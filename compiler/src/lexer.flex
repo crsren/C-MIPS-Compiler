@@ -7,32 +7,64 @@ extern "C" int fileno(FILE *stream);
 #include "parser.tab.hpp"
 %}
 
+
+DIGIT [0-9]
+
+LETTER [A-Za-z]
+
+DECIMAL {DIGIT}+"."?{DIGIT}*
+
+
+DATA_TYPE_INT "int"
+
+//DATA_TYPE_DOUBLE "double"
+
+//DATA_TYPE_FLOAT "float"
+
+//DATA_TYPE_CHARACTER "char"
+
+//DATA_TYPE_UNSIGNED "unsigned"
+
+DATA_TYPE {DATA_TYPE_INT} //| {DATA_TYPE_DOUBLE} | {DATA_TYPE_FLOAT} | {DATA_TYPE_CHARACTER} | {DATA_TYPE_UNSIGNED}
+
+
+IDENTIFIER_NAME ({LETTER} | "_")({LETTER} | "_" | {DIGIT})*
+
+FUNCTION_DECLARATION {DATA_TYPE}" "{IDENTIFIER_NAME}"("({DATA_TYPE}" "{IDENTIFIER_NAME}",")*({DATA_TYPE}" "{IDENTIFIER_NAME})")"
+
+CODE_SPACES [ \t\r\n]+
+
 %%
 
-[*]                 { return T_TIMES; }
-[+]                 { return T_PLUS; }
-[-]                 { return T_MINUS; }
-[/]                 { return T_DIVIDE; }
-[\^]                { return T_EXPONENT; }
+"{"                 { return OPERATOR_OPEN_SCOPE; }
+"}"                 { return OPERATOR_CLOSE_SCOPE; }
 
-[(]                 { return T_LBRACKET; }
-[)]                 { return T_RBRACKET; }
+"*"                 { return ARITHMETIC_OPERATOR_TIMES; }
+"+"                 { return ARITHMETIC_OPERATOR_PLUS; }
+"-"                 { return ARITHMETIC_OPERATOR_MINUS; }
+"="                 { return ARITHMETIC_OPERATOR_EQUALS; }
+//"/"                 { return ARITHMETIC_OPERATOR_DIVIDE; }
+//"\^"                { return ARITHMETIC_OPERATOR_EXPONENT; }
 
-log                 { return T_LOG; }
-exp                 { return T_EXP; }
-sqrt                { return T_SQRT; }
+"<"                 { return LOGICAL_OPERATOR_LOWER_THAN; }
+"=="                { return LOGICAL_OPERATOR_EQUALS; }
 
-[0-9]+([.][0-9]*)?  {
+"("                 { return OPERATOR_LBRACKET; }
+")"                 { return OPERATOR_RBRACKET; }
+
+
+
+{DECIMAL}           {
                         yylval.number = strtod(yytext, 0);
                         return T_NUMBER;
                     }
 
-[a-z]+              {
+{IDENTIFIER_NAME}   {
                         yylval.string = new std::string(yytext);
                         return T_VARIABLE;
                     }
 
-[ \t\r\n]+          {;}
+{CODE_SPACES}       {;}
 
 .                   {
                         fprintf(stderr, "Invalid token\n");
