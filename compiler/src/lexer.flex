@@ -12,8 +12,9 @@ DIGIT [0-9]
 
 LETTER [A-Za-z]
 
-DECIMAL {DIGIT}+"."?{DIGIT}*
+UNDERSCORE "_"
 
+DECIMAL {DIGIT}+"."?{DIGIT}*
 
 DATA_TYPE_INT "int"
 
@@ -28,16 +29,20 @@ DATA_TYPE_INT "int"
 DATA_TYPE {DATA_TYPE_INT} //| {DATA_TYPE_DOUBLE} | {DATA_TYPE_FLOAT} | {DATA_TYPE_CHARACTER} | {DATA_TYPE_UNSIGNED}
 
 
-IDENTIFIER_NAME ({LETTER} | "_")({LETTER} | "_" | {DIGIT})*
+IDENTIFIER_NAME ( {LETTER} | {UNDERSCORE} )( {LETTER} | {UNDERSCORE} | {DIGIT})*
 
-FUNCTION_DECLARATION {DATA_TYPE}" "{IDENTIFIER_NAME}"("({DATA_TYPE}" "{IDENTIFIER_NAME}",")*({DATA_TYPE}" "{IDENTIFIER_NAME})")"
+//FUNCTION_DECLARATION {DATA_TYPE}" "{IDENTIFIER_NAME}"("({DATA_TYPE}" "{IDENTIFIER_NAME}",")*({DATA_TYPE}" "{IDENTIFIER_NAME})")"
 
 CODE_SPACES [ \t\r\n]+
 
 %%
 
+";"                 { return SEMICOLON; }
+
 "{"                 { return OPERATOR_OPEN_SCOPE; }
 "}"                 { return OPERATOR_CLOSE_SCOPE; }
+"("                 { return OPERATOR_LBRACKET; }
+")"                 { return OPERATOR_RBRACKET; }
 
 "*"                 { return ARITHMETIC_OPERATOR_TIMES; }
 "+"                 { return ARITHMETIC_OPERATOR_PLUS; }
@@ -48,11 +53,13 @@ CODE_SPACES [ \t\r\n]+
 
 "<"                 { return LOGICAL_OPERATOR_LOWER_THAN; }
 "=="                { return LOGICAL_OPERATOR_EQUALS; }
+"&&"                { return LOGICAL_OPERATOR_AND; }
+"||"                { return LOGICAL_OPERATOR_OR; }
 
-"("                 { return OPERATOR_LBRACKET; }
-")"                 { return OPERATOR_RBRACKET; }
-
-
+"if"                { return CODE_KEYWORD_IF; }
+"else"              { return CODE_KEYWORD_ELSE; }
+"while"             { return CODE_KEYWORD_WHILE; }
+"return"            { return CODE_KEYWORD_RETURN; }
 
 {DECIMAL}           {
                         yylval.number = strtod(yytext, 0);
