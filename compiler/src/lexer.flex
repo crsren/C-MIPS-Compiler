@@ -33,7 +33,7 @@ IDENTIFIER_NAME ( {LETTER} | {UNDERSCORE} )( {LETTER} | {UNDERSCORE} | {DIGIT})*
 
 //FUNCTION_DECLARATION {DATA_TYPE}" "{IDENTIFIER_NAME}"("({DATA_TYPE}" "{IDENTIFIER_NAME}",")*({DATA_TYPE}" "{IDENTIFIER_NAME})")"
 
-CODE_SPACES [ \t\r\n]+
+WHITESPACE [ \t\r\n]+
 
 %%
 
@@ -71,7 +71,7 @@ CODE_SPACES [ \t\r\n]+
                         return T_VARIABLE;
                     }
 
-{CODE_SPACES}       {;}
+{WHITESPACE}       {;}
 
 .                   {
                         fprintf(stderr, "Invalid token\n");
