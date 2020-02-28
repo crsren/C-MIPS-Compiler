@@ -1,0 +1,5 @@
+mkdir -p bin
+
+all: 
+
+
