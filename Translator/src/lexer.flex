@@ -6,30 +6,30 @@
 
 %%
 
-int			{ return INT; }
-void 		{ return VOID; }
+int		  	      { return INT; }
+void 	  	      { return VOID; }
 /* main !!*/
-if			{ return IF; }
-else		{ return ELSE; }
-while		{ return WHILE; }
-return		{ return RETURN; }
+if			        { return IF; }
+else		        { return ELSE; }
+while		        { return WHILE; }
+return		      { return RETURN; }
 
-[*]             { return '*'; }
-[+]             { return '+'; }
-[-]             { return '-'; }
+"+"             { return '+'; }
+"-"             { return '-'; }
+"*"             { return '*'; }
 
-[&&]			{ return AND_OP; }
-[||]			{ return OR_OP; }
-[<]				{ return '<'; }
-[==]			{ return EQ_OP; }
-[=]				{ return '='; }
+"&&"			      { return AND_OP; }
+"||"			      { return OR_OP; }
+"<"				      { return '<'; }
+"=="			      { return EQ_OP; }
+"="				      { return '='; }
 
-[(]             { return '('; }
-[)]             { return ')'; }
-[{]             { return '{'; }
-[}]             { return '}'; }
+"("             { return '('; }
+")"             { return ')'; }
+"{"             { return '{'; }
+"}"             { return '}'; }
 
-[;]				{ return ';'; }
+";"				{ return ';'; }
 
 [0]|[1-9][0-9]+ 				{ return CONSTANT; }
 [a-zA-Z_][a-zA-Z0-9_]*          { return IDENTIFIER; }
