@@ -1,5 +1,5 @@
 %code requires{
-	#include "ast.hpp"
+	//#include "ast.hpp"
 }
 
 %token IDENTIFIER CONSTANT
@@ -14,9 +14,9 @@
 %%
 
 primary_expression
-	: IDENTIFIER									{ $$ = new Identifier($1); }
-	| CONSTANT										{ $$ = new Constant($1); }
-	| '(' assignment_expression ')'							{ $$ = $2 }
+	: IDENTIFIER									//{ $$ = new Identifier($1); }
+	| CONSTANT										//{ $$ = new Constant($1); }
+	| '(' assignment_expression ')'							//{ $$ = $2 }
 	;
 
 postfix_expression
@@ -36,7 +36,7 @@ unary_expression
 	;
 
 unary_operator
-	| '+' //dont need (deleted "*")
+	: '+' //dont need (deleted "*")
 	| '-'
 	;
 
@@ -77,11 +77,11 @@ assignment_expression
 	;
 
 declaration
-	| declaration_specifiers init_declarator ';'
+	: declaration_specifiers init_declarator ';'
 	;
 
 declaration_specifiers
-	| type_specifier
+	: type_specifier
 	| type_specifier declaration_specifiers
 	| CONSTANT
 	| CONSTANT declaration_specifiers
@@ -95,11 +95,6 @@ init_declarator
 type_specifier
 	: VOID
 	| INT
-	;
-
-IDENTIFIER
-	: IDENTIFIER
-	| IDENTIFIER ',' IDENTIFIER
 	;
 
 direct_declarator
@@ -117,7 +112,6 @@ parameter_list
 
 parameter_declaration
 	: declaration_specifiers direct_declarator
-	| declaration_specifiers direct_abstract_declarator
 	| declaration_specifiers
 	;
 
@@ -130,7 +124,7 @@ statement
 	;
 
 compound_statement
-	| '{' statement_list '}'
+	: '{' statement_list '}'
 	;
 
 statement_list
@@ -153,7 +147,7 @@ iteration_statement
 	;
 
 jump_statement
-	| RETURN ';'
+	: RETURN ';'
 	| RETURN assignment_expression ';'
 	;
 
@@ -168,9 +162,7 @@ external_declaration
 	;
 
 function_definition
-	: declaration_specifiers direct_declarator declaration_list compound_statement
-	| declaration_specifiers direct_declarator compound_statement
-	| direct_declarator declaration_list compound_statement
+	: declaration_specifiers direct_declarator compound_statement
 	| direct_declarator compound_statement
 	;
 

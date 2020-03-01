@@ -1,14 +1,13 @@
 %option noyywrap
 
 %{
-#include "lexer.hpp"
+//#include "lexer.hpp"
 %}
 
 %%
 
 int		  	      { return INT; }
 void 	  	      { return VOID; }
-/* main !!*/
 if			        { return IF; }
 else		        { return ELSE; }
 while		        { return WHILE; }
