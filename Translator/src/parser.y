@@ -25,7 +25,7 @@ postfix_expression
 	| postfix_expression '(' argument_expression_list ')'
 	;
 
-argument_expression_list
+argument_expression_list	//list
 	: assignment_expression
 	| argument_expression_list ',' assignment_expression
 	;
@@ -41,7 +41,7 @@ unary_operator
 	;
 
 multiplicative_expression
-	: unary_expression
+	: unary_expression											{ $$ = $1; }
 	| multiplicative_expression '*' unary_expression
 	;
 
@@ -52,43 +52,36 @@ additive_expression
 	;
 
 relational_expression
-	: additive_expression
+	: additive_expression										{ $$ = $1; }
 	| relational_expression '<' additive_expression
 	;
 
 equality_expression
-	: relational_expression
+	: relational_expression										{ $$ = $1; }
 	| equality_expression EQ_OP relational_expression
 	;
 
 logical_and_expression
-	: equality_expression
+	: equality_expression										{ $$ = $1; }
 	| logical_and_expression AND_OP equality_expression
 	;
 
 logical_or_expression
-	: logical_and_expression
+	: logical_and_expression									{ $$ = $1; }
 	| logical_or_expression OR_OP logical_and_expression
 	;
 
 assignment_expression
-	: logical_or_expression
+	: logical_or_expression										{ $$ = $1; }
 	| unary_expression '=' assignment_expression
 	;
 
 declaration
-	: declaration_specifiers init_declarator ';'
-	;
-
-declaration_specifiers
-	: type_specifier
-	| type_specifier declaration_specifiers
-	| CONSTANT
-	| CONSTANT declaration_specifiers
+	: type_specifier init_declarator ';'
 	;
 
 init_declarator
-	: direct_declarator
+	: direct_declarator											{ $$ = $1; }
 	| direct_declarator '=' assignment_expression
 	;
 
@@ -99,46 +92,46 @@ type_specifier
 
 direct_declarator
 	: IDENTIFIER
-	| '(' direct_declarator ')'
-	| direct_declarator '(' IDENTIFIER ')'
+	| '(' direct_declarator ')'									{ $$ = $2; }
+	| direct_declarator '(' IDENTIFIER ')'					// new function
 	| direct_declarator '(' parameter_list ')'
 	| direct_declarator '(' ')'
 	;
 
-parameter_list
+parameter_list	//list
 	: parameter_declaration
 	| parameter_list ',' parameter_declaration
 	;
 
 parameter_declaration
-	: declaration_specifiers direct_declarator
-	| declaration_specifiers
+	: type_specifier direct_declarator							// declare fn / var
+	| type_specifier											// how valid w/o any identifier?
 	;
 
 statement
-	: compound_statement
-	| expression_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
+	: compound_statement										{ $$ = $1; }
+	| expression_statement										{ $$ = $1; }
+	| selection_statement										{ $$ = $1; }
+	| iteration_statement										{ $$ = $1; }
+	| jump_statement											{ $$ = $1; }
 	;
 
 compound_statement
-	: '{' statement_list '}'
+	: '{' statement_list '}'									{ $$ = $2; }
 	;
 
-statement_list
+statement_list //list
 	: statement
 	| statement_list statement
 	;
 
 expression_statement
-	: ';'
-	| assignment_expression ';'
+	: ';'														{ $$ = NULL; } //?
+	| assignment_expression ';'									{ $$ = $1; }
 	;
 
 selection_statement
-	: IF '(' assignment_expression ')' statement
+	: IF '(' assignment_expression ')' statement 								// new selection statement
 	| IF '(' assignment_expression ')' statement ELSE statement
 	;
 
@@ -151,19 +144,19 @@ jump_statement
 	| RETURN assignment_expression ';'
 	;
 
-translation_unit
+translation_unit //list
 	: external_declaration
 	| translation_unit external_declaration
 	;
 
 external_declaration
-	: function_definition
-	| declaration
+	: function_definition										{ $$ = $1; }
+	| declaration												{ $$ = $1; }
 	;
 
 function_definition
-	: declaration_specifiers direct_declarator compound_statement
-	| direct_declarator compound_statement
+	: type_specifier direct_declarator compound_statement       // new function
+	| direct_declarator compound_statement						// how is this valid? redefinition of function?
 	;
 
 %%
