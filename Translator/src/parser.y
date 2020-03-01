@@ -16,15 +16,13 @@
 primary_expression
 	: IDENTIFIER									{ $$ = new Identifier($1); }
 	| CONSTANT										{ $$ = new Constant($1); }
-	| '(' expression ')'							{ $$ = $2 }
+	| '(' assignment_expression ')'							{ $$ = $2 }
 	;
 
 postfix_expression
 	: primary_expression
-	| postfix_expression '[' expression ']'
 	| postfix_expression '(' ')'
 	| postfix_expression '(' argument_expression_list ')'
-	| postfix_expression '.' IDENTIFIER
 	;
 
 argument_expression_list
@@ -38,8 +36,7 @@ unary_expression
 	;
 
 unary_operator
-	: '*' // dont need
-	| '+'
+	| '+' //dont need (deleted "*")
 	| '-'
 	;
 
@@ -79,14 +76,8 @@ assignment_expression
 	| unary_expression '=' assignment_expression
 	;
 
-expression
-	: assignment_expression
-	| expression ',' assignment_expression
-	;
-
 declaration
-	: declaration_specifiers ';'
-	| declaration_specifiers init_declarator_list ';'
+	| declaration_specifiers init_declarator ';'
 	;
 
 declaration_specifiers
@@ -96,14 +87,9 @@ declaration_specifiers
 	| CONSTANT declaration_specifiers
 	;
 
-init_declarator_list
-	: init_declarator
-	| init_declarator_list ',' init_declarator
-	;
-
 init_declarator
-	: declarator
-	| declarator '=' initializer
+	: direct_declarator
+	| direct_declarator '=' assignment_expression
 	;
 
 type_specifier
@@ -111,32 +97,17 @@ type_specifier
 	| INT
 	;
 
-declarator_list
-	: declarator
-	| declarator_list ',' declarator
-	;
-
 IDENTIFIER
 	: IDENTIFIER
 	| IDENTIFIER ',' IDENTIFIER
 	;
 
-declarator
-	: pointer direct_declarator
-	| direct_declarator
-	;
-
 direct_declarator
 	: IDENTIFIER
-	| '(' declarator '))'
+	| '(' direct_declarator ')'
 	| direct_declarator '(' IDENTIFIER ')'
 	| direct_declarator '(' parameter_list ')'
 	| direct_declarator '(' ')'
-	;
-
-type_qualifier_list
-	: CONSTANT
-	| type_qualifier_list CONSTANT
 	;
 
 parameter_list
@@ -145,27 +116,9 @@ parameter_list
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator
+	: declaration_specifiers direct_declarator
 	| declaration_specifiers direct_abstract_declarator
 	| declaration_specifiers
-	;
-
-direct_abstract_declarator
-	: '(' direct_abstract_declarator ')'
-	| '[' ']'
-	| direct_abstract_declarator '(' ')'
-	| direct_abstract_declarator '(' parameter_list ')'
-	;
-
-initializer
-	: assignment_expression
-	| '{' initializer_list '}'
-	| '{' initializer_list ',' '}'
-	;
-
-initializer_list
-	: initializer
-	| initializer_list ',' initializer
 	;
 
 statement
@@ -177,15 +130,7 @@ statement
 	;
 
 compound_statement
-	: '{' '}'
 	| '{' statement_list '}'
-	| '{' declaration_list '}'
-	| '{' declaration_list statement_list '}'
-	;
-
-declaration_list
-	: declaration
-	| declaration_list declaration
 	;
 
 statement_list
@@ -195,21 +140,21 @@ statement_list
 
 expression_statement
 	: ';'
-	| expression ';'
+	| assignment_expression ';'
 	;
 
 selection_statement
-	: IF '(' expression ')' statement
-	| IF '(' expression ')' statement ELSE statement
+	: IF '(' assignment_expression ')' statement
+	| IF '(' assignment_expression ')' statement ELSE statement
 	;
 
 iteration_statement
-	: WHILE '(' expression ')' statement
+	: WHILE '(' assignment_expression ')' statement
 	;
 
 jump_statement
 	| RETURN ';'
-	| RETURN expression ';'
+	| RETURN assignment_expression ';'
 	;
 
 translation_unit
@@ -223,10 +168,10 @@ external_declaration
 	;
 
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement
-	| declaration_specifiers declarator compound_statement
-	| declarator declaration_list compound_statement
-	| declarator compound_statement
+	: declaration_specifiers direct_declarator declaration_list compound_statement
+	| declaration_specifiers direct_declarator compound_statement
+	| direct_declarator declaration_list compound_statement
+	| direct_declarator compound_statement
 	;
 
 %%
