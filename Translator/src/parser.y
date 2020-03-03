@@ -1,5 +1,14 @@
 %code requires{
-	//#include "ast.hpp"
+	#include "ASTnode.h"
+	#include "primitive.h"
+	#include "operator.h"
+	#include "unary.h"
+	#include <list>
+}
+
+%union {
+	const Node * nodePtr;
+	std::string str; //for direct inputs like CONSTANT, IDENTIFIER or VOID?
 }
 
 %token IDENTIFIER CONSTANT
@@ -14,98 +23,92 @@
 %%
 
 primary_expression
-	: IDENTIFIER									//{ $$ = new Identifier($1); }
-	| CONSTANT										//{ $$ = new Constant($1); }
-	| '(' assignment_expression ')'							//{ $$ = $2 }
+	: IDENTIFIER												{ $$ = new Primitive($1); }
+	| CONSTANT													{ $$ = new Primitive($1); }
+	| '(' assignment_expression ')'								{ $$ = $2; }
 	;
 
 postfix_expression
-	: primary_expression
-	| postfix_expression '(' ')'
-	| postfix_expression '(' argument_expression_list ')'
+	: primary_expression										{ $$ = $1;} //pass as variable
+	| postfix_expression '(' ')'										//new function with no input arguments
+	| postfix_expression '(' argument_expression_list ')' 				//new function with input arguments
 	;
 
-argument_expression_list	//list
-	: assignment_expression
-	| argument_expression_list ',' assignment_expression
+argument_expression_list
+	: assignment_expression										{ $$ = new std::list<nodePtr>; $$.push_back($1);}
+	| argument_expression_list ',' assignment_expression		{ $1.push_back($3); $$ = $1; }
 	;
 
 unary_expression
-	: postfix_expression
-	| unary_operator unary_expression
-	;
-
-unary_operator
-	: '+' //dont need (deleted "*")
-	| '-'
+	: postfix_expression										{ $$ = $1; }
+	| '-' unary_expression										{ $$ = new Unary($1, $2); }
 	;
 
 multiplicative_expression
 	: unary_expression											{ $$ = $1; }
-	| multiplicative_expression '*' unary_expression
+	| multiplicative_expression '*' unary_expression			{ $$ = new Operator($1, $2, $3); }
 	;
 
 additive_expression
 	: multiplicative_expression									{ $$ = $1; }
-	| additive_expression '+' multiplicative_expression
-	| additive_expression '-' multiplicative_expression
+	| additive_expression '+' multiplicative_expression			{ $$ = new Operator($1, $2, $3); }
+	| additive_expression '-' multiplicative_expression			{ $$ = new Operator($1, $2, $3); }
 	;
 
 relational_expression
 	: additive_expression										{ $$ = $1; }
-	| relational_expression '<' additive_expression
+	| relational_expression '<' additive_expression				{ $$ = new Operator($1, $2, $3); }
 	;
 
 equality_expression
 	: relational_expression										{ $$ = $1; }
-	| equality_expression EQ_OP relational_expression
+	| equality_expression EQ_OP relational_expression			{ $$ = new Operator($1, $2, $3); }
 	;
 
 logical_and_expression
 	: equality_expression										{ $$ = $1; }
-	| logical_and_expression AND_OP equality_expression
+	| logical_and_expression AND_OP equality_expression			{ $$ = new Operator($1, $2, $3); }
 	;
 
 logical_or_expression
 	: logical_and_expression									{ $$ = $1; }
-	| logical_or_expression OR_OP logical_and_expression
+	| logical_or_expression OR_OP logical_and_expression		{ $$ = new Operator($1, $2, $3); }
 	;
 
 assignment_expression
 	: logical_or_expression										{ $$ = $1; }
-	| unary_expression '=' assignment_expression
+	| unary_expression '=' assignment_expression				// new assignment expression
 	;
 
 declaration
-	: type_specifier init_declarator ';'
-	;
-
-init_declarator
-	: direct_declarator											{ $$ = $1; }
-	| direct_declarator '=' assignment_expression
+	//: VOID and INT seperately instead of using type_specifier
+	//to allow direct assignment of variable / function decleration
+	// put direct_declerator in here instead
+	: type_specifier direct_declarator ';'						// { $$ = new decleration
+	: type_specifier direct_declarator '=' assignment_expression
 	;
 
 type_specifier
-	: VOID
-	| INT
+	: VOID														// pass on "void"
+	| INT 														// pass on "int" both for feature selections stmt
 	;
 
 direct_declarator
-	: IDENTIFIER
+	: IDENTIFIER 												{ new Primitive($1); }
 	| '(' direct_declarator ')'									{ $$ = $2; }
-	| direct_declarator '(' IDENTIFIER ')'					// new function
-	| direct_declarator '(' parameter_list ')'
+	| direct_declarator '(' IDENTIFIER ')'						// pass on $1 $3
+	| direct_declarator '(' parameter_list ')'					
 	| direct_declarator '(' ')'
 	;
 
 parameter_list	//list
-	: parameter_declaration
-	| parameter_list ',' parameter_declaration
+	: parameter_declaration										{ $$ = new std::list<nodePtr>; $$.push_back($1);}
+	| parameter_list ',' parameter_declaration					{ $1.push_back($3); $$ = $1; }
 	;
 
 parameter_declaration
-	: type_specifier direct_declarator							// declare fn / var
-	| type_specifier											// how valid w/o any identifier?
+	: type_specifier direct_declarator							// not really needed, decelration above
+	| type_specifier											// invalid
 	;
 
 statement
@@ -121,8 +124,8 @@ compound_statement
 	;
 
 statement_list //list
-	: statement
-	| statement_list statement
+	: statement 												{ $$ = new std::list<nodePtr>; $$.push_back($1);}
+	| statement_list statement 									{ $1.push_back($2); $$ = $1; }
 	;
 
 expression_statement
@@ -131,22 +134,22 @@ expression_statement
 	;
 
 selection_statement
-	: IF '(' assignment_expression ')' statement 								// new selection statement
-	| IF '(' assignment_expression ')' statement ELSE statement
+	: IF '(' assignment_expression ')' statement 				{ $$ = new Selection($3, $5); }
+	| IF '(' assignment_expression ')' statement ELSE statement { $$ = new Selection($3, $5, $7); }
 	;
 
 iteration_statement
-	: WHILE '(' assignment_expression ')' statement
+	: WHILE '(' assignment_expression ')' statement 			{ $$ = new Iteration($3, $5); }		
 	;
 
 jump_statement
-	: RETURN ';'
-	| RETURN assignment_expression ';'
+	: RETURN ';'												{ $$ = new Jump(NULL); }
+	| RETURN assignment_expression ';'							{ $$ = new Jump($2); }
 	;
 
 translation_unit //list
-	: external_declaration
-	| translation_unit external_declaration
+	: external_declaration										{ $$ = $1; }
+	| translation_unit external_declaration						{ $$ = $1; }
 	;
 
 external_declaration
@@ -171,3 +174,6 @@ char *s;
 	fflush(stdout);
 	printf("\n%*s\n%*s\n", column, "^", column, s);
 }
+
+//LINKS
+// + Linked lists: https://stackoverflow.com/questions/31513730/building-a-linked-list-in-yacc-with-left-recursive-grammar
