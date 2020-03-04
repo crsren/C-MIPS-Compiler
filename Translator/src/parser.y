@@ -1,15 +1,16 @@
 %code requires{
-	#include "ASTnode.h"
-	#include "primitive.h"
-	#include "operator.h"
-	#include "unary.h"
+	#include "AST.h"
 	#include <list>
+
+	extern const ASTNode* root;
 }
 
 %union {
 	const Node * nodePtr;
-	std::string str; //for direct inputs like CONSTANT, IDENTIFIER or VOID?
+	std::string* str; //for direct inputs like CONSTANT, IDENTIFIER or VOID?
 }
+
+%type <nodePtr> //list all nodes
 
 %token IDENTIFIER CONSTANT
 %token EQ_OP
@@ -67,12 +68,12 @@ equality_expression
 
 logical_and_expression
 	: equality_expression										{ $$ = $1; }
-	| logical_and_expression AND_OP equality_expression			{ $$ = new Operator($1, $2, $3); }
+	| logical_and_expression AND_OP equality_expression			{ $$ = new Operator($1, "and", $3); }
 	;
 
 logical_or_expression
 	: logical_and_expression									{ $$ = $1; }
-	| logical_or_expression OR_OP logical_and_expression		{ $$ = new Operator($1, $2, $3); }
+	| logical_or_expression OR_OP logical_and_expression		{ $$ = new Operator($1, "or", $3); }
 	;
 
 assignment_expression
@@ -84,8 +85,8 @@ declaration
 	//: VOID and INT seperately instead of using type_specifier
 	//to allow direct assignment of variable / function decleration
 	// put direct_declerator in here instead
-	: type_specifier direct_declarator ';'						// { $$ = new decleration
-	: type_specifier direct_declarator '=' assignment_expression
+	: type_specifier direct_declarator ';'						{ $$ = new varDecleration($2); } // implement
+	| type_specifier direct_declarator '=' assignment_expression{ $$ = new varDecleration($2, $4); }
 	;
 
 type_specifier
@@ -94,11 +95,9 @@ type_specifier
 	;
 
 direct_declarator
-	: IDENTIFIER 												{ new Primitive($1); }
-	| '(' direct_declarator ')'									{ $$ = $2; }
-	| direct_declarator '(' IDENTIFIER ')'						// pass on $1 $3
-	| direct_declarator '(' parameter_list ')'					
-	| direct_declarator '(' ')'
+	: IDENTIFIER 												{ $$ = new Primitive($1); }
+	| direct_declarator '(' parameter_list ')'					{ $$ = new fnDeclerator($1, $2); } //implement
+	| direct_declarator '(' ')'									{ $$ = new fnDeclerator($1, $2); }
 	;
 
 parameter_list	//list
@@ -120,7 +119,7 @@ statement
 	;
 
 compound_statement
-	: '{' statement_list '}'									{ $$ = $2; }
+	: '{' statement_list '}'									{ $$ = new compound($2); } //implement for indent;
 	;
 
 statement_list //list
@@ -158,22 +157,12 @@ external_declaration
 	;
 
 function_definition
-	: type_specifier direct_declarator compound_statement       // new function
-	| direct_declarator compound_statement						// how is this valid? redefinition of function?
+	: type_specifier direct_declarator compound_statement       { $$ = new fnDefinition($1, $2, $3); } //implement
 	;
 
 %%
-#include <stdio.h>
 
-extern char yytext[];
-extern int column;
-
-yyerror(s)
-char *s;
-{
-	fflush(stdout);
-	printf("\n%*s\n%*s\n", column, "^", column, s);
-}
+//see 2-parser
 
 //LINKS
 // + Linked lists: https://stackoverflow.com/questions/31513730/building-a-linked-list-in-yacc-with-left-recursive-grammar

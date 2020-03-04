@@ -1,7 +1,7 @@
 #ifndef OPERATORS_H
 #define OPERATORS_H
 
-#include "ASTnode.h"
+#include "AST.h"
 #include <string>
 
 class Operator : public Node

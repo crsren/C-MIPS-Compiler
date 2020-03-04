@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "ASTnode.h"
+#include "AST.h"
 
 using namespace std;
 

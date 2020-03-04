@@ -1,7 +1,7 @@
 #if !defined(STATEMENTS_H)
 #define STATEMENTS_H
 
-#include "ASTNode.h"
+#include "node.h"
 #include <iostream>
 
 class Selection : public Node
@@ -18,17 +18,17 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        out << indent() << "if (";
+        out << Indent::instance() << "if (";
         condition->print(out);
-        out << indent() << "):\n";
-        indent++;
+        out << Indent::instance() << "):\n";
+        Indent::instance()++;
         statement1->print(out);
-        indent--;
+        Indent::instance()--;
 
         if (has_else)
         {
-            out << indent() << "\nelse:\n";
-            indent++;
+            out << Indent::instance() << "\nelse:\n";
+            Indent::instance()++;
             statement2->print(out);
         }
     };
@@ -52,12 +52,12 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        out << indent() << "while (";
+        out << Indent::instance() << "while (";
         condition->print(out);
-        out << indent() << "):\n";
-        indent++;
+        out << Indent::instance() << "):\n";
+        Indent::instance()++;
         statement->print(out);
-        indent--;
+        Indent::instance()--;
     };
 
     ~Iteration()
@@ -77,7 +77,7 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        out << indent() << "return ";
+        out << Indent::instance() << "return ";
         if (expression != NULL)
             expression->print(out);
         out << '\n';
