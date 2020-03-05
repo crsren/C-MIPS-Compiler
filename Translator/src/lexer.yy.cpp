@@ -489,7 +489,7 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "src/lexer.flex"
 #line 4 "src/lexer.flex"
-//#include "lexer.hpp"
+  #include "parser.tab.hpp"
 #line 494 "src/lexer.yy.cpp"
 
 #define INITIAL 0
@@ -761,7 +761,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 9 "src/lexer.flex"
-{ return INT; }
+{ fprintf(stderr, "int\n"); return INT; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -850,33 +850,33 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 31 "src/lexer.flex"
-{ return ';'; }
+#line 30 "src/lexer.flex"
+{ fprintf(stderr, "semiclon\n"); return ';'; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 33 "src/lexer.flex"
-{ return CONSTANT; }
+#line 32 "src/lexer.flex"
+{ fprintf(stderr, "constant\n"); return CONSTANT; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 34 "src/lexer.flex"
+#line 33 "src/lexer.flex"
 { return IDENTIFIER; }
 	YY_BREAK
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 36 "src/lexer.flex"
+#line 35 "src/lexer.flex"
 {;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 38 "src/lexer.flex"
+#line 37 "src/lexer.flex"
 { fprintf(stderr, "Invalid token\n"); exit(1); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 39 "src/lexer.flex"
+#line 38 "src/lexer.flex"
 ECHO;
 	YY_BREAK
 #line 883 "src/lexer.yy.cpp"
@@ -1876,7 +1876,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 39 "src/lexer.flex"
+#line 38 "src/lexer.flex"
 
 
 
