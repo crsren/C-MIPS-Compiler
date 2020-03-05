@@ -8,6 +8,8 @@
 #include "statements.h"
 #include "primitive.h"
 
+#include <iostream>
+
 extern const Node *root; //
 
 typedef const Node *nodePtr;
