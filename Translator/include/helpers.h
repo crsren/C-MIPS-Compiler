@@ -25,6 +25,11 @@ public:
         std::cerr << "Indent initiated." << '\n';
     };
 
+    int getCount()
+    {
+        return count;
+    };
+
     void operator++(int)
     {
         count++;
@@ -48,7 +53,7 @@ class Global
     std::vector<std::string> variables;
 
 public:
-    Global &instance()
+    static Global &instance()
     {
         static Global instance;
         return instance;
@@ -59,15 +64,7 @@ public:
         variables.push_back(s);
     };
 
-    friend std::ostream &operator<<(std::ostream &os, const Global &global)
-    {
-        for (auto &v : global.variables)
-        {
-            os << "global " << v << '\n';
-        }
-
-        return os;
-    };
+    friend std::ostream &operator<<(std::ostream &os, const Global &global);
 };
 
 #endif // HELPERS_H
