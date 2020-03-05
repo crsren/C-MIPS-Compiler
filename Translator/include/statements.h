@@ -120,7 +120,7 @@ private:
     nodePtr statementList;
 
 public:
-    Compound(nodePtr &s) : statementList(s){};
+    Compound(nodePtr s) : statementList(s){};
 
     virtual void print(std::ostream &out) const override
     {

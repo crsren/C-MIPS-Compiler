@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-extern const Node *root; //
+extern const Node *root;
 
 typedef const Node *nodePtr;
 

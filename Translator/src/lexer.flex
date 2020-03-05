@@ -1,41 +1,40 @@
 %option noyywrap
 
 %{
-//#include "lexer.hpp"
+  #include "parser.tab.hpp"
 %}
 
 %%
 
-int		  	      { return INT; }
-void 	  	      { return VOID; }
-if			        { return IF; }
-else		        { return ELSE; }
-while		        { return WHILE; }
-return		      { return RETURN; }
+int		  	              { fprintf(stderr, "int\n"); return INT; }
+void 	  	              { return VOID; }
+if			                { return IF; }
+else		                { return ELSE; }
+while		                { return WHILE; }
+return		              { return RETURN; }
 
-"+"             { return '+'; }
-"-"             { return '-'; }
-"*"             { return '*'; }
+"+"                     { return '+'; }
+"-"                     { return '-'; }
+"*"                     { return '*'; }
 
-"&&"			      { return AND_OP; }
-"||"			      { return OR_OP; }
-"<"				      { return '<'; }
-"=="			      { return EQ_OP; }
-"="				      { return '='; }
+"&&"			              { return AND_OP; }
+"||"			              { return OR_OP; }
+"<"				              { return '<'; }
+"=="			              { return EQ_OP; }
+"="				              { return '='; }
 
-"("             { return '('; }
-")"             { return ')'; }
-"{"             { return '{'; }
-"}"             { return '}'; }
+"("                     { return '('; }
+")"                     { return ')'; }
+"{"                     { return '{'; }
+"}"                     { return '}'; }
+";"				              { fprintf(stderr, "semiclon\n"); return ';'; }
 
-";"				{ return ';'; }
-
-[0]|[1-9][0-9]+ 				{ return CONSTANT; }
-[a-zA-Z_][a-zA-Z0-9_]*          { return IDENTIFIER; }
+[0]|[1-9][0-9]+ 				{ fprintf(stderr, "constant\n"); return CONSTANT; }
+[a-zA-Z_][a-zA-Z0-9_]*  { return IDENTIFIER; }
 
 [ \t\r\n]+		{;}
 
-.               { fprintf(stderr, "Invalid token\n"); exit(1); }
+.             { fprintf(stderr, "Invalid token\n"); exit(1); }
 %%
 
 void yyerror (char const *s)

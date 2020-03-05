@@ -2,15 +2,27 @@
 	#include "AST.h"
 	#include <list>
 
-	extern const ASTNode* root;
+	extern const Node *root;
+
+	 //declaring lex generated functions to fix possible issues as provided in 2-parser CW
+	int yylex(void);
+  	void yyerror(const char *);
 }
 
 %union {
 	const Node * nodePtr;
-	std::string* str; //for direct inputs like CONSTANT, IDENTIFIER or VOID?
+	std::string * string; //for direct inputs like CONSTANT, IDENTIFIER or VOID?
+	unsigned char symbol;
 }
 
-%type <nodePtr> //list all nodes
+%nterm <nodePtr> primary_expression postfix_expression argument_expression_list unary_expression
+%nterm <nodePtr> multiplicative_expression additive_expression relational_expression equality_expression
+%nterm <nodePtr> logical_and_expression logical_or_expression assignment_expression declaration
+%nterm <nodePtr> direct_declarator parameter_list parameter_declaration statement statement_list
+%nterm <nodePtr> compound_statement selection_statement iteration_statement jump_statement
+%nterm <nodePtr> translation_unit external_declaration function_definition
+%type <string> IDENTIFIER CONSTANT VOID INT type_specifier
+%type <symbol> '-' '*' '+' '<' '='
 
 %token IDENTIFIER CONSTANT
 %token EQ_OP
@@ -42,7 +54,7 @@ argument_expression_list
 
 unary_expression
 	: postfix_expression										{ $$ = $1; }
-	| '-' unary_expression										{ $$ = new Unary($1, $2); }
+	| '-' unary_expression										{ $$ = new Unary("-", $2); }
 	;
 
 multiplicative_expression
@@ -63,7 +75,7 @@ relational_expression
 
 equality_expression
 	: relational_expression										{ $$ = $1; }
-	| equality_expression EQ_OP relational_expression			{ $$ = new Operator($1, $2, $3); }
+	| equality_expression EQ_OP relational_expression			{ $$ = new Operator($1, "==", $3); }
 	;
 
 logical_and_expression
@@ -78,10 +90,10 @@ logical_or_expression
 
 assignment_expression
 	: logical_or_expression										{ $$ = $1; }
-	| unary_expression '=' assignment_expression				{ $ = new Assignment($1, $3); }
+	| unary_expression '=' assignment_expression				{ $$ = new Assignment($1, $3); }
 	;
 
-declaration // alwys int so no need to pass type_specifier, python doesnt care anyways
+declaration // always int so no need to pass type_specifier, python doesnt care anyways
 	: type_specifier direct_declarator ';'						{ $$ = new VarDeclarator($2); }
 	| type_specifier direct_declarator '=' assignment_expression{ $$ = new VarDeclarator($2, $4); }
 	;
@@ -93,7 +105,7 @@ type_specifier
 
 direct_declarator
 	: IDENTIFIER 												{ $$ = new Primitive($1); }
-	| direct_declarator '(' parameter_list ')'					{ $$ = new FnDeclarator($1, $2); }
+	| direct_declarator '(' parameter_list ')'					{ $$ = new FnDeclarator($1, $3); }
 	| direct_declarator '(' ')'									{ $$ = new FnDeclarator($1); }
 	;
 
@@ -152,8 +164,11 @@ function_definition // type specifier does not matter since always "def " decler
 	;
 
 %%
+const Node *root; // Definition of variable (to match declaration earlier)
 
-//see 2-parser
-
-//LINKS
-// + Linked lists: https://stackoverflow.com/questions/31513730/building-a-linked-list-in-yacc-with-left-recursive-grammar
+const Node *parseAST()
+{
+  root=0;
+  yyparse();
+  return root;
+}

@@ -2,3 +2,6 @@
 .DS_Store
 .vscode/settings.json
 .vscode/c_cpp_properties.json
+Translator/src/parser.output
+Translator/src/parser.tab.cpp
+Translator/src/parser.tab.hpp

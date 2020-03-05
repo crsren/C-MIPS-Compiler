@@ -11,7 +11,7 @@ class Unary : public Node
 {
 private:
     nodePtr expression;
-    char prefix;
+    const char prefix;
 
 public:
     Unary(const char &sign, nodePtr exp) : prefix(sign), expression(exp){};
