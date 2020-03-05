@@ -20,8 +20,13 @@ public:
     virtual void print(std::ostream &out) const override
     {
         out << content;
+    };
+
+    virtual std::string getContent() const override
+    {
+        return content;
     }
-}
+};
 
 // class Identifier : public Node
 // {
