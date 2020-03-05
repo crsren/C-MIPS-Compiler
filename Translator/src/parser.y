@@ -31,8 +31,8 @@ primary_expression
 
 postfix_expression
 	: primary_expression										{ $$ = $1;} //pass as variable
-	| postfix_expression '(' ')'										//new function with no input arguments
-	| postfix_expression '(' argument_expression_list ')' 				//new function with input arguments
+	| postfix_expression '(' ')'										 //WHAT
+	| postfix_expression '(' argument_expression_list ')' 				 // WHAT
 	;
 
 argument_expression_list
@@ -78,26 +78,23 @@ logical_or_expression
 
 assignment_expression
 	: logical_or_expression										{ $$ = $1; }
-	| unary_expression '=' assignment_expression				// new assignment expression
+	| unary_expression '=' assignment_expression				{ $ = new Assignment($1, $3); }
 	;
 
-declaration
-	//: VOID and INT seperately instead of using type_specifier
-	//to allow direct assignment of variable / function decleration
-	// put direct_declerator in here instead
-	: type_specifier direct_declarator ';'						{ $$ = new varDecleration($2); } // implement
-	| type_specifier direct_declarator '=' assignment_expression{ $$ = new varDecleration($2, $4); }
+declaration // alwys int so no need to pass type_specifier, python doesnt care anyways
+	: type_specifier direct_declarator ';'						{ $$ = new VarDeclarator($2); }
+	| type_specifier direct_declarator '=' assignment_expression{ $$ = new VarDeclarator($2, $4); }
 	;
 
 type_specifier
-	: VOID														// pass on "void"
-	| INT 														// pass on "int" both for feature selections stmt
+	: VOID														{ $$ = $1; } // pass on "void"
+	| INT 														{ $$ = $1; }// pass on "int" both for feature selections stmt
 	;
 
 direct_declarator
 	: IDENTIFIER 												{ $$ = new Primitive($1); }
-	| direct_declarator '(' parameter_list ')'					{ $$ = new fnDeclerator($1, $2); } //implement
-	| direct_declarator '(' ')'									{ $$ = new fnDeclerator($1, $2); }
+	| direct_declarator '(' parameter_list ')'					{ $$ = new FnDeclarator($1, $2); }
+	| direct_declarator '(' ')'									{ $$ = new FnDeclarator($1); }
 	;
 
 parameter_list	//list
@@ -105,31 +102,25 @@ parameter_list	//list
 	| parameter_list ',' parameter_declaration					{ $1.push_back($3); $$ = $1; }
 	;
 
-parameter_declaration
-	: type_specifier direct_declarator							// not really needed, decelration above
-	| type_specifier											// invalid
+parameter_declaration //always int so no need to pass type_specifier
+	: type_specifier direct_declarator							{ $$ = new FnParameter($2); }
 	;
 
 statement
 	: compound_statement										{ $$ = $1; }
-	| expression_statement										{ $$ = $1; }
 	| selection_statement										{ $$ = $1; }
 	| iteration_statement										{ $$ = $1; }
 	| jump_statement											{ $$ = $1; }
 	;
 
-compound_statement
-	: '{' statement_list '}'									{ $$ = new compound($2); } //implement for indent;
+compound_statement //now also expression_statement
+	: '{' statement_list '}'									{ $$ = new Compound($2); }
+	| assignment_expression ';'									{ std::list<nodePtr> l; l.push_back($1); $$ = new Compound(l); }
 	;
 
 statement_list //list
 	: statement 												{ $$ = new std::list<nodePtr>; $$.push_back($1);}
 	| statement_list statement 									{ $1.push_back($2); $$ = $1; }
-	;
-
-expression_statement
-	: ';'														{ $$ = NULL; } //?
-	| assignment_expression ';'									{ $$ = $1; }
 	;
 
 selection_statement
@@ -156,8 +147,8 @@ external_declaration
 	| declaration												{ $$ = $1; }
 	;
 
-function_definition
-	: type_specifier direct_declarator compound_statement       { $$ = new fnDefinition($1, $2, $3); } //implement
+function_definition // type specifier does not matter since always "def " decleration in python
+	: type_specifier direct_declarator compound_statement       { $$ = new FnDefinition($2, $3); }
 	;
 
 %%
