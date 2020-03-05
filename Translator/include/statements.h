@@ -1,8 +1,9 @@
 #if !defined(STATEMENTS_H)
 #define STATEMENTS_H
 
-#include "node.h"
-#include <iostream>
+#include "AST.h"
+
+#include <list>
 
 class Selection : public Node
 {
@@ -86,6 +87,58 @@ public:
     ~Jump()
     {
         delete expression;
+    };
+};
+
+class Assignment : public Node
+{
+private:
+    nodePtr unary, expression;
+
+public:
+    Assignment(nodePtr u, nodePtr exp) : unary(u), expression(exp){};
+
+    virtual void print(std::ostream &out) const override
+    {
+        out << Indent::instance();
+        unary->print(out);
+        out << " = ";
+        expression->print(out);
+        out << '\n';
+    };
+
+    ~Assignment()
+    {
+        delete unary;
+        delete expression;
+    };
+};
+
+class Compound : public Node
+{
+private:
+    nodePtr statementList;
+
+public:
+    Compound(nodePtr &s) : statementList(s){};
+
+    virtual void print(std::ostream &out) const override
+    {
+        Indent::instance()++;
+
+        out << '\n';
+
+        for (auto &s : *statementList)
+        {
+            s->print(out);
+        }
+
+        Indent::instance()--;
+    };
+
+    ~Compound()
+    {
+        delete statementList;
     };
 };
 
