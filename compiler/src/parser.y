@@ -363,6 +363,10 @@ statement
 	| jump_statement
 	;
 
+//C Language
+//https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
+//C++ Language
+//https://docs.microsoft.com/en-us/cpp/cpp/labeled-statements?view=vs-2019
 labeled_statement
 	: IDENTIFIER ':' statement
 	| CASE constant_expression ':' statement
@@ -386,17 +390,23 @@ statement_list
 	| statement_list statement
 	;
 
+//https://docs.microsoft.com/en-us/cpp/c-language/expression-statement-c?view=vs-2019
 expression_statement
 	: ';'
 	| expression ';'
 	;
 
+//https://docs.microsoft.com/en-us/cpp/c-language/switch-statement-c?view=vs-2019
+//https://docs.microsoft.com/en-us/cpp/c-language/if-statement-c?view=vs-2019
 selection_statement
 	: IF '(' expression ')' statement
 	| IF '(' expression ')' statement ELSE statement
 	| SWITCH '(' expression ')' statement
 	;
 
+//https://docs.microsoft.com/en-us/cpp/c-language/do-while-statement-c?view=vs-2019
+//https://docs.microsoft.com/en-us/cpp/c-language/for-statement-c?view=vs-2019
+//https://docs.microsoft.com/en-us/cpp/c-language/while-statement-c?view=vs-2019
 iteration_statement
 	: WHILE '(' expression ')' statement
 	| DO statement WHILE '(' expression ')' ';'
@@ -404,6 +414,10 @@ iteration_statement
 	| FOR '(' expression_statement expression_statement expression ')' statement
 	;
 
+//https://docs.microsoft.com/en-us/cpp/c-language/continue-statement-c?view=vs-2019
+//https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
+//https://docs.microsoft.com/en-us/cpp/c-language/break-statement-c?view=vs-2019
+//https://docs.microsoft.com/en-us/cpp/c-language/return-statement-c?view=vs-2019
 jump_statement
 	: GOTO IDENTIFIER ';'
 	| CONTINUE ';'
@@ -422,6 +436,8 @@ external_declaration
 	| declaration
 	;
 
+//https://docs.microsoft.com/en-us/cpp/c-language/obsolete-forms-of-function-declarations-and-definitions?view=vs-2019
+//https://stackoverflow.com/questions/18820751/identifier-list-vs-parameter-type-list-in-c/18820829#18820829
 function_definition
 	: declaration_specifiers declarator declaration_list compound_statement
 	| declaration_specifiers declarator compound_statement
@@ -441,5 +457,3 @@ char *s;
 	fflush(stdout);
 	printf("\n%*s\n%*s\n", column, "^", column, s);
 }
-
-
