@@ -5,13 +5,15 @@
 #include <string>
 #include "AST.h"
 
+typedef const Node *nodePtr;
+
 using namespace std;
 
 class Unary : public Node
 {
 private:
-    nodePtr expression;
     const char prefix;
+    nodePtr expression;
 
 public:
     Unary(const char &sign, nodePtr exp) : prefix(sign), expression(exp){};

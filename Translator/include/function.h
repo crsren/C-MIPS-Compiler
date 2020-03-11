@@ -28,21 +28,21 @@ class FnDeclarator : public Node
 {
 private:
     nodePtr declarator;
-    nodePtr paramList;
+    std::list<nodePtr> paramList;
 
 public:
-    FnDeclarator(nodePtr d) : declarator(d), paramList(nullptr){};
-    FnDeclarator(nodePtr d, nodePtr p) : declarator(d), paramList(p){};
+    FnDeclarator(nodePtr d) : declarator(d), paramList(){};
+    FnDeclarator(nodePtr d, std::list<nodePtr> p) : declarator(d), paramList(p){};
 
     virtual void print(std::ostream &out) const override
     {
         declarator->print(out);
 
         out << "(";
-        if (!paramList)
+        if (paramList.empty())
         { // not empty
             unsigned char separator = 0;
-            for (auto &param : *paramList)
+            for (const auto &param : paramList)
             {
                 out << separator;
                 separator = ',';
@@ -50,6 +50,11 @@ public:
             };
         }
         out << ")";
+    };
+
+    ~FnDeclarator()
+    {
+        delete declarator;
     };
 };
 

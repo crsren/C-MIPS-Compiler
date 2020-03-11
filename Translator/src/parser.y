@@ -2,7 +2,7 @@
 	#include "AST.h"
 	#include <list>
 
-	extern const Node *root;
+	extern const Node *g_root;
 
 	 //declaring lex generated functions to fix possible issues as provided in 2-parser CW
 	int yylex(void);
@@ -32,12 +32,12 @@
 
 %token IF ELSE WHILE RETURN
 
-%start translation_unit
+%start root
 %%
 
 primary_expression
-	: IDENTIFIER												{ $$ = new Primitive($1); }
-	| CONSTANT													{ $$ = new Primitive($1); }
+	: IDENTIFIER												{ $$ = new Primitive(*$1); }
+	| CONSTANT													{ $$ = new Primitive(*$1); }
 	| '(' assignment_expression ')'								{ $$ = $2; }
 	;
 
@@ -163,12 +163,14 @@ function_definition // type specifier does not matter since always "def " decler
 	: type_specifier direct_declarator compound_statement       { $$ = new FnDefinition($2, $3); }
 	;
 
+root : translation_unit											{ g_root = $1; }
+
 %%
-const Node *root; // Definition of variable (to match declaration earlier)
+const Node *g_root; // Definition of variable (to match declaration earlier)
 
 const Node *parseAST()
 {
-  root=0;
+  g_root=NULL;
   yyparse();
-  return root;
+  return g_root;
 }

@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     string filename = "output.py";
-    // const Node * root = parseAST(); //fn from yacc
+    const Node *root = parseAST(); //fn from yacc
 
     // current date/time based on current system
     time_t now = time(0);

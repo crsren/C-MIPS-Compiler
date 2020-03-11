@@ -10,8 +10,6 @@
 
 #include <iostream>
 
-extern const Node *root;
-
-typedef const Node *nodePtr;
+extern const Node *parseAST();
 
 #endif // AST_H

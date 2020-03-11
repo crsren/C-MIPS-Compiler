@@ -4,12 +4,14 @@
 #include "AST.h"
 #include <string>
 
+typedef const Node *nodePtr;
+
 class Operator : public Node
 {
 private:
     nodePtr l;
-    nodePtr r;
     std::string opCode; // "+" etc.
+    nodePtr r;
 
 protected:
     Operator(nodePtr left, const char &symbol, nodePtr right) : l(left), r(right)
@@ -17,7 +19,7 @@ protected:
         opCode = "";
         opCode += symbol;
     };
-    Operator(nodePtr left, const std::string &symbol, nodePtr right) : opCode(symbol), l(left), r(right){};
+    Operator(nodePtr left, const std::string &symbol, nodePtr right) : l(left), opCode(symbol), r(right){};
 
 public:
     virtual void print(std::ostream &out) const override

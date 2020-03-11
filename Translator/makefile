@@ -1,17 +1,21 @@
-CPPFLAGS = -std=c++11 -W -Wall -g -Wno-unused-parameter
+CPPFLAGS += -std=c++11 -W -Wall -g -Wno-unused-parameter
 CPPFLAGS += -I include
 
+all : bin/print_canonical
 
-lexer: src/lexer.flex
-	flex -o src/lexer.yy.cpp src/lexer.flex
-
-parser:
+src/parser.tab.cpp src/parser.tab.hpp : src/parser.y
 	bison -v -d src/parser.y -o src/parser.tab.cpp
 
-all: lexer parser
-	mkdir -p bin
-	rm bin/*
+src/lexer.yy.cpp : src/lexer.flex src/parser.tab.hpp
+	flex -o src/lexer.yy.cpp  src/lexer.flex
 
-clean:
+bin/print_canonical : src/print_canonical.o src/parser.tab.o src/lexer.yy.o src/parser.tab.o
+	mkdir -p bin
+	g++ $(CPPFLAGS) -o $@ $^
+
+
+clean :
 	rm src/*.o
 	rm bin/*
+	rm src/*.tab.cpp
+	rm src/*.yy.cpp
