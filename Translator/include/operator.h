@@ -13,7 +13,7 @@ private:
     std::string opCode; // "+" etc.
     nodePtr r;
 
-protected:
+public:
     Operator(nodePtr left, const char &symbol, nodePtr right) : l(left), r(right)
     {
         opCode = "";
@@ -21,7 +21,6 @@ protected:
     };
     Operator(nodePtr left, const std::string &symbol, nodePtr right) : l(left), opCode(symbol), r(right){};
 
-public:
     virtual void print(std::ostream &out) const override
     {
         l->print(out);

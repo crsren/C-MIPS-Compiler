@@ -12,18 +12,21 @@ int main()
     string filename = "output.py";
     const Node *root = parseAST(); //fn from yacc
 
-    // current date/time based on current system
-    time_t now = time(0);
-    string dt = ctime(&now);
+    // // current date/time based on current system
+    // time_t now = time(0);
+    // string dt = ctime(&now);
 
-    ofstream output(filename);
-    output << "# Produced @ " << dt << '\n';
-    // introduce main function in python
+    // ofstream output(filename);
+    // output << "# Produced @ " << dt << '\n';
+    // // introduce main function in python
 
-    if (output.is_open())
-    {
-        root->print(output);
-    }
+    // if (output.is_open())
+    // {
+    //     root->print(output);
+    //    }
+
+    root->print(cout);
+    cout << endl;
 
     return 0;
 }

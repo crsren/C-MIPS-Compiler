@@ -28,26 +28,20 @@ class FnDeclarator : public Node
 {
 private:
     nodePtr declarator;
-    std::list<nodePtr> paramList;
+    nodePtr list;
 
 public:
-    FnDeclarator(nodePtr d) : declarator(d), paramList(){};
-    FnDeclarator(nodePtr d, std::list<nodePtr> p) : declarator(d), paramList(p){};
+    FnDeclarator(nodePtr d) : declarator(d), list(){};
+    FnDeclarator(nodePtr d, nodePtr l) : declarator(d), list(l){};
 
     virtual void print(std::ostream &out) const override
     {
         declarator->print(out);
 
         out << "(";
-        if (paramList.empty())
-        { // not empty
-            unsigned char separator = 0;
-            for (const auto &param : paramList)
-            {
-                out << separator;
-                separator = ',';
-                param->print(out);
-            };
+        if (list != nullptr)
+        {
+            list->print(out);
         }
         out << ")";
     };

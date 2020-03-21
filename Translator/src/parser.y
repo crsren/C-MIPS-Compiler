@@ -1,6 +1,5 @@
 %code requires{
 	#include "AST.h"
-	#include <list>
 
 	extern const Node *g_root;
 
@@ -21,6 +20,7 @@
 %nterm <nodePtr> direct_declarator parameter_list parameter_declaration statement statement_list
 %nterm <nodePtr> compound_statement selection_statement iteration_statement jump_statement
 %nterm <nodePtr> translation_unit external_declaration function_definition
+%nterm <nodePtr> open_statement closed_statement
 %type <string> IDENTIFIER CONSTANT VOID INT type_specifier
 %type <symbol> '-' '*' '+' '<' '='
 
@@ -48,8 +48,8 @@ postfix_expression
 	;
 
 argument_expression_list
-	: assignment_expression										{ $$ = new std::list<nodePtr>; $$.push_back($1);}
-	| argument_expression_list ',' assignment_expression		{ $1.push_back($3); $$ = $1; }
+	: assignment_expression										{ $$ = new paramList($1); }
+	| argument_expression_list ',' assignment_expression		{ $$->add($3); }
 	;
 
 unary_expression
@@ -104,14 +104,14 @@ type_specifier
 	;
 
 direct_declarator
-	: IDENTIFIER 												{ $$ = new Primitive($1); }
+	: IDENTIFIER 												{ $$ = new Primitive(*$1); }
 	| direct_declarator '(' parameter_list ')'					{ $$ = new FnDeclarator($1, $3); }
 	| direct_declarator '(' ')'									{ $$ = new FnDeclarator($1); }
 	;
 
 parameter_list	//list
-	: parameter_declaration										{ $$ = new std::list<nodePtr>; $$.push_back($1);}
-	| parameter_list ',' parameter_declaration					{ $1.push_back($3); $$ = $1; }
+	: parameter_declaration										{ $$ = new paramList($1);}
+	| parameter_list ',' parameter_declaration					{ $$->add($3); }
 	;
 
 parameter_declaration //always int so no need to pass type_specifier
@@ -119,26 +119,34 @@ parameter_declaration //always int so no need to pass type_specifier
 	;
 
 statement
-	: compound_statement										{ $$ = $1; }
-	| selection_statement										{ $$ = $1; }
+	//: compound_statement										{ $$ = $1; }
+	: selection_statement										{ $$ = $1; }
 	| iteration_statement										{ $$ = $1; }
 	| jump_statement											{ $$ = $1; }
 	;
 
 compound_statement //now also expression_statement
 	: '{' statement_list '}'									{ $$ = new Compound($2); }
-	| assignment_expression ';'									{ std::list<nodePtr> l; l.push_back($1); $$ = new Compound(l); }
+	| assignment_expression ';'									{ nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
 	;
 
 statement_list //list
-	: statement 												{ $$ = new std::list<nodePtr>; $$.push_back($1);}
-	| statement_list statement 									{ $1.push_back($2); $$ = $1; }
+	: statement 												{ $$ = new statementList($1); }
+	| statement_list statement 									{ $$->add($2); }
 	;
 
 selection_statement
-	: IF '(' assignment_expression ')' statement 				{ $$ = new Selection($3, $5); }
-	| IF '(' assignment_expression ')' statement ELSE statement { $$ = new Selection($3, $5, $7); }
+	: open_statement { $$ = $1; }
+	| closed_statement { $$ = $1; }
 	;
+
+open_statement
+	: IF '(' assignment_expression ')' selection_statement 		{ $$ = new Selection($3, $5); }
+	| IF '(' assignment_expression ')' closed_statement ELSE open_statement { $$ = new Selection($3, $5, $7); }
+	
+closed_statement
+	: compound_statement										{ $$ = $1; }
+	| IF '(' assignment_expression ')' closed_statement ELSE closed_statement { $$ = new Selection($3, $5, $7); }
 
 iteration_statement
 	: WHILE '(' assignment_expression ')' statement 			{ $$ = new Iteration($3, $5); }		

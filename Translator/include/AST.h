@@ -7,6 +7,9 @@
 #include "unary.h"
 #include "statements.h"
 #include "primitive.h"
+#include "list.h"
+#include "variable.h"
+#include "function.h"
 
 #include <iostream>
 

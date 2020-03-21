@@ -117,21 +117,17 @@ public:
 class Compound : public Node
 {
 private:
-    std::list<nodePtr> statementList;
+    nodePtr list;
 
 public:
-    Compound(std::list<nodePtr> s) : statementList(s){};
+    Compound(nodePtr s) : list(s){};
 
     virtual void print(std::ostream &out) const override
     {
         Indent::instance()++;
 
         out << '\n';
-
-        for (const auto &s : statementList)
-        {
-            s->print(out);
-        }
+        list->print(out);
 
         Indent::instance()--;
     };
