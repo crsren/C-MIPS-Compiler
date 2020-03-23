@@ -6,3 +6,4 @@ Translator/src/parser.output
 Translator/src/parser.tab.cpp
 Translator/src/parser.tab.hpp
 Translator/src/lexer.yy.cpp
+*.o
