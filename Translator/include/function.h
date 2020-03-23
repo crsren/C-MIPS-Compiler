@@ -1,7 +1,7 @@
-#if !defined(FUNCTION_H)
+#ifndef FUNCTION_H
 #define FUNCTION_H
 
-#include "AST.h"
+#include "node.h"
 
 #include <list>
 

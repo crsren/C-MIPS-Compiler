@@ -1,8 +1,8 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "helpers.h"
 #include <iostream>
+#include "node.h"
 
 class Node
 {

@@ -1,7 +1,9 @@
 %option noyywrap
+%option never-interactive
 
 %{
   #include "parser.tab.hpp"
+  #define YY_NO_UNISTD_H
 %}
 
 %%

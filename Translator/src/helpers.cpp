@@ -2,7 +2,7 @@
 
 std::ostream &operator<<(std::ostream &os, const Indent &indent)
 {
-    os << indent();
+    os << std::string(indent.count, ' ');
     return os;
 };
 

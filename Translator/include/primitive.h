@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "AST.h"
+#include "node.h"
 
 using namespace std;
 
@@ -27,33 +27,5 @@ public:
         return content;
     }
 };
-
-// class Identifier : public Node
-// {
-// private:
-//     string content;
-
-// public:
-//     Identifier(const string &in) : content(in){};
-
-//     virtual void print(std::ostream &out) const override
-//     {
-//         out << content;
-//     }
-// };
-
-// class Constant : public Node
-// {
-// private:
-//     int content;
-
-// public:
-//     Constant(const int &val) : content(val){};
-
-//     virtual void print(std::ostream &out) const override
-//     {
-//         out << content;
-//     }
-// };
 
 #endif // PRIMITIVES_H

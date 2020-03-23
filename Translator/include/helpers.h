@@ -1,4 +1,4 @@
-#if !defined(HELPERS_H)
+#ifndef HELPERS_H
 #define HELPERS_H
 
 // dealing with indent and global variable
@@ -34,14 +34,10 @@ public:
     {
         count++;
     };
+
     void operator--(int)
     {
         count--;
-    };
-
-    std::string operator()() const
-    {
-        return std::string(count, ' ');
     };
 
     friend std::ostream &operator<<(std::ostream &os, const Indent &indent);

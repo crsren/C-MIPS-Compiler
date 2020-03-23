@@ -1,7 +1,7 @@
-#if !defined(STATEMENTS_H)
+#ifndef STATEMENTS_H
 #define STATEMENTS_H
 
-#include "AST.h"
+#include "node.h"
 
 #include <list>
 
@@ -14,7 +14,7 @@ private:
     bool has_else;
 
 public:
-    Selection(nodePtr assignmentExp, nodePtr s1) : condition(assignmentExp), statement1(s1), has_else(false){};
+    Selection(nodePtr assignmentExp, nodePtr s1) : condition(assignmentExp), statement1(s1), has_else(false) {};
     Selection(nodePtr assignmentExp, nodePtr s1, nodePtr s2) : condition(assignmentExp), statement1(s1), statement2(s2), has_else(true){};
 
     virtual void print(std::ostream &out) const override

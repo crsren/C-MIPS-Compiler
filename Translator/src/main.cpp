@@ -1,4 +1,4 @@
-#include "../include/AST.h"
+#include "AST.h"
 
 #include <fstream>
 #include <iostream>
@@ -10,6 +10,7 @@ using namespace std;
 int main()
 {
     string filename = "output.py";
+    cout << "Before parsing" << endl;
     const Node *root = parseAST(); //fn from yacc
 
     // // current date/time based on current system

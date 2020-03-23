@@ -1,7 +1,7 @@
-#if !defined(VARIABLE_H)
+#ifndef VARIABLE_H
 #define VARIABLE_H
 
-#include "AST.h"
+#include "node.h"
 
 class VarDeclarator : public Node
 {

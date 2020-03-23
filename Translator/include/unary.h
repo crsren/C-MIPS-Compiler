@@ -1,9 +1,9 @@
-#if !defined(UNARY_H)
+#ifndef UNARY_H
 #define UNARY_H
 
 #include <iostream>
 #include <string>
-#include "AST.h"
+#include "node.h"
 
 typedef const Node *nodePtr;
 

@@ -1,8 +1,8 @@
 #ifndef OPERATORS_H
 #define OPERATORS_H
 
-#include "AST.h"
 #include <string>
+#include "node.h"
 
 typedef const Node *nodePtr;
 

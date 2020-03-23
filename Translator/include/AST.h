@@ -1,4 +1,4 @@
-#if !defined(AST_H)
+#ifndef AST_H
 #define AST_H
 
 #include "helpers.h"
@@ -10,8 +10,6 @@
 #include "list.h"
 #include "variable.h"
 #include "function.h"
-
-#include <iostream>
 
 extern const Node *parseAST();
 
