@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/translator.dir/helpers.cpp.o CMakeFiles/translator.dir/lexer.yy.cpp.o CMakeFiles/translator.dir/main.cpp.o CMakeFiles/translator.dir/parser.tab.cpp.o CMakeFiles/translator.dir/print_canonical.cpp.o  -o translator 

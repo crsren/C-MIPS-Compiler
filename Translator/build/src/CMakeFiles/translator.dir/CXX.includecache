@@ -1,0 +1,142 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/AST.h
+helpers.h
+../include/helpers.h
+node.h
+../include/node.h
+operator.h
+../include/operator.h
+unary.h
+../include/unary.h
+statements.h
+../include/statements.h
+primitive.h
+../include/primitive.h
+list.h
+../include/list.h
+variable.h
+../include/variable.h
+function.h
+../include/function.h
+
+../include/function.h
+node.h
+../include/node.h
+list
+-
+
+../include/helpers.h
+string
+-
+vector
+-
+iostream
+-
+
+../include/list.h
+list
+-
+node.h
+../include/node.h
+
+../include/node.h
+iostream
+-
+node.h
+../include/node.h
+
+../include/operator.h
+string
+-
+node.h
+../include/node.h
+
+../include/primitive.h
+iostream
+-
+string
+-
+node.h
+../include/node.h
+
+../include/statements.h
+node.h
+../include/node.h
+list
+-
+
+../include/unary.h
+iostream
+-
+string
+-
+node.h
+../include/node.h
+
+../include/variable.h
+node.h
+../include/node.h
+
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/helpers.cpp
+helpers.h
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/helpers.h
+
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/lexer.yy.cpp
+stdio.h
+-
+string.h
+-
+errno.h
+-
+stdlib.h
+-
+inttypes.h
+-
+parser.tab.hpp
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/parser.tab.hpp
+unistd.h
+-
+
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/main.cpp
+AST.h
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/AST.h
+fstream
+-
+iostream
+-
+string
+-
+ctime
+-
+
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/parser.tab.cpp
+AST.h
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/AST.h
+stddef.h
+-
+libintl.h
+-
+alloca.h
+-
+malloc.h
+-
+stdlib.h
+-
+stdlib.h
+-
+stdio.h
+-
+
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/parser.tab.hpp
+AST.h
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/AST.h
+
+/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/print_canonical.cpp
+
