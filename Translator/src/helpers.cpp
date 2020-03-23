@@ -2,15 +2,20 @@
 
 std::ostream &operator<<(std::ostream &os, const Indent &indent)
 {
-    os << std::string(indent.count, ' ');
+    os << std::string(indent.count, '\t');
     return os;
 };
 
 std::ostream &operator<<(std::ostream &os, const Global &global)
 {
-    for (auto &v : global.variables)
+    if (global.variables.size() > 0)
     {
-        os << Indent::instance() << "global " << v << '\n';
+        Indent::instance()++;
+        for (auto &v : global.variables)
+        {
+            os << Indent::instance() << "global " << v << '\n';
+        }
+        Indent::instance()--;
     }
 
     return os;

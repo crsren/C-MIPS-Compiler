@@ -10,9 +10,22 @@
 
 %union {
 	const Node * nodePtr;
-	std::string * string; //for direct inputs like CONSTANT, IDENTIFIER or VOID?
+	std::string * str; //for direct inputs like CONSTANT, IDENTIFIER or VOID?
 	unsigned char symbol;
 }
+
+%define parse.error verbose
+
+%token IDENTIFIER CONSTANT
+%token EQ_OP
+%token AND_OP OR_OP
+%token IF ELSE WHILE RETURN
+%token VOID INT
+%type <str> IDENTIFIER CONSTANT
+%type <symbol> '*' '+' '-' '(' ')' '{' '}' ',' ';' '<' '='
+
+%nonassoc ')'
+%nonassoc ELSE
 
 %nterm <nodePtr> primary_expression postfix_expression argument_expression_list unary_expression
 %nterm <nodePtr> multiplicative_expression additive_expression relational_expression equality_expression
@@ -20,17 +33,7 @@
 %nterm <nodePtr> direct_declarator parameter_list parameter_declaration statement statement_list
 %nterm <nodePtr> compound_statement selection_statement iteration_statement jump_statement
 %nterm <nodePtr> translation_unit external_declaration function_definition
-%nterm <nodePtr> open_statement closed_statement
-%type <string> IDENTIFIER CONSTANT VOID INT type_specifier
-%type <symbol> '-' '*' '+' '<' '='
-
-%token IDENTIFIER CONSTANT
-%token EQ_OP
-%token AND_OP OR_OP
-
-%token INT VOID
-
-%token IF ELSE WHILE RETURN
+%nterm <nodePtr> type_specifier
 
 %start root
 %%
@@ -41,13 +44,13 @@ primary_expression
 	| '(' assignment_expression ')'								{ $$ = $2; }
 	;
 
-postfix_expression
+postfix_expression // constant, var or function call
 	: primary_expression										{ $$ = $1;} //pass as variable
-	| postfix_expression '(' ')'										 //WHAT
-	| postfix_expression '(' argument_expression_list ')' 				 // WHAT
+	| postfix_expression '(' ')'								{ $$ = new FnDeclarator($1); }
+	| postfix_expression '(' argument_expression_list ')' 		{ $$ = new FnDeclarator($1, $3); }
 	;
 
-argument_expression_list
+argument_expression_list //input arguments passed to function
 	: assignment_expression										{ $$ = new paramList($1); }
 	| argument_expression_list ',' assignment_expression		{ $$->add($3); }
 	;
@@ -98,13 +101,13 @@ declaration // always int so no need to pass type_specifier, python doesnt care 
 	| type_specifier direct_declarator '=' assignment_expression{ $$ = new VarDeclarator($2, $4); }
 	;
 
-type_specifier
-	: VOID														{ $$ = $1; } // pass on "void"
-	| INT 														{ $$ = $1; }// pass on "int" both for feature selections stmt
+type_specifier //doesnt care if void or int
+	: VOID														{ $$ = new TypeSpecifier(); }
+	| INT 														{ $$ = new TypeSpecifier(); }
 	;
 
 direct_declarator
-	: IDENTIFIER 												{ $$ = new Primitive(*$1); }
+	: IDENTIFIER 												{ $$ = new Primitive(*$1); fprintf(stderr, "identifier\n"); }
 	| direct_declarator '(' parameter_list ')'					{ $$ = new FnDeclarator($1, $3); }
 	| direct_declarator '(' ')'									{ $$ = new FnDeclarator($1); }
 	;
@@ -119,34 +122,26 @@ parameter_declaration //always int so no need to pass type_specifier
 	;
 
 statement
-	//: compound_statement										{ $$ = $1; }
-	: selection_statement										{ $$ = $1; }
+	: compound_statement										{ $$ = $1; }
+	| selection_statement										{ $$ = $1; }
 	| iteration_statement										{ $$ = $1; }
 	| jump_statement											{ $$ = $1; }
 	;
 
 compound_statement //now also expression_statement
-	: '{' statement_list '}'									{ $$ = new Compound($2); }
-	| assignment_expression ';'									{ nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
+	: '{' statement_list '}'									{ $$ = new Compound($2); } //decleartion list
+	//| assignment_expression ';'									{ nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
 	;
 
 statement_list //list
-	: statement 												{ $$ = new statementList($1); }
-	| statement_list statement 									{ $$->add($2); }
+	: statement 												{ fprintf(stderr, "statementList\n"); $$ = new statementList($1); }
+	| statement_list statement 									{ $1->add($2); $$ = $1; }
 	;
 
 selection_statement
-	: open_statement { $$ = $1; }
-	| closed_statement { $$ = $1; }
+	: IF '(' assignment_expression ')' statement 				{ new Selection($3, $5); }
+	| IF '(' assignment_expression ')' statement ELSE statement { new Selection($3, $5, $7); }
 	;
-
-open_statement
-	: IF '(' assignment_expression ')' selection_statement 		{ $$ = new Selection($3, $5); }
-	| IF '(' assignment_expression ')' closed_statement ELSE open_statement { $$ = new Selection($3, $5, $7); }
-	
-closed_statement
-	: compound_statement										{ $$ = $1; }
-	| IF '(' assignment_expression ')' closed_statement ELSE closed_statement { $$ = new Selection($3, $5, $7); }
 
 iteration_statement
 	: WHILE '(' assignment_expression ')' statement 			{ $$ = new Iteration($3, $5); }		
@@ -168,7 +163,7 @@ external_declaration
 	;
 
 function_definition // type specifier does not matter since always "def " decleration in python
-	: type_specifier direct_declarator compound_statement       { $$ = new FnDefinition($2, $3); }
+	: type_specifier direct_declarator compound_statement       { fprintf(stderr, "FnDefinition\n"); $$ = new FnDefinition($2, $3); }
 	;
 
 root : translation_unit											{ g_root = $1; }

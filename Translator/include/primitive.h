@@ -28,4 +28,9 @@ public:
     }
 };
 
+class TypeSpecifier : public Node
+{
+    virtual void print(std::ostream &out) const override{};
+};
+
 #endif // PRIMITIVES_H

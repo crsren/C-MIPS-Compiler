@@ -2,46 +2,56 @@
 %option never-interactive
 
 %{
+  //#define YY_NO_UNISTD_H
+
+// To get rid of register warning for c++=17
+#if (__cplusplus - 0) >= 201703L
+  #define __REGISTER
+#else
+  #define __REGISTER                             register
+#endif
   #include "parser.tab.hpp"
-  #define YY_NO_UNISTD_H
 %}
 
 %%
 
-int		  	              { fprintf(stderr, "int\n"); return INT; }
-void 	  	              { return VOID; }
-if			                { return IF; }
-else		                { return ELSE; }
-while		                { return WHILE; }
-return		              { return RETURN; }
+"void"	  	            { return VOID; }
+"int"		  	            { return INT; }
+"if"			              { return IF; }
+"else"		              { return ELSE; }
+"while"		              { return WHILE; }
+"return"		            { return RETURN; }
 
-"+"                     { return '+'; }
-"-"                     { return '-'; }
-"*"                     { return '*'; }
+[0]|[1-9][0-9]+ 				{ yylval.str = new std::string(yytext); return CONSTANT; }
+[a-zA-Z_][a-zA-Z0-9_]*  { yylval.str = new std::string(yytext); return IDENTIFIER; }
+
 
 "&&"			              { return AND_OP; }
 "||"			              { return OR_OP; }
-"<"				              { return '<'; }
 "=="			              { return EQ_OP; }
-"="				              { return '='; }
 
-"("                     { return '('; }
-")"                     { return ')'; }
-"{"                     { return '{'; }
-"}"                     { return '}'; }
-";"				              { fprintf(stderr, "semiclon\n"); return ';'; }
 
-[0]|[1-9][0-9]+ 				{ fprintf(stderr, "constant\n"); return CONSTANT; }
-[a-zA-Z_][a-zA-Z0-9_]*  { return IDENTIFIER; }
+"+"                     |              
+"-"                     |              
+"*"                     |              
+"="	                    |              
+"<"				              |              
+"("                     |              
+")"                     |              
+"{"                     |              
+"}"                     |              
+";"				              |              
+","                     { return yytext[0]; }
+
 
 [ \t\r\n]+		{;}
 
-.             { fprintf(stderr, "Invalid token\n"); exit(1); }
+.                       { fprintf (stderr, "Invalid token: %s\n", yytext); exit(1); }
 %%
 
 void yyerror (char const *s)
 {
-  fprintf (stderr, "Parse error : %s\n", s);
+  fprintf (stderr, "Flex error : %s\n", s);
   exit(1);
 }
 

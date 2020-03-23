@@ -9,25 +9,31 @@ using namespace std;
 
 int main()
 {
-    string filename = "output.py";
-    cout << "Before parsing" << endl;
+
     const Node *root = parseAST(); //fn from yacc
 
-    // // current date/time based on current system
-    // time_t now = time(0);
-    // string dt = ctime(&now);
+    cout << endl
+         << "Writing to output.py\n";
 
-    // ofstream output(filename);
-    // output << "# Produced @ " << dt << '\n';
-    // // introduce main function in python
+    string filename = "output.py";
+    ofstream output(filename);
 
-    // if (output.is_open())
-    // {
-    //     root->print(output);
-    //    }
+    if (output.is_open())
+    {
+        // current date/time based on current system
+        time_t now = time(0);
+        string dt = ctime(&now);
+        output << "# Created on " << dt << '\n';
 
-    root->print(cout);
-    cout << endl;
+        root->print(output);
+
+        // introduce main function in python
+        output << "\n\nif __name__ == \"__main__\":\n\timport sys\n\tret=main()\n\tsys.exit(ret)\n";
+    }
+    else
+    {
+        std::cerr << "Could not open output.py.\n";
+    }
 
     return 0;
 }

@@ -4,13 +4,12 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/helpers.cpp" "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/build/src/CMakeFiles/translator.dir/helpers.cpp.o"
-  "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/lexer.yy.cpp" "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/build/src/CMakeFiles/translator.dir/lexer.yy.cpp.o"
-  "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/main.cpp" "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/build/src/CMakeFiles/translator.dir/main.cpp.o"
-  "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/parser.tab.cpp" "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/build/src/CMakeFiles/translator.dir/parser.tab.cpp.o"
-  "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/src/print_canonical.cpp" "/mnt/c/Users/adria/Desktop/Visual Studio/Translator/Translator/build/src/CMakeFiles/translator.dir/print_canonical.cpp.o"
+  "/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/src/helpers.cpp" "/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/src/CMakeFiles/translator.dir/helpers.cpp.o"
+  "/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/src/lexer.yy.cpp" "/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/src/CMakeFiles/translator.dir/lexer.yy.cpp.o"
+  "/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/src/main.cpp" "/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/src/CMakeFiles/translator.dir/main.cpp.o"
+  "/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/src/parser.tab.cpp" "/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/src/CMakeFiles/translator.dir/parser.tab.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

@@ -3,9 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/translator.dir/lexer.yy.cpp.o"
   "CMakeFiles/translator.dir/main.cpp.o"
   "CMakeFiles/translator.dir/parser.tab.cpp.o"
-  "CMakeFiles/translator.dir/print_canonical.cpp.o"
-  "translator.pdb"
   "translator"
+  "translator.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

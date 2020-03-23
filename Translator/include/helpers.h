@@ -20,10 +20,7 @@ public:
     };
     //out << Indent::instance() << ...;
 
-    Indent() : count(0)
-    {
-        std::cerr << "Indent initiated." << '\n';
-    };
+    Indent() : count(0){};
 
     int getCount()
     {

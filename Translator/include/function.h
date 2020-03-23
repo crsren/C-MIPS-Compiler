@@ -43,7 +43,7 @@ public:
         {
             list->print(out);
         }
-        out << ")";
+        out << ")\n";
     };
 
     ~FnDeclarator()
@@ -65,11 +65,8 @@ public:
     {
         out << Indent::instance() << "def ";
         declarator->print(out);
-        out << '\n';
 
-        Indent::instance()++;
         out << Global::instance();
-        Indent::instance()--;
 
         compoundStatement->print(out);
         out << '\n';
