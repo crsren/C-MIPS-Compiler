@@ -57,23 +57,23 @@ argument_expression_list //input arguments passed to function
 
 unary_expression
 	: postfix_expression										{ $$ = $1; }
-	| '-' unary_expression										{ $$ = new Unary("-", $2); }
+	| '-' unary_expression										{ $$ = new Unary('-', $2); }
 	;
 
 multiplicative_expression
 	: unary_expression											{ $$ = $1; }
-	| multiplicative_expression '*' unary_expression			{ $$ = new Operator($1, $2, $3); }
+	| multiplicative_expression '*' unary_expression			{ $$ = new Operator($1, '*', $3); }
 	;
 
 additive_expression
 	: multiplicative_expression									{ $$ = $1; }
-	| additive_expression '+' multiplicative_expression			{ $$ = new Operator($1, $2, $3); }
-	| additive_expression '-' multiplicative_expression			{ $$ = new Operator($1, $2, $3); }
+	| additive_expression '+' multiplicative_expression			{ $$ = new Operator($1, '+', $3); }
+	| additive_expression '-' multiplicative_expression			{ $$ = new Operator($1, '-', $3); }
 	;
 
 relational_expression
 	: additive_expression										{ $$ = $1; }
-	| relational_expression '<' additive_expression				{ $$ = new Operator($1, $2, $3); }
+	| relational_expression '<' additive_expression				{ $$ = new Operator($1, '<', $3); }
 	;
 
 equality_expression
@@ -107,14 +107,14 @@ type_specifier //doesnt care if void or int
 	;
 
 direct_declarator
-	: IDENTIFIER 												{ $$ = new Primitive(*$1); fprintf(stderr, "identifier\n"); }
-	| direct_declarator '(' parameter_list ')'					{ $$ = new FnDeclarator($1, $3); }
-	| direct_declarator '(' ')'									{ $$ = new FnDeclarator($1); }
+	: IDENTIFIER 												{ fprintf(stderr, "identifier\n"); $$ = new Primitive(*$1); }
+	| direct_declarator '(' parameter_list ')'					{ fprintf(stderr, "fn declarator with list\n"); $$ = new FnDeclarator($1, $3); }
+	| direct_declarator '(' ')'									{ fprintf(stderr, "fn declarator\n"); $$ = new FnDeclarator($1); }
 	;
 
 parameter_list	//list
-	: parameter_declaration										{ $$ = new paramList($1);}
-	| parameter_list ',' parameter_declaration					{ $$->add($3); }
+	: parameter_declaration										{ fprintf(stderr, "paramList\n"); $$ = new paramList($1);}
+	| parameter_list ',' parameter_declaration					{ fprintf(stderr, "+\n"); $1->add($3); $$ = $1; }
 	;
 
 parameter_declaration //always int so no need to pass type_specifier
@@ -148,8 +148,8 @@ iteration_statement
 	;
 
 jump_statement
-	: RETURN ';'												{ $$ = new Jump(NULL); }
-	| RETURN assignment_expression ';'							{ $$ = new Jump($2); }
+	: RETURN ';'												{ fprintf(stderr, "empty jumpStatement\n"); $$ = new Jump(NULL); }
+	| RETURN assignment_expression ';'							{ fprintf(stderr, "jumpStatement\n"); $$ = new Jump($2); }
 	;
 
 translation_unit //list

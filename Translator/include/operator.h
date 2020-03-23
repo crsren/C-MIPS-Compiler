@@ -14,9 +14,11 @@ private:
     nodePtr r;
 
 public:
-    Operator(nodePtr left, const char &symbol, nodePtr right) : l(left), r(right)
+    Operator(nodePtr left, const unsigned char &symbol, nodePtr right) : l(left), r(right)
     {
         opCode = "";
+        std::cerr << "Symbol: ";
+        std::cerr << symbol << '\n';
         opCode += symbol;
     };
     Operator(nodePtr left, const std::string &symbol, nodePtr right) : l(left), opCode(symbol), r(right){};

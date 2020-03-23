@@ -12,11 +12,11 @@ using namespace std;
 class Unary : public Node
 {
 private:
-    const string prefix;
+    const unsigned char prefix;
     nodePtr expression;
 
 public:
-    Unary(const string &sign, nodePtr exp) : prefix(sign), expression(exp){};
+    Unary(const unsigned char &sign, nodePtr exp) : prefix(sign), expression(exp){};
 
     virtual void print(std::ostream &out) const override
     {

@@ -25,7 +25,8 @@ int main()
         string dt = ctime(&now);
         output << "# Created on " << dt << '\n';
 
-        root->print(output);
+        //root->print(output);
+        root->print(cout);
 
         // introduce main function in python
         output << "\n\nif __name__ == \"__main__\":\n\timport sys\n\tret=main()\n\tsys.exit(ret)\n";

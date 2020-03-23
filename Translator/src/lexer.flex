@@ -22,7 +22,7 @@
 "while"		              { return WHILE; }
 "return"		            { return RETURN; }
 
-[0]|[1-9][0-9]+ 				{ yylval.str = new std::string(yytext); return CONSTANT; }
+[0]|[1-9][0-9]* 				{ yylval.str = new std::string(yytext); return CONSTANT; }
 [a-zA-Z_][a-zA-Z0-9_]*  { yylval.str = new std::string(yytext); return IDENTIFIER; }
 
 
