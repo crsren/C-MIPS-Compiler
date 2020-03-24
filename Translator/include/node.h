@@ -2,7 +2,6 @@
 #define NODE_H
 
 #include <iostream>
-#include "node.h"
 
 class Node
 {

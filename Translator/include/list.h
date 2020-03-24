@@ -2,6 +2,7 @@
 #define LIST_H
 
 #include <list>
+#include <string>
 #include "node.h"
 
 typedef const Node *nodePtr;
@@ -19,11 +20,11 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        unsigned char seperator = 0;
+        std::string seperator = "";
         for (const auto i : pList)
         {
             out << seperator;
-            seperator = ',';
+            seperator = ",";
             i->print(out);
         }
     };
@@ -49,8 +50,11 @@ public:
     {
         for (const auto i : sList)
         {
-            i->print(out);
-            out << 'n';
+            if (i != NULL)
+            { //GETS TO HERE BEFORE seg11
+                i->print(out);
+                out << '\n';
+            }
         }
     };
 

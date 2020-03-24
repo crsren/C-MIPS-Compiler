@@ -43,14 +43,14 @@ iostream
 ../include/list.h
 list
 -
+string
+-
 node.h
 ../include/node.h
 
 ../include/node.h
 iostream
 -
-node.h
-../include/node.h
 
 ../include/operator.h
 string
@@ -69,6 +69,8 @@ node.h
 ../include/statements.h
 node.h
 ../include/node.h
+iostream
+-
 list
 -
 
@@ -83,6 +85,18 @@ node.h
 ../include/variable.h
 node.h
 ../include/node.h
+
+/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/src/main.cpp
+AST.h
+/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/src/AST.h
+fstream
+-
+iostream
+-
+string
+-
+ctime
+-
 
 /Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/src/parser.tab.cpp
 AST.h

@@ -14,7 +14,7 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        if (Indent::instance().getCount())
+        if (Indent::instance().getCount() == 0)
         {
             Global::instance().add(declarator->getContent());
         }
@@ -22,7 +22,7 @@ public:
         out << Indent::instance();
         declarator->print(out);
         out << "=";
-        if (expression)
+        if (expression == nullptr)
             out << "0";
         else
             expression->print(out);

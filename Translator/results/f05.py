@@ -1,11 +1,13 @@
-# Created on Tue Mar 24 21:38:02 2020
+# Created on Tue Mar 24 21:33:29 2020
 
 def main():
-	x=5
+	z=0
 
-	x = (x + 5)
+	z = 7
 
-	return x
+	z = (2 * z)
+
+	return z
 
 
 

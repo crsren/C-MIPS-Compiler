@@ -31,7 +31,7 @@
 %nterm <nodePtr> direct_declarator parameter_list parameter_declaration statement statement_list
 %nterm <nodePtr> compound_statement selection_statement iteration_statement jump_statement
 %nterm <nodePtr> translation_unit external_declaration function_definition
-%nterm <nodePtr> type_specifier
+%nterm <nodePtr> declaration_list type_specifier
 
 %start root
 %%
@@ -76,7 +76,7 @@ relational_expression
 
 equality_expression
 	: relational_expression										{ $$ = $1; }
-	| equality_expression EQ_OP relational_expression			{ $$ = new Operator($1, "==", $3); }
+	| equality_expression EQ_OP relational_expression			{ fprintf(stderr, "==\n");$$ = new Operator($1, "==", $3); }
 	;
 
 logical_and_expression
@@ -95,8 +95,8 @@ assignment_expression
 	;
 
 declaration // always int so no need to pass type_specifier, python doesnt care anyways
-	: type_specifier direct_declarator ';'						{ $$ = new VarDeclarator($2); }
-	| type_specifier direct_declarator '=' assignment_expression{ $$ = new VarDeclarator($2, $4); }
+	: type_specifier direct_declarator ';'						{ fprintf(stderr, "intDeclaration\n"); $$ = new VarDeclarator($2); }
+	| type_specifier direct_declarator '=' assignment_expression ';' { fprintf(stderr, "intDeclarationWAssignment\n"); $$ = new VarDeclarator($2, $4); }
 	;
 
 type_specifier //doesnt care if void or int
@@ -120,19 +120,28 @@ parameter_declaration //always int so no need to pass type_specifier
 	;
 
 statement
-	: compound_statement										{ $$ = $1; }
+	: compound_statement										{ fprintf(stderr, "statmnt\n");$$ = $1; }
+	| assignment_expression ';'									{ fprintf(stderr, "statmnt\n"); $$ = $1; } //nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp;
 	| selection_statement										{ $$ = $1; }
 	| iteration_statement										{ $$ = $1; }
 	| jump_statement											{ $$ = $1; }
 	;
 
 compound_statement //now also expression_statement
-	: '{' statement_list '}'									{ $$ = new Compound($2); } //decleartion list
-	//| assignment_expression ';'									{ nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
+	: '{' declaration_list statement_list '}'					{ fprintf(stderr, "compoundStatement\n"); $$ = new Compound($2, $3); }
+	//| assignment_expression ';'									{ fprintf(stderr, "var assignment\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
+	//| parameter_declaration ';'									{ fprintf(stderr, "var declaration\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
 	;
 
-statement_list //list
-	: statement 												{ fprintf(stderr, "statementList\n"); $$ = new statementList($1); }
+declaration_list												
+	:															{ $$ = NULL; }
+	| declaration 												{ fprintf(stderr, "declarationList\n"); $$ = new statementList($1); }
+	| declaration_list declaration 								{ $1->add($2); $$ = $1; }
+	;
+
+statement_list
+	:															{ $$ = NULL; }
+	| statement 												{ fprintf(stderr, "statementList\n"); $$ = new statementList($1); }
 	| statement_list statement 									{ $1->add($2); $$ = $1; }
 	;
 
@@ -172,7 +181,6 @@ const Node *g_root; // Definition of variable (to match declaration earlier)
 const Node *parseAST()
 {
   g_root=NULL;
-  std::cout << "before2\n";
   yyparse();
   return g_root;
 }

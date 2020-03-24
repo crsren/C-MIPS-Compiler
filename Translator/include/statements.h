@@ -2,7 +2,7 @@
 #define STATEMENTS_H
 
 #include "node.h"
-
+#include <iostream>
 #include <list>
 
 class Selection : public Node
@@ -19,7 +19,10 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
+        std::cerr << "inifStatement!" << std::endl;
+
         out << Indent::instance() << "if (";
+        std::cerr << "afterif, 20:10:34" << std::endl;
         condition->print(out);
         out << Indent::instance() << "):\n";
         Indent::instance()++;
@@ -53,6 +56,7 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
+        std::cout << "Iteration, 20:08:43" << std::endl;
         out << Indent::instance() << "while (";
         condition->print(out);
         out << Indent::instance() << "):\n";
@@ -78,9 +82,11 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
+        std::cout << "Jump, 19:55:29" << std::endl;
         out << Indent::instance() << "return ";
         if (expression != NULL)
             expression->print(out);
+        std::cout << "Jump2, 19:55:48" << std::endl;
         out << '\n';
     };
 
@@ -100,6 +106,7 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
+        std::cout << "Assignment, 20:04:56" << std::endl;
         out << Indent::instance();
         unary->print(out);
         out << " = ";
@@ -117,15 +124,24 @@ public:
 class Compound : public Node
 {
 private:
-    nodePtr list;
+    nodePtr dList;
+    nodePtr sList;
 
 public:
-    Compound(nodePtr s) : list(s){};
+    Compound(nodePtr d, nodePtr s) : dList(d), sList(s){};
 
     virtual void print(std::ostream &out) const override
     {
+        std::cout << "Compound, 20:05:06" << std::endl;
         Indent::instance()++;
-        list->print(out);
+
+        if (dList != NULL)
+            dList->print(out);
+        std::cout << "inbetween, 20:06:39" << std::endl;
+
+        if (sList != NULL)
+            sList->print(out);
+
         Indent::instance()--;
     };
 };

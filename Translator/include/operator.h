@@ -25,9 +25,11 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
+        out << "(";
         l->print(out);
         out << " " << opCode << " ";
         r->print(out);
+        out << ")";
     }
 
     virtual ~Operator()

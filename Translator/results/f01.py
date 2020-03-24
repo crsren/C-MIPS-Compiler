@@ -1,11 +1,7 @@
-# Created on Tue Mar 24 21:38:02 2020
+# Created on Tue Mar 24 21:33:28 2020
 
 def main():
-	x=5
-
-	x = (x + 5)
-
-	return x
+	return (7 + 13)
 
 
 

@@ -9,11 +9,11 @@ using namespace std;
 
 int main()
 {
-    cout << "before\n";
     const Node *root = parseAST(); //fn from yacc
 
-    cout << endl
-         << "Writing to output.py\n";
+    cout << '\n';
+
+    root->print(cout);
 
     string filename = "output.py";
     ofstream output(filename);
@@ -25,11 +25,10 @@ int main()
         string dt = ctime(&now);
         output << "# Created on " << dt << '\n';
 
-        //root->print(output);
-        root->print(cout);
+        root->print(output);
 
         // introduce main function in python
-        output << "\n\nif __name__ == \"__main__\":\n\timport sys\n\tret=main()\n\tsys.exit(ret)\n";
+        output << "\nif __name__ == \"__main__\":\n\timport sys\n\tret=main()\n\tsys.exit(ret)\n";
     }
     else
     {

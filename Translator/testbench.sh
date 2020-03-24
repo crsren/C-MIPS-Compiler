@@ -6,56 +6,51 @@ else
     compiler="build/src/translator"
 fi
 
-have_compiler=0
 if [[ ! -f ${compiler} ]] ; then
-    >&2 echo "Warning : cannot find compiler at path ${compiler}. Only checking C reference against python reference."
-    have_compiler=1
+    >&2 echo "Error: could not find ${compiler}."
 fi
 
 input_dir="given/tests"
 
-working="tmp"
-mkdir -p ${working}
+target_dir="results"
+mkdir -p ${target_dir}
 
-total = 0
-passed = 0
+total=0
+passed=0
 for i in ${input_dir}/*.c ; do
-	base=$(echo $i | sed -E -e "s|${input_dir}/([^.]+)[.]c|\1|g");
+	test=$(echo $i | sed -E -e "s|${input_dir}/([^.]+)[.]c|\1|g");
 
 	((total++))
+	echo "----------------------------------------------------------------------"
 	echo "Test ${total}"
 
-    # Compile the reference C version
-    gcc $i -o $working/$base
+    # Compile reference C code
+    gcc $i -o $target_dir/$test > /dev/null 2>&1
 
-    # Run the reference C version
-    $working/$base
-    REF_C_OUT=$?
+    # Run reference C code
+    $target_dir/$test > /dev/null 2>&1
+    ref_out=$?
 
-    # Run the reference python version
-    #python3 ${input_dir}/$base.py
-    #REF_P_OUT=$?
+    # Translate C to python
+        cat $i | $compiler > /dev/null 2>&1
 
-    if [[ ${have_compiler} -eq 0 ]] ; then
+	#Rename output.py
+	py_file="./${target_dir}/${test}.py"
+	if [[ $? -eq 0 ]]; then
+	mv ./output.py ${py_file}
+	fi
 
-        # Create the DUT python version by invoking the compiler with translation flags
-        #$compiler --translate $i -o ${working}/$base-got.py
-        cat $i | $compiler
+        # Run translated python code
+        python3 ${py_file}
+        py_out=$?
 
 
-        # Run the DUT python version
-        python3 ./output.py
-        GOT_P_OUT=$?
-    fi
-
-    #if [[ $REF_C_OUT -ne $REF_P_OUT ]] ; then
-    #    echo "	$base, REF_FAIL, Expected ${REF_C_OUT}, got ${REF_P_OUT}"
-    if [[ ${have_compiler} -ne 0 ]] ; then
-        echo "	$base, Fail, No C compiler/translator"
-    elif [[ $REF_C_OUT -ne $GOT_P_OUT ]] ; then
-        echo "	$base, Fail, Expected ${REF_C_OUT}, got ${GOT_P_OUT}"
+    if [[ ${ref_out} -ne ${py_out} ]] ; then
+        echo "	${test}, Expected ${ref_out}, got ${py_out}			FAIL"
+	cat ${i}
+	cat ${py_file}
     else
-        echo "	$base, Pass"
+        echo "	${test}, Got ${ref_out} (${py_out})				PASS"
 	((passed++))
     fi
 done
