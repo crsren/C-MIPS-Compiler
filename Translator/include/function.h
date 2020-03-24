@@ -43,7 +43,7 @@ public:
         {
             list->print(out);
         }
-        out << ")\n";
+        out << "):\n";
     };
 
     ~FnDeclarator()

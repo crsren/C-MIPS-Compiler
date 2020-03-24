@@ -11,7 +11,6 @@
 %union {
 	const Node * nodePtr;
 	std::string * str; //for direct inputs like CONSTANT, IDENTIFIER or VOID?
-	unsigned char symbol;
 }
 
 %define parse.error verbose
@@ -22,7 +21,6 @@
 %token IF ELSE WHILE RETURN
 %token VOID INT
 %type <str> IDENTIFIER CONSTANT
-%type <symbol> '*' '+' '-' '(' ')' '{' '}' ',' ';' '<' '='
 
 %nonassoc ')'
 %nonassoc ELSE
@@ -153,8 +151,8 @@ jump_statement
 	;
 
 translation_unit //list
-	: external_declaration										{ $$ = $1; }
-	| translation_unit external_declaration						{ $$ = $1; }
+	: external_declaration										{ fprintf(stderr, "newUnit\n"); $$ = new transUnitList($1); }
+	| translation_unit external_declaration						{ fprintf(stderr, "+\n"); $1->add($2); $$ = $1; }
 	;
 
 external_declaration
@@ -174,6 +172,7 @@ const Node *g_root; // Definition of variable (to match declaration earlier)
 const Node *parseAST()
 {
   g_root=NULL;
+  std::cout << "before2\n";
   yyparse();
   return g_root;
 }

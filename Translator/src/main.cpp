@@ -9,7 +9,7 @@ using namespace std;
 
 int main()
 {
-
+    cout << "before\n";
     const Node *root = parseAST(); //fn from yacc
 
     cout << endl

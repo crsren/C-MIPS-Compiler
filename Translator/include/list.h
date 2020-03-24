@@ -60,4 +60,30 @@ public:
     }
 };
 
+class transUnitList : public Node
+{
+private:
+    mutable std::list<nodePtr> tList;
+
+public:
+    transUnitList(nodePtr first)
+    {
+        tList.push_back(first);
+    }
+
+    virtual void print(std::ostream &out) const override
+    {
+        for (const auto i : tList)
+        {
+            i->print(out);
+            out << '\n';
+        }
+    };
+
+    virtual void add(nodePtr ptr) const override
+    {
+        tList.push_back(ptr);
+    }
+};
+
 #endif // LIST_H
