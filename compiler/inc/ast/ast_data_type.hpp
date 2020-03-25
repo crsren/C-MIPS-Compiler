@@ -1,7 +1,7 @@
 #ifndef DATA_TYPE_HPP
 #define DATA_TYPE_HPP
 
-#include "ast_variable_bindings.hpp"
+#include "../context.hpp"
 #include "ast_node.hpp"
 
 #include <memory>
