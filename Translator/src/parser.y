@@ -80,8 +80,8 @@ relational_expression
 
 equality_expression
 	: relational_expression										{ $$ = $1; }
-	| equality_expression EQ_OP relational_expression			{ fprintf(stderr, "equal\n");$$ = new Operator($1, "==", $3); }
-	| equality_expression NE_OP relational_expression			{ fprintf(stderr, "not equal\n"); $$ = new Operator($1, "!=", $3); }
+	| equality_expression EQ_OP relational_expression			{ $$ = new Operator($1, "==", $3); }
+	| equality_expression NE_OP relational_expression			{ $$ = new Operator($1, "!=", $3); }
 	;
 
 logical_and_expression

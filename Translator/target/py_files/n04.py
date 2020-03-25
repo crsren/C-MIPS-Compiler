@@ -1,4 +1,4 @@
-# Created on Wed Mar 25 16:05:14 2020
+# Created on Wed Mar 25 16:51:32 2020
 
 def f(x):
 	x = (x + 1)
@@ -9,7 +9,19 @@ def f(x):
 s = -3
 def main():
 	global s
+	r = 2
+
 	f(s)
+	if ((s < r) and (s == -3)):
+		s = r
+
+		r = 4
+
+
+	if (r or 0):
+		r = ((-2 * 4) - 1)
+
+
 	if (1 == 0):
 		return 11
 

@@ -11,7 +11,7 @@ typedef const Node *nodePtr;
 class paramList : public Node
 {
 private:
-    std::list<nodePtr> pList;
+    mutable std::list<nodePtr> pList;
 
 public:
     paramList(nodePtr first)
@@ -30,7 +30,7 @@ public:
         }
     };
 
-    virtual void add(nodePtr ptr) override
+    virtual void add(nodePtr ptr) const override
     {
         pList.push_back(ptr);
     }
@@ -39,7 +39,7 @@ public:
 class statementList : public Node
 {
 private:
-    std::list<nodePtr> sList;
+    mutable std::list<nodePtr> sList;
 
 public:
     statementList(nodePtr first)
@@ -59,7 +59,7 @@ public:
         }
     };
 
-    virtual void add(nodePtr ptr) override
+    virtual void add(nodePtr ptr) const override
     {
         sList.push_back(ptr);
     }
@@ -68,7 +68,7 @@ public:
 class transUnitList : public Node
 {
 private:
-    std::list<nodePtr> tList;
+    mutable std::list<nodePtr> tList;
 
 public:
     transUnitList(nodePtr first)
@@ -85,7 +85,7 @@ public:
         }
     }
 
-    void add(nodePtr ptr) override
+    void add(nodePtr ptr) const override
     {
         tList.push_back(ptr);
     }

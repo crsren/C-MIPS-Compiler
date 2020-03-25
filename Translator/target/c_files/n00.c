@@ -21,5 +21,5 @@ int main()
     int c = y;
     x = g(c);
 
-    return +-1 + f(x, c);
+    return +1 + f(x, c);
 }

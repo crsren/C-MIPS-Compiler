@@ -1,4 +1,4 @@
-# Created on Wed Mar 25 16:05:14 2020
+# Created on Wed Mar 25 16:51:31 2020
 
 def fun1(a):
 	a = (-a + 3)

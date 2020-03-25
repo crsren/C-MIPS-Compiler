@@ -4,10 +4,14 @@ int s = -3;
 
 int main()
 {
-    f(s);
     int r = 2;
-    if (s < r && s == -3)
-        return 9;
+    f(s);
+
+    if (s < r && s == -3) { s = r; r = 4; }
+
+    if (r || 0 ) {
+	r = -2*4-1;
+    }
 
     if (1 == 0) return 11;
     return s;
