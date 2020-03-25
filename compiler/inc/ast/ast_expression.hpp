@@ -1,9 +1,9 @@
 #ifndef EXPRESSION_HPP
 #define EXPRESSION_HPP
 
-#include "bindings.hpp"
-#include "node.hpp"
-#include "type.hpp"
+#include "../context.hpp"
+#include "ast_node.hpp"
+#include "ast_data_type.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -12,155 +12,178 @@
 class Expression : public Node
 {
 protected:
-	Expression* next_expression_;
+	Expression* nextExpression;
     
 public:
-	virtual VariableBindings printAsm(VariableBindings bindings, int& label_count) const = 0;
-    
-	virtual int constantFold() const;
-	virtual void print() const;
-	virtual void printXml() const;
-	virtual void countArguments(int &argument_count) const;
-	virtual void expressionDepth(int &depth_count) const;
-	virtual std::string id() const;
+	virtual ~Expression(){}
+
+	virtual VariableBindings printMIPS(VariableBindings bindings, int& label_count) const = 0;
+	void setNextExpression(Expression* nextExpression_i)
+	{
+		nextExpression = nextExpression_i;
+	}
+
 	virtual DataType* getType(const VariableBindings &bindings) const = 0;
-       
-	void linkExpression(Expression* next_expression);
-	Expression* nextExpression() const;
+	Expression* getNextExpression() const
+	{
+		return nextExpression;
+	}
 };
 
 //*********************************************OperationalExpression*********************************************
 
-class OperationExpression : public Expression
+class OperationalExpression : public Expression
 {
 protected:
-	Expression* lhs_;
-	Expression* rhs_;
+	Expression* lhs;
+	Expression* rhs;
+
 public:
-	OperationExpression(Expression *lhs, Expression *rhs);
-	OperationExpression(Expression* lhs, Expression *rhs);
+	OperationalExpression(Expression* lhs_i, Expression* rhs_i):
+		lhs(lhs_i),
+		rhs(rhs_i)
+		{}
+	virtual ~OperationalExpression()
+	{
+		delete nextExpression;
+		delete lhs;
+		delete rhs;
+	}
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const = 0;
-    
-	virtual int constantFold() const;
-	virtual void expressionDepth(int &depth_count) const;
-	virtual DataType* getType(const VariableBindings &bindings) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const = 0;
 
-	Expression* getLhs() const;
-	Expression* getRhs() const;
+	virtual DataType* getType(const VariableBindings &bindings) const
+	{
+		return lhs -> getType(bindings);
+	}
+
+	Expression* getLhs() const
+	{
+		return lhs;
+	}
+
+	Expression* getRhs() const
+	{
+		return rhs;
+	}
     
 	void evaluateExpression(VariableBindings bindings, int &label_count) const;
 };
 
-class AdditiveExpression : public OperationExpression
+class AddSubExpression : public OperationalExpression
 {
 private:
-	std::string operator_;
+	std::string operationSymbol;
 
 public:
-	AdditiveExpression(Expression *lhs, const std::string &_operator, Expression *rhs);
+	AddSubExpression(Expression* lhs_i, const std::string &operationSymbol_i, Expression* rhs_i):
+		OperationalExpression(lhs_i, rhs_i),
+		operationSymbol(operationSymbol_i)
+		{}
+		
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const
+	{
+		// print the lhs of the expression
+		lhs -> printMIPS(bindings, label_count);
+
+		// store the relative memory location of the lhs on the stack
+		rhs -> printMIPS(bindings, label_count);
+		
+		std::
+	}
 };
 
-class MultiplicativeExpression : public OperationExpression
+class MulDivExpression : public OperationalExpression
 {
 private:
-	std::string operator_;
+	std::string operationSymbol;
 
 public:
-	MultiplicativeExpression(Expression *lhs, const std::string &_operator, Expression *rhs);
+	MulDivExpression(Expression* lhs_i, const std::string &operationSymbol_i, Expression* rhs_i):
+		OperationalExpression(lhs_i, rhs_i),
+		operationSymbol(operationSymbol_i)
+		{}
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class ShiftExpression : public OperationExpression
+class ShiftExpression : public OperationalExpression
 {
 private:
-	std::string operator_;
+	std::string operationSymbol;
 public:
-	ShiftExpression(Expression *lhs, const std::string &_operator, Expression *rhs);
+	ShiftExpression(Expression* lhs_i, const std::string &operationSymbol_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class RelationalExpression : public OperationExpression
+class RelationalExpression : public OperationalExpression
 {
 private:
-	std::string operator_;
+	std::string operationSymbol;
 public:
-	RelationalExpression(Expression *lhs, const std::string &_operator, Expression *rhs);
+	RelationalExpression(Expression* lhs_i, const std::string &operationSymbol_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class EqualityExpression : public OperationExpression
+class EqualityExpression : public OperationalExpression
 {
 private:
-	std::string operator_;
+	std::string operationSymbol;
 public:
-	EqualityExpression(Expression *lhs, const std::string &_operator, Expression *rhs);
+	EqualityExpression(Expression* lhs_i, const std::string &operationSymbol_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class AndExpression : public OperationExpression
+class AndExpression : public OperationalExpression
 {
 public:
-	AndExpression(Expression *lhs, Expression *rhs);
+	AndExpression(Expression* lhs_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class ExclusiveOrExpression : public OperationExpression
+class ExclusiveOrExpression : public OperationalExpression
 {
 public:
-	ExclusiveOrExpression(Expression *lhs, Expression *rhs);
+	ExclusiveOrExpression(Expression* lhs_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class InclusiveOrExpression : public OperationExpression
+class InclusiveOrExpression : public OperationalExpression
 {
 public:
-	InclusiveOrExpression(Expression *lhs, Expression *rhs);
+	InclusiveOrExpression(Expression* lhs_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const; 
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class LogicalAndExpression : public OperationExpression
+class LogicalAndExpression : public OperationalExpression
 {
 public:
-	LogicalAndExpression(Expression *lhs, Expression *rhs);
+	LogicalAndExpression(Expression* lhs_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class LogicalOrExpression : public OperationExpression
+class LogicalOrExpression : public OperationalExpression
 {
 public:
-	LogicalOrExpression(Expression *lhs, Expression *rhs);
+	LogicalOrExpression(Expression* lhs_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;    
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
-class AssignmentExpression : public OperationExpression
+class AssignmentExpression : public OperationalExpression
 {
 public:
-	AssignmentExpression(Expression *lhs, Expression *rhs);
-	AssignmentExpression(Expression* lhs, Expression *rhs);
+	AssignmentExpression(Expression* lhs_i, Expression* rhs_i);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 };
 
 //***************************************************************************************************************
@@ -182,9 +205,9 @@ private:
 	Expression* index_expression_;
     
 public:
-	PostfixArrayElement(Expression *postfix_expression, Expression *index_expression);
+	PostfixArrayElement(Expression* postfix_expression, Expression* index_expression);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual void expressionDepth(int &depth_count) const;
 	virtual void stackPosition(VariableBindings bindings, int &depth_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
@@ -201,26 +224,26 @@ private:
 	Expression* argument_expression_list_;
     
 public:
-	PostfixFunctionCall(Expression *argument_expression_list = nullptr);
+	PostfixFunctionCall(Expression* argument_expression_list = nullptr);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual void countArguments(int &argument_count) const;
 	virtual void expressionDepth(int &depth_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
     
-	void setPostfixExpression(Expression *postfix_expression);
+	void setPostfixExpression(Expression* postfix_expression);
 };
 
 class PostfixPostIncDecExpression : public UnaryExpression
 {
 private:
-	std::string operator_;
+	std::string operationSymbol;
 	Expression* postfix_expression_;
 
 public:
-	PostfixPostIncDecExpression(const std::string &_operator, Expression *postfix_expression);
+	PostfixPostIncDecExpression(const std::string &operationSymbol_i, Expression* postfix_expression);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
     
 };
@@ -228,26 +251,26 @@ public:
 class UnaryPreIncDecExpression : public UnaryExpression
 {
 private:
-	std::string operator_;
+	std::string operationSymbol;
 	Expression* unary_expression_;
     
 public:
-	UnaryPreIncDecExpression(const std::string &_operator, Expression *unary_expression);
+	UnaryPreIncDecExpression(const std::string &operationSymbol_i, Expression* unary_expression);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
 };
 
 class OperatorUnaryExpression : public UnaryExpression
 {
 private:
-	std::string operator_;
+	std::string operationSymbol;
 	Expression* cast_expression_;
 
 public:
-	OperatorUnaryExpression(const std::string &_operator, Expression *cast_expression);
+	OperatorUnaryExpression(const std::string &operationSymbol_i, Expression* cast_expression);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual void stackPosition(VariableBindings bindings, int &depth_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
 	std::string getOperator() const;
@@ -260,7 +283,7 @@ private:
 public:
 	Identifier(const std::string &id);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual void pointerPosition(VariableBindings bindings) const;
 	virtual void stackPosition(VariableBindings bindings, int &depth_count) const;
 	virtual std::string id() const;
@@ -274,7 +297,7 @@ private:
 public:
 	StringLiteral(const std::string &string_content);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
 };
 
@@ -285,8 +308,7 @@ private:
 public:
 	Constant(const int32_t &constant);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
-	virtual int constantFold() const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
 };
 
@@ -297,9 +319,9 @@ class Initializer : public Expression
 private:
 	Expression* next_initializer_;
 public:
-	Initializer(Expression *next_initializer);
+	Initializer(Expression* next_initializer);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
 
 	void printInitializerAsm(VariableBindings &bindings, int &label_count, int position, const std::vector<int> &iteration_vector, const DataType* &type) const;
@@ -314,10 +336,10 @@ private:
 	Expression* conditional_expression_;
 
 public:
-	ConditionalExpression(Expression *logical_or, Expression *expression,
-	                      Expression *conditional_expression);
+	ConditionalExpression(Expression* logical_or, Expression* expression,
+	                      Expression* conditional_expression);
     
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
 };
 
@@ -328,9 +350,9 @@ private:
 	Expression* expression_;
 
 public:
-	CastExpression(DataType *type, Expression *expression);
+	CastExpression(DataType* type, Expression* expression);
 
-	virtual VariableBindings printAsm(VariableBindings bindings, int &label_count) const;
+	virtual VariableBindings printMIPS(VariableBindings bindings, int &label_count) const;
 	virtual void expressionDepth(int &depth_count) const;
 	virtual DataType* getType(const VariableBindings &bindings) const;
 };
