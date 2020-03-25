@@ -36,6 +36,7 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
+        out << Indent::instance();
         declarator->print(out);
 
         out << "(";
