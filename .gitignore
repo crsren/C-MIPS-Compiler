@@ -9,3 +9,4 @@ Translator/src/lexer.yy.cpp
 *.o
 Translator/build/*
 Translator/results/*
+Translator/output.py
