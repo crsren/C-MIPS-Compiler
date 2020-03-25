@@ -21,7 +21,7 @@ public:
 
         out << Indent::instance();
         declarator->print(out);
-        out << "=";
+        out << " = ";
         if (expression == nullptr)
             out << "0";
         else

@@ -2,7 +2,7 @@
 %option never-interactive
 
 %{
-  //#define YY_NO_UNISTD_H
+  #define YY_NO_UNISTD_H
 
 // To get rid of register warning for c++=17
 #if (__cplusplus - 0) >= 201703L

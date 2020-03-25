@@ -4,6 +4,7 @@
 #include <list>
 #include <string>
 #include "node.h"
+#include "statements.h"
 
 typedef const Node *nodePtr;
 
@@ -50,8 +51,11 @@ public:
     {
         for (const auto i : sList)
         {
-            if (i != NULL)
+            if (dynamic_cast<const Selection *>(i))
+                std::cerr << "This is a selection statement\n";
+            if (i != nullptr)
             { //GETS TO HERE BEFORE seg11
+                std::cout << "statementList, 22:28:12" << std::endl;
                 i->print(out);
                 out << '\n';
             }

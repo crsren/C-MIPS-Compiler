@@ -6,8 +6,13 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
 endif()
 
 # set the project name
-project(ChrisCompiler VERSION 1.0 LANGUAGES CXX)
+project(BabaYaga VERSION 1.0 LANGUAGES CXX)
 
 
 # Add the subdirectory containing the source code
 add_subdirectory(src)
+
+
+# Appending flags to CMake variables to remove flex register warning
+SET(GCC_COVERAGE_COMPILE_FLAGS "-Wdeprecated-register")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")

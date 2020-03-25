@@ -7,9 +7,10 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char **argv)
 {
-    const Node *root = parseAST(); //fn from yacc
+    const Node *root = parseAST();
+    //parseAST(argv[1]); for debuggin in VS
 
     cout << '\n';
 

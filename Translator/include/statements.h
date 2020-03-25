@@ -2,8 +2,6 @@
 #define STATEMENTS_H
 
 #include "node.h"
-#include <iostream>
-#include <list>
 
 class Selection : public Node
 {
@@ -14,15 +12,13 @@ private:
     bool has_else;
 
 public:
-    Selection(nodePtr assignmentExp, nodePtr s1) : condition(assignmentExp), statement1(s1), has_else(false){};
+    Selection(nodePtr assignmentExp, nodePtr s1) : condition(assignmentExp), statement1(s1), statement2(nullptr), has_else(false){};
     Selection(nodePtr assignmentExp, nodePtr s1, nodePtr s2) : condition(assignmentExp), statement1(s1), statement2(s2), has_else(true){};
 
-    virtual void print(std::ostream &out) const override
+    void print(std::ostream &out) const override
     {
-        std::cerr << "inifStatement!" << std::endl;
-
+        std::cout << "Selection, 12:14:14" << std::endl;
         out << Indent::instance() << "if (";
-        std::cerr << "afterif, 20:10:34" << std::endl;
         condition->print(out);
         out << Indent::instance() << "):\n";
         Indent::instance()++;
@@ -34,6 +30,7 @@ public:
             out << Indent::instance() << "\nelse:\n";
             Indent::instance()++;
             statement2->print(out);
+            Indent::instance()--;
         }
     };
 

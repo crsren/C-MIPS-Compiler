@@ -489,7 +489,7 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "src/lexer.flex"
 #line 5 "src/lexer.flex"
-  //#define YY_NO_UNISTD_H
+  #define YY_NO_UNISTD_H
 
 // To get rid of register warning for c++=17
 #if (__cplusplus - 0) >= 201703L

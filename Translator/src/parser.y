@@ -3,6 +3,9 @@
 
 	extern const Node *g_root;
 
+	// Declare the input file for the lexer
+	//extern FILE *yyin;
+
 	 //declaring lex generated functions to fix possible issues as provided in 2-parser CW
 	int yylex(void);
   	void yyerror(const char *);
@@ -56,6 +59,7 @@ argument_expression_list //input arguments passed to function
 unary_expression
 	: postfix_expression										{ $$ = $1; }
 	| '-' unary_expression										{ $$ = new Unary('-', $2); }
+	//| '+' unary_expression 										{ $$ = $2; }
 	;
 
 multiplicative_expression
@@ -128,26 +132,26 @@ statement
 	;
 
 compound_statement //now also expression_statement
-	: '{' declaration_list statement_list '}'					{ fprintf(stderr, "compoundStatement\n"); $$ = new Compound($2, $3); }
-	//| assignment_expression ';'									{ fprintf(stderr, "var assignment\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
-	//| parameter_declaration ';'									{ fprintf(stderr, "var declaration\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
+	: '{' declaration_list statement_list '}'					{ fprintf(stderr, "cStatementBOTH\n"); $$ = new Compound($2, $3); }
+	| '{' statement_list '}'									{ fprintf(stderr, "cStatementSL\n"); $$ = new Compound(NULL, $2); }
+	| '{' declaration_list '}'									{ fprintf(stderr, "compoundStatementDL\n"); $$ = new Compound($2, NULL); }
+	//| assignment_expression ';'								{ fprintf(stderr, "var assignment\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
+	//| parameter_declaration ';'								{ fprintf(stderr, "var declaration\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
 	;
 
 declaration_list												
-	:															{ $$ = NULL; }
-	| declaration 												{ fprintf(stderr, "declarationList\n"); $$ = new statementList($1); }
+	: declaration 												{ fprintf(stderr, "declarationList\n"); $$ = new statementList($1); }
 	| declaration_list declaration 								{ $1->add($2); $$ = $1; }
 	;
 
 statement_list
-	:															{ $$ = NULL; }
-	| statement 												{ fprintf(stderr, "statementList\n"); $$ = new statementList($1); }
+	: statement 												{ fprintf(stderr, "statementList\n"); $$ = new statementList($1); }
 	| statement_list statement 									{ $1->add($2); $$ = $1; }
 	;
 
 selection_statement
-	: IF '(' assignment_expression ')' statement 				{ new Selection($3, $5); }
-	| IF '(' assignment_expression ')' statement ELSE statement { new Selection($3, $5, $7); }
+	: IF '(' assignment_expression ')' statement 				{ $$ = new Selection($3, $5); }
+	| IF '(' assignment_expression ')' statement ELSE statement { $$ = new Selection($3, $5, $7); }
 	;
 
 iteration_statement
@@ -178,9 +182,17 @@ root : translation_unit											{ g_root = $1; }
 %%
 const Node *g_root; // Definition of variable (to match declaration earlier)
 
+//const Node *parseAST(const char *inputFile)
 const Node *parseAST()
 {
-  g_root=NULL;
-  yyparse();
-  return g_root;
+	//yyin = fopen(inputFile, "r");
+	// if (!yyin)
+	// {
+	// 	fprintf(stderr, "The input file (%s) could not be opened", inputFile);
+	// 	return nullptr;
+	// }
+    
+	g_root=NULL;
+    yyparse();
+    return g_root;
 }
