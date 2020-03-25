@@ -10,12 +10,12 @@ std::ostream &operator<<(std::ostream &os, const Global &global)
 {
     if (global.variables.size() > 0)
     {
-        Indent::instance()++;
+        //Indent::instance()++;
         for (auto &v : global.variables)
         {
             os << Indent::instance() << "global " << v << '\n';
         }
-        Indent::instance()--;
+        //Indent::instance()--;
     }
 
     return os;

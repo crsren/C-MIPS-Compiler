@@ -19,7 +19,7 @@
 %define parse.error verbose
 
 %token IDENTIFIER CONSTANT
-%token EQ_OP
+%token EQ_OP NE_OP
 %token AND_OP OR_OP
 %token IF ELSE WHILE RETURN
 %token VOID INT
@@ -34,7 +34,7 @@
 %nterm <nodePtr> direct_declarator parameter_list parameter_declaration statement statement_list
 %nterm <nodePtr> compound_statement selection_statement iteration_statement jump_statement
 %nterm <nodePtr> translation_unit external_declaration function_definition
-%nterm <nodePtr> declaration_list type_specifier
+%nterm <nodePtr> declaration_list content_list type_specifier
 
 %start root
 %%
@@ -58,8 +58,8 @@ argument_expression_list //input arguments passed to function
 
 unary_expression
 	: postfix_expression										{ $$ = $1; }
-	| '-' unary_expression										{ $$ = new Unary('-', $2); }
-	//| '+' unary_expression 										{ $$ = $2; }
+	| '-' postfix_expression										{ $$ = new Unary('-', $2); }
+	| '+' postfix_expression 										{ $$ = $2; }
 	;
 
 multiplicative_expression
@@ -80,7 +80,8 @@ relational_expression
 
 equality_expression
 	: relational_expression										{ $$ = $1; }
-	| equality_expression EQ_OP relational_expression			{ fprintf(stderr, "==\n");$$ = new Operator($1, "==", $3); }
+	| equality_expression EQ_OP relational_expression			{ fprintf(stderr, "equal\n");$$ = new Operator($1, "==", $3); }
+	| equality_expression NE_OP relational_expression			{ fprintf(stderr, "not equal\n"); $$ = new Operator($1, "!=", $3); }
 	;
 
 logical_and_expression
@@ -99,8 +100,8 @@ assignment_expression
 	;
 
 declaration // always int so no need to pass type_specifier, python doesnt care anyways
-	: type_specifier direct_declarator ';'						{ fprintf(stderr, "intDeclaration\n"); $$ = new VarDeclarator($2); }
-	| type_specifier direct_declarator '=' assignment_expression ';' { fprintf(stderr, "intDeclarationWAssignment\n"); $$ = new VarDeclarator($2, $4); }
+	: type_specifier direct_declarator ';'						{ $$ = new VarDeclarator($2); }
+	| type_specifier direct_declarator '=' assignment_expression ';' { $$ = new VarDeclarator($2, $4); }
 	;
 
 type_specifier //doesnt care if void or int
@@ -109,14 +110,14 @@ type_specifier //doesnt care if void or int
 	;
 
 direct_declarator
-	: IDENTIFIER 												{ fprintf(stderr, "identifier\n"); $$ = new Primitive(*$1); }
-	| direct_declarator '(' parameter_list ')'					{ fprintf(stderr, "fn declarator with list\n"); $$ = new FnDeclarator($1, $3); }
-	| direct_declarator '(' ')'									{ fprintf(stderr, "fn declarator\n"); $$ = new FnDeclarator($1); }
+	: IDENTIFIER 												{ $$ = new Primitive(*$1); }
+	| direct_declarator '(' parameter_list ')'					{ $$ = new FnDeclarator($1, $3); }
+	| direct_declarator '(' ')'									{ $$ = new FnDeclarator($1); }
 	;
 
 parameter_list	//list
-	: parameter_declaration										{ fprintf(stderr, "paramList\n"); $$ = new paramList($1);}
-	| parameter_list ',' parameter_declaration					{ fprintf(stderr, "+\n"); $1->add($3); $$ = $1; }
+	: parameter_declaration										{ $$ = new paramList($1);}
+	| parameter_list ',' parameter_declaration					{ $1->add($3); $$ = $1; }
 	;
 
 parameter_declaration //always int so no need to pass type_specifier
@@ -124,28 +125,34 @@ parameter_declaration //always int so no need to pass type_specifier
 	;
 
 statement
-	: compound_statement										{ fprintf(stderr, "statmnt\n");$$ = $1; }
-	| assignment_expression ';'									{ fprintf(stderr, "statmnt\n"); $$ = $1; } //nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp;
+	: compound_statement										{ $$ = $1; }
+	| assignment_expression ';'									{ $$ = $1; } //nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp;
 	| selection_statement										{ $$ = $1; }
 	| iteration_statement										{ $$ = $1; }
 	| jump_statement											{ $$ = $1; }
 	;
 
 compound_statement //now also expression_statement
-	: '{' declaration_list statement_list '}'					{ fprintf(stderr, "cStatementBOTH\n"); $$ = new Compound($2, $3); }
-	| '{' statement_list '}'									{ fprintf(stderr, "cStatementSL\n"); $$ = new Compound(NULL, $2); }
-	| '{' declaration_list '}'									{ fprintf(stderr, "compoundStatementDL\n"); $$ = new Compound($2, NULL); }
+	: '{' declaration_list statement_list '}'					{ $$ = new Compound($2, $3); }
+	| '{' statement_list '}'									{ $$ = new Compound(NULL, $2); }
+	| '{' declaration_list '}'									{ $$ = new Compound($2, NULL); }
 	//| assignment_expression ';'								{ fprintf(stderr, "var assignment\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
 	//| parameter_declaration ';'								{ fprintf(stderr, "var declaration\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
 	;
 
+content_list //allowing declarationLists to follow statementLists
+	: declaration_list											{ $$ = new contentList($1); }
+	| statement_list											{ $$ = new contentList($1); }
+	| content_list statement_list								{ $1->add($2); $$ = $1; }
+	| content_list declaration_list								{ $1->add($2); $$ = $1; }
+
 declaration_list												
-	: declaration 												{ fprintf(stderr, "declarationList\n"); $$ = new statementList($1); }
+	: declaration 												{ $$ = new statementList($1); }
 	| declaration_list declaration 								{ $1->add($2); $$ = $1; }
 	;
 
 statement_list
-	: statement 												{ fprintf(stderr, "statementList\n"); $$ = new statementList($1); }
+	: statement 												{ $$ = new statementList($1); }
 	| statement_list statement 									{ $1->add($2); $$ = $1; }
 	;
 
@@ -159,13 +166,13 @@ iteration_statement
 	;
 
 jump_statement
-	: RETURN ';'												{ fprintf(stderr, "empty jumpStatement\n"); $$ = new Jump(NULL); }
-	| RETURN assignment_expression ';'							{ fprintf(stderr, "jumpStatement\n"); $$ = new Jump($2); }
+	: RETURN ';'												{ $$ = new Jump(NULL); }
+	| RETURN assignment_expression ';'							{ $$ = new Jump($2); }
 	;
 
 translation_unit //list
-	: external_declaration										{ fprintf(stderr, "newUnit\n"); $$ = new transUnitList($1); }
-	| translation_unit external_declaration						{ fprintf(stderr, "+\n"); $1->add($2); $$ = $1; }
+	: external_declaration										{ $$ = new transUnitList($1); }
+	| translation_unit external_declaration						{ $1->add($2); $$ = $1; }
 	;
 
 external_declaration
@@ -174,7 +181,7 @@ external_declaration
 	;
 
 function_definition // type specifier does not matter since always "def " decleration in python
-	: type_specifier direct_declarator compound_statement       { fprintf(stderr, "FnDefinition\n"); $$ = new FnDefinition($2, $3); }
+	: type_specifier direct_declarator compound_statement       { $$ = new FnDefinition($2, $3); }
 	;
 
 root : translation_unit											{ g_root = $1; }

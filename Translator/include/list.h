@@ -11,7 +11,7 @@ typedef const Node *nodePtr;
 class paramList : public Node
 {
 private:
-    mutable std::list<nodePtr> pList;
+    std::list<nodePtr> pList;
 
 public:
     paramList(nodePtr first)
@@ -30,7 +30,7 @@ public:
         }
     };
 
-    virtual void add(nodePtr ptr) const override
+    virtual void add(nodePtr ptr) override
     {
         pList.push_back(ptr);
     }
@@ -39,7 +39,7 @@ public:
 class statementList : public Node
 {
 private:
-    mutable std::list<nodePtr> sList;
+    std::list<nodePtr> sList;
 
 public:
     statementList(nodePtr first)
@@ -51,27 +51,49 @@ public:
     {
         for (const auto i : sList)
         {
-            if (dynamic_cast<const Selection *>(i))
-                std::cerr << "This is a selection statement\n";
             if (i != nullptr)
-            { //GETS TO HERE BEFORE seg11
-                std::cout << "statementList, 22:28:12" << std::endl;
+            {
                 i->print(out);
                 out << '\n';
             }
         }
     };
 
-    virtual void add(nodePtr ptr) const override
+    virtual void add(nodePtr ptr) override
     {
         sList.push_back(ptr);
+    }
+};
+
+class contentList : public Node
+{
+private:
+    std::list<nodePtr> cList;
+
+public:
+    contentList(nodePtr first)
+    {
+        cList.push_back(first);
+    }
+
+    void print(std::ostream &out) const override
+    {
+        for (const auto i : cList)
+        {
+            i->print(out);
+        }
+    }
+
+    void add(nodePtr ptr) override
+    {
+        cList.push_back(ptr);
     }
 };
 
 class transUnitList : public Node
 {
 private:
-    mutable std::list<nodePtr> tList;
+    std::list<nodePtr> tList;
 
 public:
     transUnitList(nodePtr first)
@@ -79,16 +101,16 @@ public:
         tList.push_back(first);
     }
 
-    virtual void print(std::ostream &out) const override
+    void print(std::ostream &out) const override
     {
         for (const auto i : tList)
         {
             i->print(out);
-            out << '\n';
+            //out << '\n';
         }
-    };
+    }
 
-    virtual void add(nodePtr ptr) const override
+    void add(nodePtr ptr) override
     {
         tList.push_back(ptr);
     }

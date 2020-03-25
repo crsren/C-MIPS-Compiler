@@ -67,8 +67,10 @@ public:
         out << Indent::instance() << "def ";
         declarator->print(out);
         out << ":\n";
+        Indent::instance()++;
         out << Global::instance();
         compoundStatement->print(out);
+        Indent::instance()--;
         out << '\n';
     };
 

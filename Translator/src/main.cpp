@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 
     cout << '\n';
 
-    root->print(cout);
+    //root->print(cout);
 
     string filename = "output.py";
     ofstream output(filename);

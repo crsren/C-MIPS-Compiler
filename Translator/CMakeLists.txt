@@ -14,5 +14,7 @@ add_subdirectory(src)
 
 
 # Appending flags to CMake variables to remove flex register warning
-SET(GCC_COVERAGE_COMPILE_FLAGS "-Wdeprecated-register")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
+#add_definitions("-Wno-deprecated-register")
+#list(APPEND flags "-Wno-deprecated-register")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register")
+

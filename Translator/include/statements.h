@@ -17,17 +17,16 @@ public:
 
     void print(std::ostream &out) const override
     {
-        std::cout << "Selection, 12:14:14" << std::endl;
-        out << Indent::instance() << "if (";
+        out << Indent::instance() << "if ";
         condition->print(out);
-        out << Indent::instance() << "):\n";
+        out << ":\n";
         Indent::instance()++;
         statement1->print(out);
         Indent::instance()--;
 
         if (has_else)
         {
-            out << Indent::instance() << "\nelse:\n";
+            out << Indent::instance() << "else:\n";
             Indent::instance()++;
             statement2->print(out);
             Indent::instance()--;
@@ -53,10 +52,9 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        std::cout << "Iteration, 20:08:43" << std::endl;
-        out << Indent::instance() << "while (";
+        out << Indent::instance() << "while ";
         condition->print(out);
-        out << Indent::instance() << "):\n";
+        out << ":\n";
         Indent::instance()++;
         statement->print(out);
         Indent::instance()--;
@@ -79,11 +77,9 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        std::cout << "Jump, 19:55:29" << std::endl;
         out << Indent::instance() << "return ";
         if (expression != NULL)
             expression->print(out);
-        std::cout << "Jump2, 19:55:48" << std::endl;
         out << '\n';
     };
 
@@ -103,7 +99,6 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        std::cout << "Assignment, 20:04:56" << std::endl;
         out << Indent::instance();
         unary->print(out);
         out << " = ";
@@ -129,17 +124,15 @@ public:
 
     virtual void print(std::ostream &out) const override
     {
-        std::cout << "Compound, 20:05:06" << std::endl;
-        Indent::instance()++;
+        //Indent::instance()++;
 
         if (dList != NULL)
             dList->print(out);
-        std::cout << "inbetween, 20:06:39" << std::endl;
 
         if (sList != NULL)
             sList->print(out);
 
-        Indent::instance()--;
+        //Indent::instance()--;
     };
 };
 

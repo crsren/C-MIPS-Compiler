@@ -29,6 +29,7 @@
 "&&"			              { return AND_OP; }
 "||"			              { return OR_OP; }
 "=="			              { return EQ_OP; }
+"!="			              { return NE_OP; }
 
 
 "+"                     |              
