@@ -1,5 +1,0 @@
-/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/CMakeFiles/rebuild_cache.dir
-/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/CMakeFiles/edit_cache.dir
-/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/src/CMakeFiles/rebuild_cache.dir
-/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/src/CMakeFiles/edit_cache.dir
-/Users/chris/github/langproc-2019-cw-Baba-Yaga/Translator/build/src/CMakeFiles/translator.dir
