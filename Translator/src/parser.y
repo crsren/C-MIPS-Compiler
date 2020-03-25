@@ -34,7 +34,7 @@
 %nterm <nodePtr> direct_declarator parameter_list parameter_declaration statement statement_list
 %nterm <nodePtr> compound_statement selection_statement iteration_statement jump_statement
 %nterm <nodePtr> translation_unit external_declaration function_definition
-%nterm <nodePtr> declaration_list content_list type_specifier
+%nterm <nodePtr> declaration_list type_specifier
 
 %start root
 %%
@@ -139,12 +139,6 @@ compound_statement //now also expression_statement
 	//| assignment_expression ';'								{ fprintf(stderr, "var assignment\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
 	//| parameter_declaration ';'								{ fprintf(stderr, "var declaration\n"); nodePtr tmp = new paramList($1); $$ = new Compound(tmp); delete tmp; }
 	;
-
-content_list //allowing declarationLists to follow statementLists
-	: declaration_list											{ $$ = new contentList($1); }
-	| statement_list											{ $$ = new contentList($1); }
-	| content_list statement_list								{ $1->add($2); $$ = $1; }
-	| content_list declaration_list								{ $1->add($2); $$ = $1; }
 
 declaration_list												
 	: declaration 												{ $$ = new statementList($1); }

@@ -65,31 +65,6 @@ public:
     }
 };
 
-class contentList : public Node
-{
-private:
-    std::list<nodePtr> cList;
-
-public:
-    contentList(nodePtr first)
-    {
-        cList.push_back(first);
-    }
-
-    void print(std::ostream &out) const override
-    {
-        for (const auto i : cList)
-        {
-            i->print(out);
-        }
-    }
-
-    void add(nodePtr ptr) override
-    {
-        cList.push_back(ptr);
-    }
-};
-
 class transUnitList : public Node
 {
 private:
