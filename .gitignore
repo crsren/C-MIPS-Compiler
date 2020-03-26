@@ -12,3 +12,5 @@ Translator/results/*
 Translator/output.py
 Translator/target/py_files/*
 Translator/target/c_bin/*
+*.py
+*.py
