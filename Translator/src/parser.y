@@ -181,15 +181,15 @@ function_definition // type specifier does not matter since always "def " decler
 root : translation_unit											{ g_root = $1; }
 
 %%
-const Node *g_root; // Definition of variable (to match declaration earlier)
+const Node *g_root; // Definition of root ptr (to match declaration earlier)
 
 //const Node *parseAST(const char *inputFile)
 const Node *parseAST()
 {
-	//yyin = fopen(inputFile, "r");
+	//yyin = fopen(input, "r");
 	// if (!yyin)
 	// {
-	// 	fprintf(stderr, "The input file (%s) could not be opened", inputFile);
+	// 	fprintf(stderr, "(%s) could not be opened", input);
 	// 	return nullptr;
 	// }
     

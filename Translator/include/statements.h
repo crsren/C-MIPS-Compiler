@@ -2,6 +2,7 @@
 #define STATEMENTS_H
 
 #include "node.h"
+#include "helpers.h"
 
 class Selection : public Node
 {
