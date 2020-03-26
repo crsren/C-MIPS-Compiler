@@ -7,7 +7,6 @@ class Node
 {
 public:
     virtual ~Node(){}
-    virtual void print(std::ostream &out) const = 0;
     virtual void printMIPS(std::ostream &out) const = 0; //printing MIPS equivalent
 };
 

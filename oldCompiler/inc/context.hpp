@@ -4,11 +4,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <set>
-#include <iterator>
 #include <vector>
-#include <algorithm>
-#include <functional>
 
 class DataType;
 
@@ -19,6 +15,9 @@ struct VariableData
 
 	// the stackFramePosition is the value that must be added to the stack pointer
 	// to evaluate the memory location of the variable
+	// IF THE STACK FRAME POSITION IS NEGATIVE (it can take the values [-1, -8]),
+	// then taking the |stackFramePosition + 1| will indicate the index of the
+	// "Saved Register" (i.e. $s0, $s1, ... , $s7) in which the variable is stored
 	int stackFramePosition;
 
 	// the size of the vector is the dimensions of the multi-dimensional array
@@ -34,16 +33,6 @@ private:
 	// variables defined within the current local scope
 	std::unordered_map<std::string, VariableData> localBindings;
 
-	// note that this vector holds the index of the "Saved Register"
-	// (i.e. $s0, $s1, ... , $s7) in which the most commonly used
-	// local variables are stored
-	// NOTE that they are both stored in the stack and in the saved registers
-	std::vector<VariableData> savedRegistersLocalBindings;
-
-	// note that this map holds the identifiers of the most used variables
-	// and the number they are accessed/modified
-	std::unordered_map<std::string, int> variableUsageCounter;
-
 	// note that this map holds the identifiers and the data of the global
 	// variables
 	// note that it is static since the global variables are shared by every
@@ -57,7 +46,7 @@ private:
 	int stackFrameSize;
 
 public:
-	VariableBindings(int stackFrameSize_i): stackFrameSize(stackFrameSize_i)
+	VariableBindings(int stackFrameSize_i = 0): stackFrameSize(stackFrameSize_i)
 	{}
 
 
@@ -85,11 +74,6 @@ public:
 		return (*variableBinding).second.arrayDimensionSizes;
 	}
 
-	const std::vector<VariableData> &getSavedRegistersLocalBindings() const
-	{
-		return savedRegistersLocalBindings;
-	}
-
 
 
 	void insertVariableBinding(const std::string &id, const DataType* &type_i, const int &stackFramePosition_i)
@@ -98,7 +82,6 @@ public:
 		varData.type = type_i;
 		varData.stackFramePosition = stackFramePosition_i;
 		localBindings.insert( std::make_pair(id, varData) );
-		variableUsageCounter.insert( std::make_pair(id, 0) );
 	}
 
 	void insertArrayVariableBinding(const std::string &id, const DataType* &type_i, const int &stackFramePosition_i, const std::vector<int> arrayDimensionSizes_i)
@@ -108,45 +91,6 @@ public:
 		varData.stackFramePosition = stackFramePosition_i;
 		varData.arrayDimensionSizes = arrayDimensionSizes_i;
 		localBindings.insert( std::make_pair(id, varData) );
-	}
-
-	void incrementVariableUsageCount(const std::string &id)
-	{
-		auto variableUsageCount = variableUsageCounter.find(id);
-		(*variableUsageCount).second++;
-	}
-
-	void sortLocalBindingsByUsageCounter()
-	{
-		typedef std::function< bool(std::pair<std::string, int>, std::pair<std::string, int>) > Comparator;
-		std::set< std::pair<std::string, int>, Comparator > setOfVariableUsage
-		(
-			variableUsageCounter.begin(),
-			variableUsageCounter.end(),
-			[](std::pair<std::string, int> elem1, std::pair<std::string, int> elem2)
-			{
-				return elem1.second > elem2.second;
-			}
-		);
-
-		if(setOfVariableUsage.size() <= 8)
-		{
-			for(auto it = setOfVariableUsage.begin(); it != setOfVariableUsage.end(); ++it)
-			{
-				auto variableBinding = localBindings.find( (*it).first );
-				savedRegistersLocalBindings.push_back( (*variableBinding).second );
-			}
-		}
-		else
-		{
-			auto stopItr = setOfVariableUsage.begin();
-			std::advance(stopItr, 8);
-			for(auto it = setOfVariableUsage.begin(); it != stopItr; ++it)
-			{
-				auto variableBinding = localBindings.find( (*it).first );
-				savedRegistersLocalBindings.push_back( (*variableBinding).second );
-			}
-		}
 	}
 	
 
@@ -159,6 +103,16 @@ public:
 	void increaseStackFrameSizeBy(const int &position)
 	{
 		stackFrameSize += position;
+	}
+
+	void decrementStackFrameSize()
+	{
+		stackFrameSize -= 4;
+	}
+
+	void decrementStackFrameSizeBy(const int &position)
+	{
+		stackFrameSize -= position;
 	}
 };
 
