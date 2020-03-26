@@ -63,16 +63,17 @@ L?'(\\.|[^\\'])+'	{ return(CONSTANT); }
 
 L?\"(\\.|[^\\"])*\"	{ return(STRING_LITERAL); }
 
-">>="			{ return(RIGHT_ASSIGN); }
-"<<="			{ return(LEFT_ASSIGN); }
-"+="			{ return(ADD_ASSIGN); }
-"-="			{ return(SUB_ASSIGN); }
-"*="			{ return(MUL_ASSIGN); }
-"/="			{ return(DIV_ASSIGN); }
-"%="			{ return(MOD_ASSIGN); }
-"&="			{ return(AND_ASSIGN); }
-"^="			{ return(XOR_ASSIGN); }
-"|="			{ return(OR_ASSIGN); }
+">>="			|
+"<<="			|
+"+="			|
+"-="			|
+"*="			|
+"/="			|
+"%="			|
+"&="			|
+"^="			|
+"|="			{ return(ASSIGN); }
+
 ">>"			{ return(RIGHT_OP); }
 "<<"			{ return(LEFT_OP); }
 "++"			{ return(INC_OP); }
@@ -84,30 +85,32 @@ L?\"(\\.|[^\\"])*\"	{ return(STRING_LITERAL); }
 ">="			{ return(GE_OP); }
 "=="			{ return(EQ_OP); }
 "!="			{ return(NE_OP); }
-";"				{ return(';'); }
+
 ("{"|"<%")		{ return('{'); }
 ("}"|"%>")		{ return('}'); }
-","				{ return(','); }
-":"				{ return(':'); }
-"="				{ return('='); }
-"("				{ return('('); }
-")"				{ return(')'); }
 ("["|"<:")		{ return('['); }
 ("]"|":>")		{ return(']'); }
-"."				{ return('.'); }
-"&"				{ return('&'); }
-"!"				{ return('!'); }
-"~"				{ return('~'); }
-"-"				{ return('-'); }
-"+"				{ return('+'); }
-"*"				{ return('*'); }
-"/"				{ return('/'); }
-"%"				{ return('%'); }
-"<"				{ return('<'); }
-">"				{ return('>'); }
-"^"				{ return('^'); }
-"|"				{ return('|'); }
-"?"				{ return('?'); }
+
+";"				|
+","				|
+":"				|
+"="				|
+"("				|
+")"				|
+"."				|
+"&"				|
+"!"				|
+"~"				|
+"-"				|
+"+"				|
+"*"				|
+"/"				|
+"%"				|
+"<"				|
+">"				|
+"^"				|
+"|"				|
+"?"				{ return yytext[0]; }
 
 [ \t\v\n\f]		{ ; }
 .				{ fprintf (stderr, "Invalid token: %s\n", yytext); exit(1); }

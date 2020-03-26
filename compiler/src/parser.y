@@ -20,9 +20,8 @@
 /// Lexer tokens ----------------------------------------------------------------------
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
-%token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
-%token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
-%token XOR_ASSIGN OR_ASSIGN TYPE_NAME
+%token AND_OP OR_OP ASSIGN     
+%token TYPE_NAME
 %token TYPEDEF  STATIC 
 %token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST  VOID
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
@@ -162,21 +161,10 @@ conditional_expression
 
 assignment_expression
 	: conditional_expression
-	| unary_expression assignment_operator assignment_expression
-	;
-
-assignment_operator
-	: '='
-	| MUL_ASSIGN
-	| DIV_ASSIGN
-	| MOD_ASSIGN
-	| ADD_ASSIGN
-	| SUB_ASSIGN
-	| LEFT_ASSIGN
-	| RIGHT_ASSIGN
-	| AND_ASSIGN
-	| XOR_ASSIGN
-	| OR_ASSIGN
+	| unary_expression '=' assignment_expression { $$ = new AssignmentExpression($1, $3); }
+	// middle will be assignment string ("*=")
+	// → remove last char ("=") and use BinaryOperation
+	| unary_expression ASSIGN assignment_expression { $2[strlen(p)-1]='\0'; $$ = new AssignmentExpression($1, new BinaryOperation($1, *$2, $3)); }
 	;
 
 expression
@@ -425,7 +413,7 @@ external_declaration
 translation_unit //top level list
 	: external_declaration
 	| translation_unit external_declaration
-	; //implement
+	;
 
 root: translation_unit																{ g_root = $1; }
 
