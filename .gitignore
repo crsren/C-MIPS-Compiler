@@ -1,2 +1,16 @@
 
 .DS_Store
+.vscode/settings.json
+.vscode/c_cpp_properties.json
+Translator/src/parser.output
+Translator/src/parser.tab.cpp
+Translator/src/parser.tab.hpp
+Translator/src/lexer.yy.cpp
+*.o
+Translator/build/*
+Translator/results/*
+Translator/output.py
+Translator/target/py_files/*
+Translator/target/c_bin/*
+*.py
+*.py
