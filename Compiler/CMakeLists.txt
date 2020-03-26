@@ -6,7 +6,7 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
 endif()
 
 # set the project name
-project(BabaYaga-Translator VERSION 1.0 LANGUAGES CXX)
+project(BabaYaga-Commpiler VERSION 1.0 LANGUAGES CXX)
 
 
 # Add the subdirectory containing the source code
