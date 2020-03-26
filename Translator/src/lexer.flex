@@ -49,7 +49,7 @@
 
 void yyerror (char const *s)
 {
-  fprintf (stderr, "Flex error : %s\n", s);
+  fprintf (stderr, "Parse error : %s\n", s);
   exit(1);
 }
 
