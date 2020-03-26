@@ -237,17 +237,17 @@ declaration_specifiers
 // 	| STATIC
 // 	;
 
-type_specifier //no signed needed, short?
+type_specifier
 	: VOID
-	| CHAR
-	| SHORT
+	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
+	| SHORT		            	 								{ fprintf(stderr, "\n SHORT not implemented\n"); }
 	| INT
-	| LONG
-	| FLOAT
-	| DOUBLE
-	| struct_specifier 						{ fprintf(stderr, "Not implemented\n"); }
-	| enum_specifier 						{ fprintf(stderr, "Not implemented\n"); }
-	| TYPE_NAME
+	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
+	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
+	| DOUBLE		        	 								{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
+	| struct_specifier			 								{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
+	| enum_specifier			 								{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
+	| TYPE_NAME			 					        			{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
 	;
 
 specifier_qualifier_list
@@ -340,6 +340,7 @@ declaration_list
 
 //https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
 labeled_statement
+    // "stop: <some body>" ; goto stop; 
 	: IDENTIFIER ':' statement
 	| CASE constant_expression ':' statement
 	| DEFAULT ':' statement
@@ -369,7 +370,7 @@ expression_statement
 selection_statement
 	: IF '(' expression ')' statement
 	| IF '(' expression ')' statement ELSE statement
-	| SWITCH '(' expression ')' statement
+	| SWITCH '(' expression ')' statement			 			    { fprintf(stderr, "\n SWITCH not implemented\n"); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/while-statement-c?view=vs-2019
@@ -403,7 +404,7 @@ statement
 	| jump_statement
 	;
 
-//// Top level & Global Scope -----------------------------------------------------------------
+//// Global & Top Level -----------------------------------------------------------------
 
 //https://docs.microsoft.com/en-us/cpp/c-language/obsolete-forms-of-function-declarations-and-definitions?view=vs-2019
 //https://stackoverflow.com/questions/18820751/identifier-list-vs-parameter-type-list-in-c/18820829#18820829
