@@ -189,6 +189,30 @@ constant_expression
 	: conditional_expression
 	;
 
+//// Initialization ---------------------------------------------------------
+
+//https://en.cppreference.com/w/c/language/initialization
+initializer
+	: assignment_expression
+	| '{' initializer_list '}'
+	| '{' initializer_list ',' '}'
+	;
+
+initializer_list
+	: initializer
+	| initializer_list ',' initializer
+	;
+
+init_declarator_list
+	: init_declarator
+	| init_declarator_list ',' init_declarator
+	;
+
+init_declarator
+	: declarator
+	| declarator '=' initializer
+	;
+
 //// Declaration ------------------------------------------------------------
 
 declarator
@@ -208,16 +232,6 @@ declaration_specifiers
 	| CONST declaration_specifiers
 	;
 
-init_declarator_list
-	: init_declarator
-	| init_declarator_list ',' init_declarator
-	;
-
-init_declarator
-	: declarator
-	| declarator '=' initializer
-	;
-
 // storage_class_specifier
 // 	: TYPEDEF
 // 	| STATIC
@@ -231,57 +245,10 @@ type_specifier //no signed needed, short?
 	| LONG
 	| FLOAT
 	| DOUBLE
-	| struct_specifier
-	| enum_specifier
+	| struct_specifier 						{ fprintf(stderr, "Not implemented\n"); }
+	| enum_specifier 						{ fprintf(stderr, "Not implemented\n"); }
 	| TYPE_NAME
 	;
-
-//// Later -------------------------------------------------------------
-/// Struct -------------------------------------------------------------
-// struct_specifier //no union needed
-// 	: STRUCT IDENTIFIER '{' struct_declaration_list '}'
-// 	| STRUCT '{' struct_declaration_list '}'
-// 	| STRUCT IDENTIFIER
-// 	;
-
-// struct_declaration_list
-// 	: struct_declaration
-// 	| struct_declaration_list struct_declaration
-// 	;
-
-// struct_declaration
-// 	: specifier_qualifier_list struct_declarator_list ';'
-// 	;
-
-// struct_declarator_list
-// 	: struct_declarator
-// 	| struct_declarator_list ',' struct_declarator
-// 	;
-
-// struct_declarator
-// 	: declarator
-// 	| ':' constant_expression
-// 	| declarator ':' constant_expression
-// 	;
-
-
-/// Enum -------------------------------------------------------------
-
-// enum_specifier
-// 	: ENUM '{' enumerator_list '}'
-// 	| ENUM IDENTIFIER '{' enumerator_list '}'
-// 	| ENUM IDENTIFIER
-// 	;
-
-// enumerator_list
-// 	: enumerator
-// 	| enumerator_list ',' enumerator
-// 	;
-
-// enumerator
-// 	: IDENTIFIER
-// 	| IDENTIFIER '=' constant_expression
-// 	;
 
 specifier_qualifier_list
 	: type_specifier specifier_qualifier_list
@@ -316,16 +283,57 @@ type_name
 	| specifier_qualifier_list abstract_declarator
 	;
 
-//https://en.cppreference.com/w/c/language/initialization
-initializer
-	: assignment_expression
-	| '{' initializer_list '}'
-	| '{' initializer_list ',' '}'
+//// Declarator -----------------------------------------------------------------
+
+pointer
+	: '*'
+	//| '*' type_qualifier_list
+	| '*' pointer
+	//| '*' type_qualifier_list pointer
 	;
 
-initializer_list
-	: initializer
-	| initializer_list ',' initializer
+abstract_declarator
+	: pointer
+	| direct_abstract_declarator
+	| pointer direct_abstract_declarator
+	;
+
+//https://docs.microsoft.com/en-us/cpp/c-language/c-abstract-declarators?view=vs-2019
+direct_abstract_declarator
+	: '(' abstract_declarator ')'
+	| '[' ']'
+	| '[' constant_expression ']'
+	| direct_abstract_declarator '[' ']'
+	| direct_abstract_declarator '[' constant_expression ']'
+	| '(' ')'
+	| '(' parameter_list ')'
+	| direct_abstract_declarator '(' ')'
+	| direct_abstract_declarator '(' parameter_list ')'
+	;
+
+//https://en.cppreference.com/w/c/language/declarations
+//http://c-faq.com/decl/spiral.anderson.html
+direct_declarator
+	: IDENTIFIER
+	| '(' declarator ')'
+	| direct_declarator '[' constant_expression ']'
+	| direct_declarator '[' ']'
+	| direct_declarator '(' parameter_list ')'
+	| direct_declarator '(' identifier_list ')'
+	| direct_declarator '(' ')'
+	;
+
+
+//primitive data type variable declaration
+//or any user-defined type structure declaration
+declaration
+	: declaration_specifiers ';'
+	| declaration_specifiers init_declarator_list ';'
+	;
+
+declaration_list
+	: declaration
+	| declaration_list declaration
 	;
 
 /// Statement -----------------------------------------------------------------
@@ -395,62 +403,6 @@ statement
 	| jump_statement
 	;
 
-
-
-//// Declarator -----------------------------------------------------------------
-
-pointer
-	: '*'
-	//| '*' type_qualifier_list
-	| '*' pointer
-	//| '*' type_qualifier_list pointer
-	;
-
-abstract_declarator
-	: pointer
-	| direct_abstract_declarator
-	| pointer direct_abstract_declarator
-	;
-
-//https://docs.microsoft.com/en-us/cpp/c-language/c-abstract-declarators?view=vs-2019
-direct_abstract_declarator
-	: '(' abstract_declarator ')'
-	| '[' ']'
-	| '[' constant_expression ']'
-	| direct_abstract_declarator '[' ']'
-	| direct_abstract_declarator '[' constant_expression ']'
-	| '(' ')'
-	| '(' parameter_list ')'
-	| direct_abstract_declarator '(' ')'
-	| direct_abstract_declarator '(' parameter_list ')'
-	;
-
-//https://en.cppreference.com/w/c/language/declarations
-//http://c-faq.com/decl/spiral.anderson.html
-direct_declarator
-	: IDENTIFIER
-	| '(' declarator ')'
-	| direct_declarator '[' constant_expression ']'
-	| direct_declarator '[' ']'
-	| direct_declarator '(' parameter_list ')'
-	| direct_declarator '(' identifier_list ')'
-	| direct_declarator '(' ')'
-	;
-
-
-//primitive data type variable declaration
-//or any user-defined type structure declaration
-declaration
-	: declaration_specifiers ';'
-	| declaration_specifiers init_declarator_list ';'
-	;
-
-declaration_list
-	: declaration
-	| declaration_list declaration
-	;
-
-
 //// Top level & Global Scope -----------------------------------------------------------------
 
 //https://docs.microsoft.com/en-us/cpp/c-language/obsolete-forms-of-function-declarations-and-definitions?view=vs-2019
@@ -458,7 +410,8 @@ declaration_list
 function_definition
 	// : declaration_specifiers declarator declaration_list compound_statement
 	| declaration_specifiers declarator compound_statement
-	| declarator declaration_list compound_statement
+	// Functions with return type int/int* aren't required to have a declaration
+	//| declarator declaration_list compound_statement
 	//| declarator compound_statement
 	;
 
@@ -476,6 +429,63 @@ translation_unit //top level list
 root: translation_unit																{ g_root = $1; }
 
 %%
+
+// REDUNDANT GRAMMAR:
+// parameter_type_list
+// ELLIPSE, VOLATILE; EXTERN; AUTO; REGISTER; UNION
+
+
+
+//// Later -------------------------------------------------------------
+/// Struct -------------------------------------------------------------
+// struct_specifier //no union needed
+// 	: STRUCT IDENTIFIER '{' struct_declaration_list '}'
+// 	| STRUCT '{' struct_declaration_list '}'
+// 	| STRUCT IDENTIFIER
+// 	;
+
+// struct_declaration_list
+// 	: struct_declaration
+// 	| struct_declaration_list struct_declaration
+// 	;
+
+// struct_declaration
+// 	: specifier_qualifier_list struct_declarator_list ';'
+// 	;
+
+// struct_declarator_list
+// 	: struct_declarator
+// 	| struct_declarator_list ',' struct_declarator
+// 	;
+
+// struct_declarator
+// 	: declarator
+// 	| ':' constant_expression
+// 	| declarator ':' constant_expression
+// 	;
+
+
+/// Enum -------------------------------------------------------------
+
+// enum_specifier
+// 	: ENUM '{' enumerator_list '}'
+// 	| ENUM IDENTIFIER '{' enumerator_list '}'
+// 	| ENUM IDENTIFIER
+// 	;
+
+// enumerator_list
+// 	: enumerator
+// 	| enumerator_list ',' enumerator
+// 	;
+
+// enumerator
+// 	: IDENTIFIER
+// 	| IDENTIFIER '=' constant_expression
+// 	;
+
+//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
+
 //#include <stdio.h>
 
 //  char yytext[];
@@ -505,8 +515,3 @@ const Node *parseAST(const char *inputFile)
     yyparse();
     return g_root;
 }
-
-
-// redundant grammar:
-// parameter_type_list
-// ELLIPSE, VOLATILE; EXTERN; AUTO; REGISTER; UNION
