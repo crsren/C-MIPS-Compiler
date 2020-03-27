@@ -341,6 +341,8 @@ labeled_statement
 	| DEFAULT ':' statement			 								{ fprintf(stderr, "\n DEFAULT not implemented\n"); }
 	;
 
+// C89 does not allow declarations after statements 
+// https://stackoverflow.com/questions/6488503/c89-mixing-variable-declarations-and-code
 compound_statement
 	: '{' '}'
 	| '{' statement_list '}'										{ $$ = new CompoundStatement(nullptr, $2); }
