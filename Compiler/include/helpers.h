@@ -1,4 +1,4 @@
-#if !defined(HELPERS_H)
+#ifndef HELPERS_H
 #define HELPERS_H
 
 // Header to include helpers used by most classes and to implement small helper functions
