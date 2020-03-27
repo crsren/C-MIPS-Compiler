@@ -1,7 +1,6 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <iostream>
 #include "helpers.h"
 
 class Node;
