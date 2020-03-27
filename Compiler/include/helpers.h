@@ -1,4 +1,4 @@
-#if !defined(HELPERS_H)
+#ifndef HELPERS_H
 #define HELPERS_H
 
 // This header includes library and helper classes/functions used across the AST

@@ -1,7 +1,7 @@
-#if !defined(UNARY_OPERATION_H)
+#ifndef UNARY_OPERATION_H
 #define UNARY_OPERATION_H
 
-#include "helpers.h"
+#include "../helpers.h"
 
 // '&' '*' '+' '-' '~' '!'
 class UnaryOperation : public Node
@@ -13,7 +13,7 @@ private:
 public:
     UnaryOperation(const unsigned char symbol, nodePtr expression) : symbol(symbol), expression(expression){};
 
-    void print(std::ostream &out, !!!) const override; //implement
+    void print(std::ostream &out, VariableBindings bindings) const override; //implement
 
     ~UnaryOperation()
     {

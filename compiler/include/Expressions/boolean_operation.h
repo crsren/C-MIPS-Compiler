@@ -1,15 +1,14 @@
-#ifndef ARITHMETIC_OPERATION_H
-#define ARITHMETIC_OPERATION_H
+#ifndef BOOLEAN_OPERATION_H
+#define BOOLEAN_OPERATION_H
 
-#include "../helpers.h"
 #include "binary_operation.h"
+#include "../helpers.h"
 
-#include <string>
-
-class ArithmeticOperation : public BinaryOperation
+// <, >, <=, >=, ==, !=
+class BooleanOperation : public BinaryOperation
 {
 public:
-    ArithmeticOperation(nodePtr l, const std::string &s, nodePtr r) : BinaryOperation(l, s, r){};
+    BooleanOperation(nodePtr l, const std::string &s, nodePtr r) : BinaryOperation(l, s, r){};
 
     void print(std::ostream &out, VariableBindings bindings) const override
     {
@@ -66,7 +65,6 @@ public:
 
         out << "\tsw\t$2,-" << bindings.getCurrentExpressionAddressOffset() << "($fp)\n";
     }
-
 };
 
-#endif // BINARY_OPERATION_H
+#endif // BOOL_OPERATION_H
