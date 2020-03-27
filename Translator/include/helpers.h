@@ -15,7 +15,7 @@ class Indent
 public:
     static Indent &instance()
     {
-        static Indent instance;
+        static Indent instance; //Insantiated on first use
         return instance;
     };
     //out << Indent::instance() << ...;
@@ -37,10 +37,10 @@ public:
         count--;
     };
 
+    // overloading insertion operator
     friend std::ostream &operator<<(std::ostream &os, const Indent &indent);
 };
 
-//implement
 class Global
 {
     std::vector<std::string> variables;
@@ -48,7 +48,7 @@ class Global
 public:
     static Global &instance()
     {
-        static Global instance;
+        static Global instance; //Insantiated on first use
         return instance;
     };
 
@@ -57,6 +57,7 @@ public:
         variables.push_back(s);
     };
 
+    // overloading insertion operator
     friend std::ostream &operator<<(std::ostream &os, const Global &global);
 };
 

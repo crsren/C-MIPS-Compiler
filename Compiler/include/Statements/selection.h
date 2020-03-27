@@ -3,6 +3,9 @@
 
 #include "helpers.h"
 
+//
+
+// IF (ELSE)
 class SelectionStatement : public Node
 {
 private:
@@ -17,7 +20,7 @@ public:
     // if else statement
     SelectionStatement(nodePtr c, nodePtr s1, nodePtr s2) : condition(c), statement1(s1), statement2(s2), has_else(true){};
 
-    void print(std::ostream &out, !!!) const override; // implement
+    void print(std::ostream &out, VariableBindings bindings) const override; // implement
 
     ~SelectionStatement()
     {

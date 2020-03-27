@@ -4,7 +4,7 @@
 #include "helpers.h"
 
 // Input: (node* declarationlist, node* statementlist)
-class Compound : public Node()
+class Compound : public Node
 {
 private:
     nodePtr dList; //declaration list
@@ -12,6 +12,8 @@ private:
 
 public:
     Compound(nodePtr d, nodePtr s) : dList(d), sList(s){};
+
+    void print(std::ostream &out, VariableBindings bindings) const override;
 
     ~Compound()
     {

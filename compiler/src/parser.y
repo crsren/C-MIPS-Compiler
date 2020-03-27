@@ -331,11 +331,11 @@ parameter_declaration
 	| declaration_specifiers
 	;
 
-/// Statement -----------------------------------------------------------------
+/// Statements -----------------------------------------------------------------
 
 //https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
 labeled_statement
-    // "stop: <some body>" ; goto stop; 
+    // "stop: <something>" ; goto stop; 
 	: IDENTIFIER ':' statement			 							{ fprintf(stderr, "\n IDENTIFIER not implemented\n"); }
 	| CASE constant_expression ':' statement			 			{ fprintf(stderr, "\n CASE not implemented\n"); }
 	| DEFAULT ':' statement			 								{ fprintf(stderr, "\n DEFAULT not implemented\n"); }

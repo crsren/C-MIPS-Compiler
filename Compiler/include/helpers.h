@@ -10,4 +10,27 @@
 #include <iostream>
 #include <string>
 
+// Singletons
+//https://stackoverflow.com/questions/1008019/c-singleton-design-pattern
+
+// Guarantees unique labeling
+class Label
+{
+    int count;
+
+public:
+    static Label &instance()
+    {
+        static Label instance; //Insantiated on first use
+        return instance;
+    }
+
+    Label() : count(0){};
+
+    std::string makeUnique(std::string base)
+    {
+        return base + "_" + std::to_string(count++);
+    };
+};
+
 #endif // HELPERS_H
