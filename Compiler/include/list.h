@@ -18,7 +18,11 @@ public:
         items.push_back(first);
     };
 
-    virtual void print(std::ostream &out) const override;
+    virtual void print(std::ostream &out, !!!) const override
+    {
+        for (nodePtr i : items)
+            i->print(out, !!!);
+    }
 
     virtual void add(nodePtr ptr)
     {

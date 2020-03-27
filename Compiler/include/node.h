@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+class Node;
+typedef const Node *nodePtr;
+
 class Node
 {
 public:
@@ -10,7 +13,5 @@ public:
     virtual void print(std::ostream &out, !!!) const { std::cerr << "Unimplemented node.\n"; };
     //const = 0;
 };
-
-const Node *nodePtr;
 
 #endif // NODE_H

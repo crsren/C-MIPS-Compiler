@@ -59,8 +59,8 @@ primary_expression
 postfix_expression
 	: primary_expression
 	| postfix_expression '[' expression ']'
-	| postfix_expression '(' ')'
-	| postfix_expression '(' argument_expression_list ')'
+	| postfix_expression '(' ')'									{ $$ = new fnCall($1); }
+	| postfix_expression '(' argument_expression_list ')'			{ $$ = new fnCall($1, $3); }
 	| postfix_expression '.' IDENTIFIER
 	| postfix_expression PTR_OP IDENTIFIER
 	| postfix_expression INC_OP
@@ -201,25 +201,6 @@ init_declarator
 	| declarator '=' initializer
 	;
 
-//// Declaration ------------------------------------------------------------
-
-declarator
-	: pointer direct_declarator
-	| direct_declarator
-	;
-
-//storage-class specifiers
-//type specifiers (ie primitive, user-defined)
-//type qualifiers (ie are they "modifiable")
-declaration_specifiers
-	: storage_class_specifier
-	| storage_class_specifier declaration_specifiers
-	| type_specifier
-	| type_specifier declaration_specifiers
-	| CONST
-	| CONST declaration_specifiers
-	;
-
 // storage_class_specifier
 // 	: TYPEDEF
 // 	| STATIC
@@ -255,11 +236,6 @@ parameter_list
 	| parameter_list ',' parameter_declaration
 	;
 
-parameter_declaration
-	: declaration_specifiers declarator
-	| declaration_specifiers abstract_declarator
-	| declaration_specifiers
-	;
 
 identifier_list
 	: IDENTIFIER
@@ -297,6 +273,29 @@ direct_abstract_declarator
 	| '(' parameter_list ')'
 	| direct_abstract_declarator '(' ')'
 	| direct_abstract_declarator '(' parameter_list ')'
+	;
+
+declarator
+	: pointer direct_declarator
+	| direct_declarator
+	;
+
+//storage-class specifiers
+//type specifiers (ie primitive, user-defined)
+//type qualifiers (ie are they "modifiable")
+declaration_specifiers
+	: storage_class_specifier
+	| storage_class_specifier declaration_specifiers
+	| type_specifier
+	| type_specifier declaration_specifiers
+	| CONST
+	| CONST declaration_specifiers
+	;
+
+parameter_declaration
+	: declaration_specifiers declarator
+	| declaration_specifiers abstract_declarator
+	| declaration_specifiers
 	;
 
 //https://en.cppreference.com/w/c/language/declarations
@@ -379,8 +378,8 @@ jump_statement
 	: GOTO IDENTIFIER ';'
 	| CONTINUE ';'
 	| BREAK ';'
-	| RETURN ';'
-	| RETURN expression ';'
+	| RETURN ';'															{ $$ = new ReturnStatement();	}
+	| RETURN expression ';'													{ $$ = new ReturnStatement($2); }
 	;
 
 statement

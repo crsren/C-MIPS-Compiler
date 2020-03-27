@@ -8,12 +8,12 @@
 class BinaryOperation : public Node
 {
 private:
-    Node *left;
+    nodePtr left;
     const std::string symbol;
-    Node *right;
+    nodePtr right;
 
 public:
-    BinaryOperation(Node *l, const std::string &s, Node *r) : left(l), symbol(s), right(r){};
+    BinaryOperation(nodePtr l, const std::string &s, nodePtr r) : left(l), symbol(s), right(r){};
 
     void print(std::ostream &out, !!!) const override;
 };
