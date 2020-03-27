@@ -58,8 +58,8 @@ argument_expression_list //input arguments passed to function
 
 unary_expression
 	: postfix_expression										{ $$ = $1; }
-	| '-' postfix_expression										{ $$ = new Unary('-', $2); }
-	| '+' postfix_expression 										{ $$ = $2; }
+	| '-' postfix_expression									{ $$ = new Unary('-', $2); }
+	| '+' postfix_expression 									{ $$ = $2; }
 	;
 
 multiplicative_expression

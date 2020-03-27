@@ -52,7 +52,7 @@
 //// Expressions -----------------------------------------------------------------
 
 primary_expression
-	: IDENTIFIER 												{ $$ = new Identifier($1); }
+	: IDENTIFIER 												{ $$ = new Identifier(*$1); }
 	| CONSTANT 													{ $$ = new Constant($1); }
 	| STRING_LITERAL			 								{ fprintf(stderr, "\n STRING_LITERAL not implemented\n"); }
 	| '(' expression ')' 										{ $$ = $2; }
@@ -213,9 +213,9 @@ type_specifier
 	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
 	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
 	| DOUBLE		        	 								{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
-	//| struct_specifier			 								{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
+	//| struct_specifier			 							{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
 	//| enum_specifier			 								{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
-	//| TYPE_NAME			 					        			{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
+	//| TYPE_NAME			 					        		{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
 	;
 
 specifier_qualifier_list
