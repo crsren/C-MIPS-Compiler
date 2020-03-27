@@ -96,6 +96,10 @@ private:
 
 	// note that this map holds the identifiers and the data of the global
 	// variables
+    //
+    // ALSO note that in MIPS the variable identifiers correspond to the actual
+    // memory address of the global variable
+    // 
 	// note that it is static since the global variables are shared by every
 	// local scope and thus, by every instance of the VariableBindings class
 	static std::unordered_map<std::string, Variable> globalBindings;
@@ -105,6 +109,11 @@ private:
 	// also if subtracted from the frame pointer, we get the memory location
 	// pointed by the stack pointer
 	int stackFrameSize;
+
+    // the currentExpressionAddressOffset is the value that must be subtracted from
+    // the stack pointer to get the memory location of the current intermediate stored
+    // expression
+    int currentExpressionAddressOffset;
 
 public:
 	VariableBindings(int stackFrameSize_i = 0): stackFrameSize(stackFrameSize_i)
@@ -117,19 +126,24 @@ public:
 		return stackFrameSize;
 	}
 
-	PrimitiveDataTypeCode getVariableDataTypeCode(const std::string &id) const
+    int getCurrentExpressionAddressOffset() const
+	{
+		return currentExpressionAddressOffset;
+	}
+
+	PrimitiveDataTypeCode getLocalVariableDataTypeCode(const std::string &id) const
     {
         auto variableBinding = localBindings.find(id);
 		return (*variableBinding).second.variableDataTypeCode;
     }
 
-    const Array& getArrayVariable(const std::string &id) const
+    const Array& getLocalArrayVariable(const std::string &id) const
     {
         auto variableBinding = localBindings.find(id);
 		return (*variableBinding).second.arrayVariable;
     }
 
-	int getVariableAddressOffset(const std::string &id) const
+	int getLocalVariableAddressOffset(const std::string &id) const
 	{
 		auto variableBinding = localBindings.find(id);
 		return (*variableBinding).second.addressOffset;
@@ -137,17 +151,21 @@ public:
 
 
 
-	void insertVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
+	void insertLocalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
 	{
         incrementStackFrameSize();
         Variable var;
         var.addressOffset = getStackFrameSize();
         var.is_array = false;
         var.variableDataTypeCode = dataTypeCode;
+         if(dataTypeCode == DOUBLE)
+        {
+            incrementStackFrameSize();
+        }
 		localBindings.insert( std::make_pair(id, var) );
 	}
 
-	void insertArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
+	void insertLocalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
 	{
         Variable var;
         var.addressOffset = getStackFrameSize() + 4;
@@ -158,6 +176,11 @@ public:
         {
             arraySize *= arrayDimensionSizes_i[i];
         }
+        arraySize *= 4;
+        if(dataTypeCode == DOUBLE)
+        {
+            arraySize *= 2;
+        }
         increaseStackFrameSizeBy(arraySize);
 
 		Array varArray;
@@ -167,28 +190,81 @@ public:
         
 		localBindings.insert( std::make_pair(id, var) );
 	}
-	
+
+
+
+    void insertGlobalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
+	{
+        Variable var;
+        var.addressOffset = -1;
+        var.is_array = false;
+        var.variableDataTypeCode = dataTypeCode;
+		globalBindings.insert( std::make_pair(id, var) );
+	}
+
+	void insertGlobalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
+	{
+        Variable var;
+        var.addressOffset = -1;
+        var.is_array = true;
+
+        int arraySize = 1;
+        for(int i = 0; i < arrayDimensionSizes_i.size(); i++)
+        {
+            arraySize *= arrayDimensionSizes_i[i];
+        }
+        arraySize *= 4;
+        if(dataTypeCode == DOUBLE)
+        {
+            arraySize *= 2;
+        }
+        increaseStackFrameSizeBy(arraySize);
+
+		Array varArray;
+        varArray.setArrayDataTypeCode(dataTypeCode);
+        varArray.setArrayDimensionalSizes(arrayDimensionSizes_i);
+        var.arrayVariable = varArray;
+        
+		globalBindings.insert( std::make_pair(id, var) );
+	}
+
 
 
 	void incrementStackFrameSize()
 	{
 		stackFrameSize += 4;
+        currentExpressionAddressOffset += 4;
 	}
 
 	void increaseStackFrameSizeBy(const int &position)
 	{
 		stackFrameSize += position;
+        currentExpressionAddressOffset += position;
 	}
 
 	void decrementStackFrameSize()
 	{
 		stackFrameSize -= 4;
+        currentExpressionAddressOffset -= 4;
 	}
 
 	void decrementStackFrameSizeBy(const int &position)
 	{
 		stackFrameSize -= position;
+        currentExpressionAddressOffset -= position;
 	}
+
+
+
+    void incrementCurrentExpressionAddressOffset()
+    {
+        currentExpressionAddressOffset += 4;
+    }
+
+    void decrementCurrentExpressionAddressOffset()
+    {
+        currentExpressionAddressOffset -= 4;
+    }
 };
 
 #endif
