@@ -50,6 +50,7 @@ public:
     ~FnDeclarator()
     {
         delete declarator;
+        delete list;
     };
 };
 

@@ -1,6 +1,6 @@
 #include "Function/fn_call.h"
 
-void fnCall::print(std::ostream &out, !!!) const
+void FnCall::print(std::ostream &out, !!!) const
 {
     // get function name
     string name;

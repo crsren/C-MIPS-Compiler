@@ -1,5 +1,5 @@
 %code requires{
-	#include "AST.h"
+	#include "topLevel.h"
 
 	//matched below context-free grammar
 	 const Node *g_root;
@@ -11,7 +11,9 @@
 }
 // Possible type that symbols can take on
 %union{
-
+	Node* nodePtr;
+	std::string* str;
+	
 }
 
 %define parse.error verbose //For debugging
@@ -59,12 +61,12 @@ primary_expression
 postfix_expression
 	: primary_expression
 	| postfix_expression '[' expression ']'
-	| postfix_expression '(' ')'									{ $$ = new fnCall($1); }
-	| postfix_expression '(' argument_expression_list ')'			{ $$ = new fnCall($1, $3); }
+	| postfix_expression '(' ')'								{ $$ = new fnCall($1); }
+	| postfix_expression '(' argument_expression_list ')'		{ $$ = new fnCall($1, $3); }
 	| postfix_expression '.' IDENTIFIER
 	| postfix_expression PTR_OP IDENTIFIER
-	| postfix_expression INC_OP
-	| postfix_expression DEC_OP
+	| postfix_expression INC_OP 								{ $$ = new postOperation("+", $2); }	
+	| postfix_expression DEC_OP 								{ $$ = new postOperation("-", $2); }
 	;
 
 argument_expression_list
@@ -73,12 +75,12 @@ argument_expression_list
 	;
 
 unary_expression
-	: postfix_expression
-	| INC_OP unary_expression
-	| DEC_OP unary_expression
-	| unary_operator cast_expression
-	| SIZEOF unary_expression
-	| SIZEOF '(' type_name ')'
+	: postfix_expression 		 								{ $$ = $1; }								
+	| INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
+	| DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
+	| unary_operator cast_expression			 				{ fprintf(stderr, "\n UNARY_OPERATOR not implemented\n"); }
+	| SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
+	| SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	;
 
 unary_operator
@@ -91,121 +93,118 @@ unary_operator
 	;
 
 cast_expression
-	: unary_expression
+	: unary_expression  										{ $$ = $1; }
 	//| '(' type_name ')' cast_expression
 	;
 
 multiplicative_expression
-	: cast_expression
-	| multiplicative_expression '*' cast_expression
-	| multiplicative_expression '/' cast_expression
-	| multiplicative_expression '%' cast_expression
+	: cast_expression 											{ $$ = $1; }					
+	| multiplicative_expression '*' cast_expression 			{ $$ = new ArithmeticOperation($1,"*", $3); }
+	| multiplicative_expression '/' cast_expression 			{ $$ = new ArithmeticOperation($1, "/", $3); }
+	| multiplicative_expression '%' cast_expression 			{ $$ = new ArithmeticOperation($1, "%", $3); }
 	;
 
 additive_expression
-	: multiplicative_expression
-	| additive_expression '+' multiplicative_expression
-	| additive_expression '-' multiplicative_expression
+	: multiplicative_expression 								{ $$ = $1; }
+	| additive_expression '+' multiplicative_expression 		{ $$ = new ArithmeticOperation($1, "+", $3); }
+	| additive_expression '-' multiplicative_expression 		{ $$ = new ArithmeticOperation($1, "-", $3); }
 	;
 
 shift_expression
-	: additive_expression
-	| shift_expression LEFT_OP additive_expression
-	| shift_expression RIGHT_OP additive_expression
+	: additive_expression 										{ $$ = $1; }
+	| shift_expression LEFT_OP additive_expression 				{ $$ = new BitwiseOperation($1, "<<", $3); }
+	| shift_expression RIGHT_OP additive_expression 			{ $$ = new BitwiseOperation($1, ">>", $3); }
 	;
 
 relational_expression
-	: shift_expression
-	| relational_expression '<' shift_expression
-	| relational_expression '>' shift_expression
-	| relational_expression LE_OP shift_expression
-	| relational_expression GE_OP shift_expression
+	: shift_expression 											{ $$ = $1; }
+	| relational_expression '<' shift_expression 				{ $$ = new BooleanOperation($1, "<", $3); }
+	| relational_expression '>' shift_expression 				{ $$ = new BooleanOperation($1, ">", $3); }
+	| relational_expression LE_OP shift_expression				{ $$ = new BooleanOperation($1, "<=", $3); } 				
+	| relational_expression GE_OP shift_expression				{ $$ = new BooleanOperation($1, ">=", $3); }
 	;
 
 equality_expression
-	: relational_expression
-	| equality_expression EQ_OP relational_expression
-	| equality_expression NE_OP relational_expression
+	: relational_expression 									{ $$ = $1; }
+	| equality_expression EQ_OP relational_expression			{ $$ = new BooleanOperation($1, "==", $3); }
+	| equality_expression NE_OP relational_expression			{ $$ = new BooleanOperation($1, "!=", $3); }
 	;
 
 and_expression
-	: equality_expression
-	| and_expression '&' equality_expression
+	: equality_expression 										{ $$ = $1; }
+	| and_expression '&' equality_expression 					{ $$ = new BitwiseOperation($1, "&", $3); }
 	;
 
 exclusive_or_expression
-	: and_expression
-	| exclusive_or_expression '^' and_expression
+	: and_expression 		 									{ $$ = $1; }
+	| exclusive_or_expression '^' and_expression 				{ $$ = new BitwiseOperation($1, "^", $3); }
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression
-	| inclusive_or_expression '|' exclusive_or_expression
+	: exclusive_or_expression 									{ $$ = $1; }
+	| inclusive_or_expression '|' exclusive_or_expression 		{ $$ = new BitwiseOperation($1, "|", $3); }
 	;
 
 logical_and_expression
-	: inclusive_or_expression
-	| logical_and_expression AND_OP inclusive_or_expression
+	: inclusive_or_expression 									{ $$ = $1; }
+	| logical_and_expression AND_OP inclusive_or_expression		{ fprintf(stderr, "\n LOGICAL_AND_EXPRESSION not implemented\n"); }
 	;
 
 logical_or_expression
-	: logical_and_expression
-	| logical_or_expression OR_OP logical_and_expression
+	: logical_and_expression									{ $$ = $1; }
+	| logical_or_expression OR_OP logical_and_expression		{ fprintf(stderr, "\n LOGICAL_OR_EXPRESSION not implemented\n"); }
 	;
 
 //https://en.cppreference.com/w/c/language/operator_other#Conditional_operator
 conditional_expression
-	: logical_or_expression
-	| logical_or_expression '?' expression ':' conditional_expression
+	: logical_or_expression										{ $$ = $1; }
+	//| logical_or_expression '?' expression ':' conditional_expression
 	;
 
 assignment_expression
-	: conditional_expression
-	| unary_expression '=' assignment_expression { $$ = new AssignmentExpression($1, $3); }
+	: conditional_expression									{ $$ = $1; }
+	| unary_expression '=' assignment_expression 				{ $$ = new AssignmentExpression($1, $3); }
+
 	// middle will be assignment string ("*=")
 	// → remove last char ("=") and use BinaryOperation
-	| unary_expression ASSIGN assignment_expression { $2[strlen(p)-1]='\0'; $$ = new AssignmentExpression($1, new BinaryOperation($1, *$2, $3)); }
+	| unary_expression ASSIGN assignment_expression 			{ $2[strlen(p)-1]='\0';
+																$$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
 	;
 
 expression
-	: assignment_expression
-	//f (a, "(t=3, t+2)", c)
+	: assignment_expression										{ $$ = $1; }
+
+//f (a, "(t=3, t+2)", c)
 	//| expression ',' assignment_expression
 	;
 
-constant_expression
-	: conditional_expression
+constant_expression //dont really need this
+	: conditional_expression									{ $$ = $1; }
 	;
 
 //// Initialization ---------------------------------------------------------
 
 //https://en.cppreference.com/w/c/language/initialization
 initializer
-	: assignment_expression
-	| '{' initializer_list '}'
-	| '{' initializer_list ',' '}'
+	: assignment_expression										{ $$ = $1; }
+
+////initializer list "vector<in> v{1,2,3}"
+	//| '{' initializer_list '}'
+	//| '{' initializer_list ',' '}'
 	;
 
-initializer_list
-	: initializer
-	| initializer_list ',' initializer
-	;
+// initializer_list
+// 	: initializer
+// 	| initializer_list ',' initializer
+// 	;
 
-init_declarator_list
-	: init_declarator
-	| init_declarator_list ',' init_declarator
-	;
-
-init_declarator
-	: declarator
-	| declarator '=' initializer
-	;
 
 // storage_class_specifier
 // 	: TYPEDEF
 // 	| STATIC
 // 	;
 
+//!
 type_specifier
 	: VOID
 	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
@@ -214,9 +213,9 @@ type_specifier
 	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
 	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
 	| DOUBLE		        	 								{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
-	| struct_specifier			 								{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
-	| enum_specifier			 								{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
-	| TYPE_NAME			 					        			{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
+	//| struct_specifier			 								{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
+	//| enum_specifier			 								{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
+	//| TYPE_NAME			 					        			{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
 	;
 
 specifier_qualifier_list
@@ -256,23 +255,45 @@ pointer
 	//| '*' type_qualifier_list pointer
 	;
 
-abstract_declarator
-	: pointer
-	| direct_abstract_declarator
-	| pointer direct_abstract_declarator
+// abstract_declarator
+// 	: pointer
+// 	| direct_abstract_declarator
+// 	| pointer direct_abstract_declarator
+// 	;
+
+// //https://docs.microsoft.com/en-us/cpp/c-language/c-abstract-declarators?view=vs-2019
+// direct_abstract_declarator
+// 	: '(' abstract_declarator ')'
+// 	| '[' ']'
+// 	| '[' constant_expression ']'
+// 	| direct_abstract_declarator '[' ']'
+// 	| direct_abstract_declarator '[' constant_expression ']'
+// 	| '(' ')'
+// 	| '(' parameter_list ')'
+// 	| direct_abstract_declarator '(' ')'
+// 	| direct_abstract_declarator '(' parameter_list ')'
+// 	;
+
+init_declarator
+	: declarator
+	| declarator '=' initializer
 	;
 
-//https://docs.microsoft.com/en-us/cpp/c-language/c-abstract-declarators?view=vs-2019
-direct_abstract_declarator
-	: '(' abstract_declarator ')'
-	| '[' ']'
-	| '[' constant_expression ']'
-	| direct_abstract_declarator '[' ']'
-	| direct_abstract_declarator '[' constant_expression ']'
-	| '(' ')'
-	| '(' parameter_list ')'
-	| direct_abstract_declarator '(' ')'
-	| direct_abstract_declarator '(' parameter_list ')'
+init_declarator_list
+	: init_declarator
+	| init_declarator_list ',' init_declarator
+	;
+
+//https://en.cppreference.com/w/c/language/declarations
+//http://c-faq.com/decl/spiral.anderson.html
+direct_declarator
+	: IDENTIFIER 													// new simple declarator
+	| '(' declarator ')' 											{ $$ = $2; }
+	| direct_declarator '[' constant_expression ']' 				// new array declarator
+	| direct_declarator '[' ']' 									// new array declarator
+	| direct_declarator '(' parameter_list ')'						{ $$ = new FnDeclarator($1, $3); }
+	// | direct_declarator '(' identifier_list ')'
+	| direct_declarator '(' ')'										{ $$ = new FnDeclarator($1); }
 	;
 
 declarator
@@ -292,35 +313,22 @@ declaration_specifiers
 	| CONST declaration_specifiers
 	;
 
+//primitive data type variable declaration
+//or any user-defined type structure declaration
+declaration
+	//: declaration_specifiers ';'
+	| declaration_specifiers init_declarator_list ';'				{ $$ = new VarDeclaration($1, $2); } //! implement
+	;
+
+declaration_list
+	: declaration 													{ $$ = new List($1); }
+	| declaration_list declaration 									{ $1->add($2); $$ = $1; }
+	;
+
 parameter_declaration
 	: declaration_specifiers declarator
 	| declaration_specifiers abstract_declarator
 	| declaration_specifiers
-	;
-
-//https://en.cppreference.com/w/c/language/declarations
-//http://c-faq.com/decl/spiral.anderson.html
-direct_declarator
-	: IDENTIFIER
-	| '(' declarator ')'
-	| direct_declarator '[' constant_expression ']'
-	| direct_declarator '[' ']'
-	| direct_declarator '(' parameter_list ')'
-	| direct_declarator '(' identifier_list ')'
-	| direct_declarator '(' ')'
-	;
-
-
-//primitive data type variable declaration
-//or any user-defined type structure declaration
-declaration
-	: declaration_specifiers ';'
-	| declaration_specifiers init_declarator_list ';'
-	;
-
-declaration_list
-	: declaration
-	| declaration_list declaration
 	;
 
 /// Statement -----------------------------------------------------------------
@@ -328,35 +336,35 @@ declaration_list
 //https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
 labeled_statement
     // "stop: <some body>" ; goto stop; 
-	: IDENTIFIER ':' statement
-	| CASE constant_expression ':' statement
-	| DEFAULT ':' statement
+	: IDENTIFIER ':' statement			 							{ fprintf(stderr, "\n IDENTIFIER not implemented\n"); }
+	| CASE constant_expression ':' statement			 			{ fprintf(stderr, "\n CASE not implemented\n"); }
+	| DEFAULT ':' statement			 								{ fprintf(stderr, "\n DEFAULT not implemented\n"); }
 	;
 
 compound_statement
 	: '{' '}'
-	| '{' statement_list '}'
-	| '{' declaration_list '}'
-	| '{' declaration_list statement_list '}'
+	| '{' statement_list '}'										{ $$ = new CompoundStatement(nullptr, $2); }
+	| '{' declaration_list '}'										{ $$ = new CompoundStatement($2, nullptr); }
+	| '{' declaration_list statement_list '}'						{ $$ = new CompoundStatement($2, $3); }
 	;
 
 
-statement_list
-	: statement
-	| statement_list statement
+statement_list //! not sure if this has to have additional features to list
+	: statement 													{ $$ = new List($1); }
+	| statement_list statement 										{ $1->add($2); $$ = $1; }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/expression-statement-c?view=vs-2019
 expression_statement
-	: ';'
-	| expression ';'
+	: ';'															{ $$ = NULL; }
+	| expression ';'												{ $$ = $1; }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/switch-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/if-statement-c?view=vs-2019
 selection_statement
-	: IF '(' expression ')' statement
-	| IF '(' expression ')' statement ELSE statement
+	: IF '(' expression ')' statement 								{ $$ = new SelectionStatement($3, $5); }
+	| IF '(' expression ')' statement ELSE statement 				{ $$ = new SelectionStatement($3, $5, $7); }
 	| SWITCH '(' expression ')' statement			 			    { fprintf(stderr, "\n SWITCH not implemented\n"); }
 	;
 
@@ -364,10 +372,10 @@ selection_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/do-while-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/for-statement-c?view=vs-2019
 iteration_statement
-	: WHILE '(' expression ')' statement
-	| DO statement WHILE '(' expression ')' ';'
-	| FOR '(' expression_statement expression_statement ')' statement
-	| FOR '(' expression_statement expression_statement expression ')' statement
+	: WHILE '(' expression ')' statement			 								{ fprintf(stderr, "\n WHILE not implemented\n"); }
+	| DO statement WHILE '(' expression ')' ';'			 							{ fprintf(stderr, "\n WHILE not implemented\n"); }
+	| FOR '(' expression_statement expression_statement ')' statement				{ fprintf(stderr, "\n WHILE not implemented\n"); }
+	| FOR '(' expression_statement expression_statement expression ')' statement	{ fprintf(stderr, "\n WHILE not implemented\n"); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/continue-statement-c?view=vs-2019
@@ -383,12 +391,12 @@ jump_statement
 	;
 
 statement
-	: labeled_statement
-	| compound_statement
-	| expression_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
+	: labeled_statement														{ $$ = $1; }
+	| compound_statement													{ $$ = $1; }
+	| expression_statement													{ $$ = $1; }
+	| selection_statement													{ $$ = $1; }
+	| iteration_statement													{ $$ = $1; }
+	| jump_statement														{ $$ = $1; }
 	;
 
 //// Global & Top Level -----------------------------------------------------------------
@@ -405,16 +413,16 @@ function_definition
 
  //decarations in global scope
 external_declaration
-	: function_definition															{ $$ = $1; }
-	| declaration																	{ $$ = $1; }
+	: function_definition													{ $$ = $1; }
+	| declaration															{ $$ = $1; }
 	;
 
 translation_unit //top level list
-	: external_declaration
-	| translation_unit external_declaration
+	: external_declaration													{ $$ = new List($1); }
+	| translation_unit external_declaration									{ $1->add($3); $$ = $1; }
 	;
 
-root: translation_unit																{ g_root = $1; }
+root: translation_unit														{ g_root = $1; }
 
 %%
 

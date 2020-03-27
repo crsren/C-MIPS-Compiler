@@ -3,18 +3,18 @@
 
 #include "helpers.h"
 
-class fnCall : public Node
+class FnCall : public Node
 {
 private:
     nodePtr postfix;
     nodePtr arguments;
 
 public:
-    fnCall(nodePtr p, nodePtr a) : postfix(p), arguments(a){};
+    FnCall(nodePtr p, nodePtr a) : postfix(p), arguments(a){};
 
-    void print(std::ostream &out, !!!) const override;
+    void print(std::ostream &out, !!!) const override; //implement
 
-    ~fnCall()
+    ~FnCall()
     {
         delete postfix;
         delete arguments;

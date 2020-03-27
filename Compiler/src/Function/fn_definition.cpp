@@ -1,6 +1,6 @@
 #include "Function/fn_definition.h"
 
-void fnDefinition::print(std::ostream &out, !!!) const
+void FnDefinition::print(std::ostream &out, !!!) const
 {
     out << Mips::segment_text();
     //get return type

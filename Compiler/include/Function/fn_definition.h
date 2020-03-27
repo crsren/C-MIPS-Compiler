@@ -3,14 +3,23 @@
 
 #include "helpers.h"
 
-class fnDefinition : public Node
+class FnDefinition : public Node
 {
-    fnDefinition();
+private:
+    nodePtr specifier; // return type
+    nodePtr declarator;
+    nodePtr statement;
 
-    void print(std::ostream &out, !!!) const override;
+public:
+    FnDefinition(nodePtr declaration_list, nodePtr declarator, nodePtr compound_stmt) : specifier(declaration_list), declarator(declarator), statement(compound_stmt){};
 
-    ~fnDefinition()
+    void print(std::ostream &out, !!!) const override; //implement
+
+    ~FnDefinition()
     {
+        delete specifier;
+        delete declarator;
+        delete statement;
     }
 };
 
