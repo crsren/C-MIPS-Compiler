@@ -1,7 +1,7 @@
 #if !defined(HELPERS_H)
 #define HELPERS_H
 
-// Header to include helpers used by most classes and to implement small helper functions
+// This header includes library and helper classes/functions used across the AST
 
 #include "node.h"
 #include "mips.h"

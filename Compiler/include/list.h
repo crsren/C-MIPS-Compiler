@@ -1,7 +1,7 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include "node.h"
+#include "helpers.h"
 
 #include <list>
 
@@ -18,10 +18,10 @@ public:
         items.push_back(first);
     };
 
-    virtual void print(std::ostream &out, !!!) const override
+    void print(std::ostream &out, VariableBindings bindings) const override
     {
-        for (nodePtr i : items)
-            i->print(out, !!!);
+        for (const auto &i : items)
+            i->print(out, bindings);
     }
 
     virtual void add(nodePtr ptr)
