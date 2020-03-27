@@ -18,7 +18,7 @@
 
 %define parse.error verbose //For debugging
 
-//// Symbol definitions ---------------------------------------------------------
+//// Symbol definitions ---------------------------------------------------------------
 /// Lexer tokens ----------------------------------------------------------------------
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -52,19 +52,19 @@
 //// Expressions -----------------------------------------------------------------
 
 primary_expression
-	: IDENTIFIER
-	| CONSTANT
-	| STRING_LITERAL
-	| '(' expression ')'
+	: IDENTIFIER 												{ $$ = new Identifier($1); }
+	| CONSTANT 													{ $$ = new Constant($1); }
+	| STRING_LITERAL			 								{ fprintf(stderr, "\n STRING_LITERAL not implemented\n"); }
+	| '(' expression ')' 										{ $$ = $2; }
 	;
 
 postfix_expression
-	: primary_expression
-	| postfix_expression '[' expression ']'
+	: primary_expression 										{ $$ = $1; }
+	| postfix_expression '[' expression ']'			 			{ fprintf(stderr, "\n ARRAY ACCESS not implemented\n"); }
 	| postfix_expression '(' ')'								{ $$ = new fnCall($1); }
 	| postfix_expression '(' argument_expression_list ')'		{ $$ = new fnCall($1, $3); }
-	| postfix_expression '.' IDENTIFIER
-	| postfix_expression PTR_OP IDENTIFIER
+	//| postfix_expression '.' IDENTIFIER
+	//| postfix_expression PTR_OP IDENTIFIER
 	| postfix_expression INC_OP 								{ $$ = new postOperation("+", $2); }	
 	| postfix_expression DEC_OP 								{ $$ = new postOperation("-", $2); }
 	;
