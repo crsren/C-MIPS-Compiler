@@ -116,8 +116,10 @@ private:
     int currentExpressionAddressOffset;
 
 public:
-	VariableBindings(int stackFrameSize_i = 0): stackFrameSize(stackFrameSize_i)
-	{}
+	VariableBindings(int stackFrameSize_i = 0, int currentExpressionAddressOffset_i = 4):
+        stackFrameSize(stackFrameSize_i),
+        currentExpressionAddressOffset(currentExpressionAddressOffset_i)
+	    {}
 
 
 
@@ -265,6 +267,11 @@ public:
     {
         currentExpressionAddressOffset -= 4;
     }
+
+    void decrementCurrentExpressionAddressOffsetBy(const int &position)
+	{
+		currentExpressionAddressOffset -= position;
+	}
 };
 
 #endif
