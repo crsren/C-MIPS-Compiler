@@ -204,25 +204,25 @@ initializer
 // 	;
 
 //!
-type_specifier
-	: VOID
-	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
-	| SHORT		            	 								{ fprintf(stderr, "\n SHORT not implemented\n"); }
-	| INT
-	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
-	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
-	| DOUBLE		        	 								{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
+// type_specifier // could do this directly using lexer token as well!
+// 	: VOID 														{ $$ = new TypeSpecifier("void"); }
+// 	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
+// 	| SHORT		            	 								{ fprintf(stderr, "\n SHORT not implemented\n"); }
+// 	| INT 														{ $$ = new TypeSpecifier("int"); }
+// 	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
+// 	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
+// 	| DOUBLE		        	 								{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
 	//| struct_specifier			 							{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
 	//| enum_specifier			 								{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
 	//| TYPE_NAME			 					        		{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
 	;
 
-specifier_qualifier_list
-	: type_specifier specifier_qualifier_list
-	| type_specifier
-	| CONST specifier_qualifier_list
-	| CONST
-	;
+// specifier_qualifier_list
+// 	: type_specifier specifier_qualifier_list
+// 	| type_specifier
+// 	| CONST specifier_qualifier_list
+// 	| CONST
+// 	;
 
 // type_qualifier_list //needed in pointer?
 // 	: CONST
@@ -305,13 +305,20 @@ declarator
 //type specifiers (ie primitive, user-defined)
 //type qualifiers (ie are they "modifiable")
 declaration_specifiers
-	: storage_class_specifier
-	| storage_class_specifier declaration_specifiers
-	| type_specifier
-	| type_specifier declaration_specifiers
-	| CONST
-	| CONST declaration_specifiers
+	// : storage_class_specifier
+	// | storage_class_specifier declaration_specifiers
+	| type_specifier											{ $$ = new SpecifierList($1); }
+	| type_specifier declaration_specifiers						{ $2->add($1); $$ = $2; } //? why is this the other way arround
 	;
+
+type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
+	: VOID 														{ $$ = $1; } // { $$ = new TypeSpecifier("void"); }
+	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
+	| SHORT		            	 								{ fprintf(stderr, "\n SHORT not implemented\n"); }
+	| INT 														{ $$ = $1; } // { $$ = new TypeSpecifier("int"); }
+	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
+	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
+	| DOUBLE	
 
 //primitive data type variable declaration
 //or any user-defined type structure declaration
