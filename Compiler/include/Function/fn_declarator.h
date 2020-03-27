@@ -1,8 +1,7 @@
 #ifndef FN_DECLARATOR_H
 #define FN_DECLARATOR_H
 
-#include "helpers.h"
-#include "../node.h"
+#include "../helpers.h"
 
 class FnDeclarator : public Node
 {

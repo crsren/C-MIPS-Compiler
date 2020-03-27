@@ -7,17 +7,20 @@
 class UnaryOperation : public Node
 {
 private:
-    const unsigned char symbol;
-    nodePtr expression;
+    const unsigned char operationSymbol;
+    nodePtr unaryExpression;
 
 public:
-    UnaryOperation(const unsigned char symbol, nodePtr expression) : symbol(symbol), expression(expression){};
-
-    void print(std::ostream &out, VariableBindings bindings) const override; //implement
+    UnaryOperation(const unsigned char s, nodePtr uExp) : operationSymbol(s), unaryExpression(uExp){};
 
     ~UnaryOperation()
     {
-        delete expression;
+        delete unaryExpression;
+    }
+
+    void print(std::ostream &out, VariableBindings bindings) const override
+    {
+        
     }
 };
 

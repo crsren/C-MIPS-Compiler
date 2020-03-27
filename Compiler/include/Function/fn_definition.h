@@ -1,7 +1,7 @@
-#if !defined(FN_DEFINITION_H)
+#ifndef FN_DEFINITION_H
 #define FN_DEFINITION_H
 
-#include "helpers.h"
+#include "../helpers.h"
 
 class FnDefinition : public Node
 {

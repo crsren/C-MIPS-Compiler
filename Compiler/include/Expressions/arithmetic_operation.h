@@ -19,8 +19,8 @@ public:
         bindings.incrementCurrentExpressionAddressOffset();
         right -> print(out, bindings);
 
-        out << "\tlw\t$2,-" << leftExpressionAddressOffset << "($fp)\n";
-        out << "\tlw\t$3,-" << bindings.getCurrentExpressionAddressOffset() << "($fp)\n";
+        out << Mips::load_word(2, leftExpressionAddressOffset, false);
+        out << Mips::load_word(3, bindings.getCurrentExpressionAddressOffset(), false);
 
         bindings.decrementCurrentExpressionAddressOffsetBy(bindings.getCurrentExpressionAddressOffset() - leftExpressionAddressOffset);
 
@@ -48,23 +48,23 @@ public:
 
         switch(operationSymbolNumber)
         {
-            case 0: out << "\taddu\t$2,$2,$3\n";
+            case 0: out << Mips::addu(2, 2, 3);
                     break;
 
-            case 1: out << "\tsubu\t$2,$2,$3\n";
+            case 1: out << Mips::subu(2, 2, 3);
                     break;
 
-            case 2: out << "\tmul\t$2,$2,$3\n";
+            case 2: out << Mips::mul(2, 2, 3);
                     break;
 
-            case 3: out << "\tdiv\t$2,$3\n" << "\tmflo\t$2\n";
+            case 3: out << Mips::div_quotient(2, 2, 3);
                     break;
             
-            case 4: out << "\tdiv\t$2,$3\n" << "\tmfhi\t$2\n";
+            case 4: out << Mips::div_remainder(2, 2, 3);
                     break;
         }
 
-        out << "\tsw\t$2,-" << bindings.getCurrentExpressionAddressOffset() << "($fp)\n";
+        out << Mips::store_word(2, bindings.getCurrentExpressionAddressOffset(), false);
     }
 
 };

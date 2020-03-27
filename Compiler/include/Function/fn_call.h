@@ -1,7 +1,7 @@
 #ifndef FN_CALL_H
 #define FN_CALL_H
 
-#include "helpers.h"
+#include "../helpers.h"
 
 class FnCall : public Node
 {
