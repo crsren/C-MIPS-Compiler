@@ -167,8 +167,7 @@ assignment_expression
 
 	// middle will be assignment string ("*=")
 	// → remove last char ("=") and use BinaryOperation
-	| unary_expression ASSIGN assignment_expression 			{ $2[strlen(p)-1]='\0';
-																$$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
+	| unary_expression ASSIGN assignment_expression 			{ $2[strlen(p)-1]='\0'; $$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
 	;
 
 expression
@@ -241,10 +240,11 @@ identifier_list
 	| identifier_list ',' IDENTIFIER
 	;
 
-type_name
-	: specifier_qualifier_list
-	| specifier_qualifier_list abstract_declarator
-	;
+/// For templates
+// type_name
+// 	: specifier_qualifier_list
+// 	| specifier_qualifier_list abstract_declarator
+// 	;
 
 //// Declarator -----------------------------------------------------------------
 
@@ -374,10 +374,10 @@ selection_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/do-while-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/for-statement-c?view=vs-2019
 iteration_statement
-	: WHILE '(' expression ')' statement			 								{ fprintf(stderr, "\n WHILE not implemented\n"); }
-	| DO statement WHILE '(' expression ')' ';'			 							{ fprintf(stderr, "\n WHILE not implemented\n"); }
-	| FOR '(' expression_statement expression_statement ')' statement				{ fprintf(stderr, "\n WHILE not implemented\n"); }
-	| FOR '(' expression_statement expression_statement expression ')' statement	{ fprintf(stderr, "\n WHILE not implemented\n"); }
+	: WHILE '(' expression ')' statement			 								{ $$ = new WhileStatement($3, $5); }
+	| DO statement WHILE '(' expression ')' ';'			 							{ fprintf(stderr, "\n DO-WHILE not implemented\n"); }
+	| FOR '(' expression_statement expression_statement ')' statement				{ fprintf(stderr, "\n FOR not implemented\n"); }
+	| FOR '(' expression_statement expression_statement expression ')' statement	{ fprintf(stderr, "\n FOR not implemented\n"); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/continue-statement-c?view=vs-2019
@@ -385,9 +385,9 @@ iteration_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/break-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/return-statement-c?view=vs-2019
 jump_statement
-	: GOTO IDENTIFIER ';'
-	| CONTINUE ';'
-	| BREAK ';'
+	: GOTO IDENTIFIER ';'			 										{ fprintf(stderr, "\n GOTO not implemented\n"); }
+	| CONTINUE ';'			 												{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
+	| BREAK ';'			 													{ fprintf(stderr, "\n BREAK not implemented\n"); }
 	| RETURN ';'															{ $$ = new ReturnStatement();	}
 	| RETURN expression ';'													{ $$ = new ReturnStatement($2); }
 	;
@@ -407,7 +407,7 @@ statement
 //https://stackoverflow.com/questions/18820751/identifier-list-vs-parameter-type-list-in-c/18820829#18820829
 function_definition
 	// : declaration_specifiers declarator declaration_list compound_statement
-	| declaration_specifiers declarator compound_statement
+	| declaration_specifiers declarator compound_statement 					{ $$ = new FnDefinition($1, $2, $3); }
 	// Functions with return type int/int* aren't required to have a declaration
 	//| declarator declaration_list compound_statement
 	//| declarator compound_statement

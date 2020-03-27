@@ -3,10 +3,10 @@
 
 #include "helpers.h"
 
-//
+// TODO: Switch
 
-// IF (ELSE)
-class SelectionStatement : public Node
+//input (Condition, if-statement, else-statement)
+class IfElseStatement : public Node
 {
 private:
     nodePtr condition;
