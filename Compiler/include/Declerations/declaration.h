@@ -1,4 +1,4 @@
-#if !defined(DECLARATION_H)
+#ifndef DECLARATION_H
 #define DECLARATION_H
 
 #include "node.h"

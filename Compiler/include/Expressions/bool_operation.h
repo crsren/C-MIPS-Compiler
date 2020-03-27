@@ -1,4 +1,4 @@
-#if !defined(BOOL_OPERATION_H)
+#ifndef BOOL_OPERATION_H
 #define BOOL_OPERATION_H
 
 #include "operation.h"

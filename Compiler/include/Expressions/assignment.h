@@ -1,21 +1,21 @@
-#if !defined(ASSIGNMENT_H)
+#ifndef ASSIGNMENT_H
 #define ASSIGNMENT_H
 
-#include "helpers.h"
+#include "../node.h"
 
 #include <string>
 
 class AssignmentExpression : public Node
 {
 private:
-    nodePtr l;
-    nodePtr r;
+    nodePtr left;
+    nodePtr right;
 
 public:
     //simple "=", possible associated binary operation has been daelt with in parser
-    AssignmentExpression(nodePtr l, nodePtr r) : l(l), r(r){};
+    AssignmentExpression(Node *l, Node *r) : left(l), right(r){};
 
-    void print(std::ostream &out, !!!) const override;
+    void print(std::ostream &out, VariableBindings bindings) const override;
 };
 
 #endif // ASSIGNMENT_H
