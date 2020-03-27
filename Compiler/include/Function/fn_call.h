@@ -1,4 +1,4 @@
-#if !defined(FN_CALL_H)
+#ifndef FN_CALL_H
 #define FN_CALL_H
 
 #include "helpers.h"
@@ -7,17 +7,17 @@ class FnCall : public Node
 {
 private:
     nodePtr postfix;
-    nodePtr arguments;
+    nodePtr argumentList;
 
 public:
-    FnCall(nodePtr p, nodePtr a) : postfix(p), arguments(a){};
+    FnCall(nodePtr p, nodePtr a) : postfix(p), argumentList(a){};
 
-    void print(std::ostream &out, !!!) const override; //implement
+    void print(std::ostream &out, !!!) const override;
 
     ~FnCall()
     {
         delete postfix;
-        delete arguments;
+        delete argumentList;
     }
 };
 

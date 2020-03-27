@@ -1,7 +1,8 @@
-#if !defined(BINARY_OPERATION_H)
+#ifndef BINARY_OPERATION_H
 #define BIANRY_OPERATION_H
 
 #include "helpers.h"
+#include "../node.h"
 
 #include <string>
 
