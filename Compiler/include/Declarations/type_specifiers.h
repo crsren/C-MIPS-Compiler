@@ -29,6 +29,6 @@ public:
     {
         sList.push_back(stringPtr);
     }
-}
+};
 
 #endif // TYPE_SPECIFIER
