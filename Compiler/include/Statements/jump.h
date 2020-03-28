@@ -11,9 +11,9 @@ private:
 public:
     ReturnStatement(nodePtr e = nullptr) : expression(e){};
 
-    void print(std::ostream &out, !!!) const override;
+    void print(std::ostream &out, VariableBindings &bindings) const override;
 
-    ~ReturnStatement { delete expression; };
+    ~ReturnStatement() { delete expression; };
 };
 
 #endif // JUMP_H

@@ -12,7 +12,8 @@ class Mips //call like this:  "Mips::move(...);"
 public:
     static std::string branch(std::string label)
     {
-        std::string tmp = "\tb\t$" + label + "\n";
+        // need $ for label?
+        std::string tmp = "\tb\t" + label + "\n";
         tmp += "\tnop\n";
         return tmp;
     }
@@ -21,6 +22,14 @@ public:
     {
         // need $ for label?
         std::string tmp = "\tbeq\t$" + std::to_string(reg1) + ",$" + std::to_string(reg2) + ", " + label + "\n";
+        tmp += "\tnop\n";
+        return tmp;
+    }
+
+    static std::string bne(int reg1, int reg2, std::string label)
+    {
+        // need $ for label?
+        std::string tmp = "\tbne\t$" + std::to_string(reg1) + ",$" + std::to_string(reg2) + ", " + label + "\n";
         tmp += "\tnop\n";
         return tmp;
     }

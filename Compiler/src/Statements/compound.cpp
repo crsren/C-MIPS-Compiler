@@ -2,7 +2,7 @@
 
 void Compound::print(std::ostream &out, VariableBindings bindings) const
 {
-    //enter scope
+    // TODO: enter scope
 
     for (const auto &declaration : dList)
         declaration->print(out, bindings);
@@ -10,5 +10,5 @@ void Compound::print(std::ostream &out, VariableBindings bindings) const
     for (const auto &statement : sList)
         statement->print(out, bindings);
 
-    // levae scope
+    // TODO: levae scope
 };
