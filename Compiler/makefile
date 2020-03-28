@@ -1,14 +1,12 @@
-all: ExampleBacktrace2.class example-backtrace-3 example-leak \
-  ExampleBacktrace2.class
-	
-ExampleBacktrace2.class: ExampleBacktrace2.java
-	javac $<
 
-example-backtrace-3: example-backtrace-3.cpp
-	${CXX} -g $< -o ./example-backtrace-3
+all : parser lexer
 
-example-leak: example-leak.c
-	${CC} -Wall -g $< -o $@
+parser : src/parser.y
+	bison -v -d src/parser.y -o src/parser.tab.cpp
 
-clean:
-	-rm example-leak example-backtrace-3
+lexer : src/lexer.flex src/parser.tab.hpp
+	flex -o src/lexer.yy.cpp  src/lexer.flex
+
+
+clean :
+	rm -f src/*.tab.cpp src/*.yy.cpp src/*.output

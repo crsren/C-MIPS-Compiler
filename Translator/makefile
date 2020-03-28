@@ -1,6 +1,3 @@
-CPPFLAGS += -std=c++11 -W -Wall -g -Wno-unused-parameter
-CPPFLAGS += -I include
-
 all : lexer parser
 
 parser : src/parser.y
@@ -11,6 +8,4 @@ lexer : src/lexer.flex src/parser.tab.hpp
 
 
 clean :
-	rm -rf bin
-	rm src/*.tab.cpp
-	rm src/*.yy.cpp
+	rm -f src/*.tab.cpp src/*.yy.cpp src/*.output
