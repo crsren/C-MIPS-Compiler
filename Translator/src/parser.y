@@ -25,6 +25,7 @@
 %token VOID INT
 %type <str> IDENTIFIER CONSTANT
 
+// To avoid dangling else problem
 %nonassoc ')'
 %nonassoc ELSE
 

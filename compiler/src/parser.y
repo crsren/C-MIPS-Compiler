@@ -2,24 +2,26 @@
 	#include "topLevel.h"
 
 	//matched below context-free grammar
-	 const Node *g_root;
+	 extern const Node *g_root;
 	 FILE *yyin; // Lexer input file
 
-	 //declaring lex generated functions to fix possible issues as provided in 2-parser CW
 	int yylex(void);
   	void yyerror(const char *);
 }
-// Possible type that symbols can take on
+
+// Possible types that terminals can be
 %union{
-	Node* nodePtr;
-	std::string* str;
-	
+	const Node * nodePtr;
+	std::string * str;
+	const List * list; //to get labels in switch statement
+	double num;
 }
 
 %define parse.error verbose //For debugging
 
 //// Symbol definitions ---------------------------------------------------------------
-/// Lexer tokens ----------------------------------------------------------------------
+
+/// Lexer tokens
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP ASSIGN     
@@ -28,22 +30,41 @@
 %token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST  VOID
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
-// To avoid dangling else problem
+// Avoid dangling else problem
 %nonassoc ')'
 %nonassoc ELSE
 
-/// Symbol types -----------------------------------------------------------------------
-// Define type of terminal & non-terminal symbols
-//%type <> ...
-//$nterm <> for exclusively non-terminal symbols
+/// Symbol types
+// Terminals (Lexer tokens used as argument)
+// TODO: unary_operator
+%type <num> CONSTANT
+%type <str> IDENTIFIER //STRING_LITERAL
+%type <str> ASSIGN
+%type <str> VOID CHAR SHORT INT LONG FLOAT DOUBLE //TYPE_NAME
 
-// Terminals (from lexer) IDENTIFIER, CONSTANT STRING_LITERAL
-// Expressions
-// Statements
-// Declarations
-// (List)
+// Non-Terminals (can be broken down into terminals)
+%nterm <str> type_specifier
+// Expressions:
+%nterm <nodePtr> primary_expression postfix_expression argument_expression_list
+%nterm <nodePtr> unary_expression cast_expression multiplicative_expression
+%nterm <nodePtr> additive_expression shift_expression relational_expression
+%nterm <nodePtr> equality_expression and_expression exclusive_or_expression
+%nterm <nodePtr> inclusive_or_expression logical_and_expression logical_or_expression
+%nterm <nodePtr> conditional_expression assignment_expression expression
+%nterm <nodePtr> constant_expression initializer //identifier_list
+// Declarations:
+%nterm <nodePtr> parameter_list init_declarator init_declarator_list
+%nterm <nodePtr> direct_declarator declarator declaration_specifiers
+%nterm <nodePtr> declaration declaration_list parameter_declaration
+// Statements:
+%nterm <nodePtr> labeled_statement compound_statement 
+%nterm <nodePtr> expression_statement selection_statement iteration_statement
+%nterm <nodePtr> jump_statement statement statement_list
+// Global & Top Level
+%nterm <nodePtr> function_definition external_declaration translation_unit
 
-%start g_root
+
+%start root
 %%
 
 // Grammar based on Jeff Lee's ANSI C Yacc grammar 
@@ -65,13 +86,13 @@ postfix_expression
 	| postfix_expression '(' argument_expression_list ')'		{ $$ = new fnCall($1, $3); }
 	//| postfix_expression '.' IDENTIFIER
 	//| postfix_expression PTR_OP IDENTIFIER
-	| postfix_expression INC_OP 								{ $$ = new postOperation("+", $2); }	
-	| postfix_expression DEC_OP 								{ $$ = new postOperation("-", $2); }
+	| postfix_expression INC_OP 								{ $$ = new postOperation("+", $1); }	
+	| postfix_expression DEC_OP 								{ $$ = new postOperation("-", $1); }
 	;
 
 argument_expression_list
-	: assignment_expression
-	| argument_expression_list ',' assignment_expression
+	: assignment_expression 									{ $$ = new List($1); }
+	| argument_expression_list ',' assignment_expression 		{ $1->add($3); $$ = $1; }
 	;
 
 unary_expression
@@ -79,8 +100,8 @@ unary_expression
 	| INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
 	| DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
 	| unary_operator cast_expression			 				{ fprintf(stderr, "\n UNARY_OPERATOR not implemented\n"); }
-	| SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
-	| SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
+	// | SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
+	// | SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	;
 
 unary_operator
@@ -177,15 +198,17 @@ expression
 	//| expression ',' assignment_expression
 	;
 
-constant_expression //dont really need this
+constant_expression // We us this in switch cases
 	: conditional_expression									{ $$ = $1; }
 	;
 
-//// Initialization ---------------------------------------------------------
-
-//https://en.cppreference.com/w/c/language/initialization
+	//https://en.cppreference.com/w/c/language/initialization
 initializer
 	: assignment_expression										{ $$ = $1; }
+
+
+//// Initialization ---------------------------------------------------------
+
 
 ////initializer list "vector<in> v{1,2,3}"
 	//| '{' initializer_list '}'
@@ -203,19 +226,6 @@ initializer
 // 	| STATIC
 // 	;
 
-//!
-// type_specifier // could do this directly using lexer token as well!
-// 	: VOID 														{ $$ = new TypeSpecifier("void"); }
-// 	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
-// 	| SHORT		            	 								{ fprintf(stderr, "\n SHORT not implemented\n"); }
-// 	| INT 														{ $$ = new TypeSpecifier("int"); }
-// 	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
-// 	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
-// 	| DOUBLE		        	 								{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
-	//| struct_specifier			 							{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
-	//| enum_specifier			 								{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
-	//| TYPE_NAME			 					        		{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
-	;
 
 // specifier_qualifier_list
 // 	: type_specifier specifier_qualifier_list
@@ -229,16 +239,12 @@ initializer
 // 	| type_qualifier_list CONST
 // 	;
 
-parameter_list
-	: parameter_declaration
-	| parameter_list ',' parameter_declaration
-	;
 
 
-identifier_list
-	: IDENTIFIER
-	| identifier_list ',' IDENTIFIER
-	;
+// identifier_list
+// 	: IDENTIFIER 							
+// 	| identifier_list ',' IDENTIFIER
+// 	;
 
 /// For templates
 // type_name
@@ -248,11 +254,16 @@ identifier_list
 
 //// Declarator -----------------------------------------------------------------
 
-pointer
-	: '*'
-	//| '*' type_qualifier_list
-	| '*' pointer
-	//| '*' type_qualifier_list pointer
+// pointer
+// 	: '*'
+// 	//| '*' type_qualifier_list
+// 	| '*' pointer
+// 	//| '*' type_qualifier_list pointer
+//	;
+
+parameter_list
+	: parameter_declaration
+	| parameter_list ',' parameter_declaration
 	;
 
 // abstract_declarator
@@ -287,7 +298,7 @@ init_declarator_list
 //https://en.cppreference.com/w/c/language/declarations
 //http://c-faq.com/decl/spiral.anderson.html
 direct_declarator
-	: IDENTIFIER 													// new simple declarator
+	: IDENTIFIER 													{ $$ = new SimpleDeclarator($1); } // IMPLEMENT
 	| '(' declarator ')' 											{ $$ = $2; }
 	| direct_declarator '[' constant_expression ']' 				// new array declarator
 	| direct_declarator '[' ']' 									// new array declarator
@@ -297,8 +308,8 @@ direct_declarator
 	;
 
 declarator
-	: pointer direct_declarator
-	| direct_declarator
+	//: pointer direct_declarator
+	: direct_declarator 											{ $$ = $1; }
 	;
 
 //storage-class specifiers
@@ -307,18 +318,22 @@ declarator
 declaration_specifiers
 	// : storage_class_specifier
 	// | storage_class_specifier declaration_specifiers
-	| type_specifier											{ $$ = new SpecifierList($1); }
+	: type_specifier											{ $$ = new SpecifierList($1); }
 	| type_specifier declaration_specifiers						{ $2->add($1); $$ = $2; } //? why is this the other way arround
 	;
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
-	: VOID 														{ $$ = $1; } // { $$ = new TypeSpecifier("void"); }
+	: VOID 														{ fprint(stderr, "\n Should pass string ptr\n"); string:$$ = $1; } // { $$ = new TypeSpecifier("void"); }
 	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
 	| SHORT		            	 								{ fprintf(stderr, "\n SHORT not implemented\n"); }
 	| INT 														{ $$ = $1; } // { $$ = new TypeSpecifier("int"); }
 	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
 	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
-	| DOUBLE	
+	| DOUBLE			 										{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
+	//| struct_specifier			 							{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
+	//| enum_specifier			 								{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
+	//| TYPE_NAME			 					        		{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
+	//;	
 
 //primitive data type variable declaration
 //or any user-defined type structure declaration
@@ -334,24 +349,16 @@ declaration_list
 
 parameter_declaration
 	: declaration_specifiers declarator
-	| declaration_specifiers abstract_declarator
+	//| declaration_specifiers abstract_declarator
 	| declaration_specifiers
 	;
 
 /// Statements -----------------------------------------------------------------
 
-//https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
-labeled_statement
-    // "stop: <something>" ; goto stop; 
-	: IDENTIFIER ':' statement			 							{ fprintf(stderr, "\n IDENTIFIER not implemented\n"); }
-	| CASE constant_expression ':' statement			 			{ fprintf(stderr, "\n CASE not implemented\n"); }
-	| DEFAULT ':' statement			 								{ fprintf(stderr, "\n DEFAULT not implemented\n"); }
-	;
-
 // C89 does not allow declarations after statements 
 // https://stackoverflow.com/questions/6488503/c89-mixing-variable-declarations-and-code
 compound_statement
-	: '{' '}'
+	: '{' '}' 														{ $$ = nullptr; }
 	| '{' statement_list '}'										{ $$ = new CompoundStatement(nullptr, $2); }
 	| '{' declaration_list '}'										{ $$ = new CompoundStatement($2, nullptr); }
 	| '{' declaration_list statement_list '}'						{ $$ = new CompoundStatement($2, $3); }
@@ -374,7 +381,7 @@ expression_statement
 selection_statement
 	: IF '(' expression ')' statement 								{ $$ = new SelectionStatement($3, $5); }
 	| IF '(' expression ')' statement ELSE statement 				{ $$ = new SelectionStatement($3, $5, $7); }
-	| SWITCH '(' expression ')' statement			 			    { fprintf(stderr, "\n SWITCH not implemented\n"); }
+	| SWITCH '(' expression ')' '{' statement_list '}'			 			    { $$ = new SwitchStatement($3, $5); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/while-statement-c?view=vs-2019
@@ -392,11 +399,20 @@ iteration_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/break-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/return-statement-c?view=vs-2019
 jump_statement
-	: GOTO IDENTIFIER ';'			 										{ fprintf(stderr, "\n GOTO not implemented\n"); }
-	| CONTINUE ';'			 												{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
-	| BREAK ';'			 													{ fprintf(stderr, "\n BREAK not implemented\n"); }
+	//: GOTO IDENTIFIER ';'			 										{ fprintf(stderr, "\n GOTO not implemented\n"); }
+	//| CONTINUE ';'			 												{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
+	//| BREAK ';'			 													{ fprintf(stderr, "\n BREAK not implemented\n"); }
 	| RETURN ';'															{ $$ = new ReturnStatement();	}
 	| RETURN expression ';'													{ $$ = new ReturnStatement($2); }
+	;
+
+//https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
+labeled_statement
+    // "ching: <something>" ; goto ching:
+	//: IDENTIFIER ':' statement
+	// for switch only:			 							{ fprintf(stderr, "\n IDENTIFIER not implemented\n"); }
+	: CASE constant_expression ':' statement			 			{ new LabeledStatement($2, $4); }
+	| DEFAULT ':' statement			 								{ new LabeledStatement($3); }
 	;
 
 statement
@@ -414,7 +430,7 @@ statement
 //https://stackoverflow.com/questions/18820751/identifier-list-vs-parameter-type-list-in-c/18820829#18820829
 function_definition
 	// : declaration_specifiers declarator declaration_list compound_statement
-	| declaration_specifiers declarator compound_statement 					{ $$ = new FnDefinition($1, $2, $3); }
+	: declaration_specifiers declarator compound_statement 					{ $$ = new FnDefinition($1, $2, $3); }
 	// Functions with return type int/int* aren't required to have a declaration
 	//| declarator declaration_list compound_statement
 	//| declarator compound_statement
@@ -428,7 +444,7 @@ external_declaration
 
 translation_unit //top level list
 	: external_declaration													{ $$ = new List($1); }
-	| translation_unit external_declaration									{ $1->add($3); $$ = $1; }
+	| translation_unit external_declaration									{ $1->add($2); $$ = $1; }
 	;
 
 root: translation_unit														{ g_root = $1; }
