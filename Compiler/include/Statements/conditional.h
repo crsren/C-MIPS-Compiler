@@ -15,7 +15,7 @@ class IfElseStatement : public Node
 
 public:
     //if statement
-    IfElseStatement(nodeptr c, nodePtr s) : condition(c), statement1(s), statement2(nullptr), has_else(false){};
+    IfElseStatement(nodePtr c, nodePtr s) : condition(c), statement1(s), statement2(nullptr), has_else(false){};
     // if else statement
     IfElseStatement(nodePtr c, nodePtr s1, nodePtr s2) : condition(c), statement1(s1), statement2(s2), has_else(true){};
 
@@ -64,7 +64,7 @@ public:
     ForStatement(nodePtr e1, nodePtr e2, nodePtr e3, nodePtr s)
         : init(e1), condition(e2), alteration(e3), statement(s){};
     // for(int i = 0; i < x)
-    ForStatement(nodePtr e1, nodePtr e2 nodePtr s)
+    ForStatement(nodePtr e1, nodePtr e2, nodePtr s)
         : init(e1), condition(e2), alteration(nullptr), statement(s){};
 
     void print(std::ostream &out, VariableBindings &bindings) const override;

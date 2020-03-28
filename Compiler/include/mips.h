@@ -10,7 +10,7 @@
 class Mips //call like this:  "Mips::move(...);"
 {
 public:
-    static std::string branch(std::string label)
+    static std::string branch(const std::string &label)
     {
         // need $ for label?
         std::string tmp = "\tb\t" + label + "\n";
@@ -18,7 +18,7 @@ public:
         return tmp;
     }
 
-    static std::string beq(int reg1, int reg2, std::string label)
+    static std::string beq(int reg1, int reg2, const std::string &label)
     {
         // need $ for label?
         std::string tmp = "\tbeq\t$" + std::to_string(reg1) + ",$" + std::to_string(reg2) + ", " + label + "\n";
@@ -26,7 +26,7 @@ public:
         return tmp;
     }
 
-    static std::string bne(int reg1, int reg2, std::string label)
+    static std::string bne(int reg1, int reg2, const std::string &label)
     {
         // need $ for label?
         std::string tmp = "\tbne\t$" + std::to_string(reg1) + ",$" + std::to_string(reg2) + ", " + label + "\n";
@@ -165,9 +165,9 @@ public:
         return tmp;
     }
 
-    static std::string jal(std::string name)
+    static std::string jal(const std::string &label)
     {
-        return "\tjal\t" + name + "\n";
+        return "\tjal\t" + label + "\n";
     }
 
     static std::string segment_text()
@@ -180,12 +180,12 @@ public:
         return ".data\n";
     }
 
-    static std::string label(std::string label)
+    static std::string new_label(const std::string &label)
     {
         return label + ":\n";
     }
 
-    static std::string tag_global(std::string tag)
+    static std::string tag_global(const std::string &tag)
     {
         return ".globl" + tag + "\n";
     }
