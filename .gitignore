@@ -4,11 +4,11 @@
 .vscode/c_cpp_properties.json
 .vagrant/*
 *.o
+*.py
 Translator/src/parser.output
 Translator/src/parser.tab.cpp
 Translator/src/parser.tab.hpp
 Translator/src/lexer.yy.cpp
-Translator/output.py
 Translator/build/*
 Translator/results/*
 
