@@ -14,7 +14,7 @@
 //https://stackoverflow.com/questions/1008019/c-singleton-design-pattern
 
 // Guarantees unique labeling
-class Label
+class Label // usage: Label::instance().uniquify("string");
 {
     int count;
 
