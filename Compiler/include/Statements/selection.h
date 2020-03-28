@@ -16,13 +16,13 @@ private:
 
 public:
     //if statement
-    SelectionStatement(nodeptr c, nodePtr s) : condition(c), statement1(s), statement2(nullptr), has_else(false){};
+    IfElseStatement(nodeptr c, nodePtr s) : condition(c), statement1(s), statement2(nullptr), has_else(false){};
     // if else statement
-    SelectionStatement(nodePtr c, nodePtr s1, nodePtr s2) : condition(c), statement1(s1), statement2(s2), has_else(true){};
+    IfElseStatement(nodePtr c, nodePtr s1, nodePtr s2) : condition(c), statement1(s1), statement2(s2), has_else(true){};
 
     void print(std::ostream &out, VariableBindings bindings) const override; // implement
 
-    ~SelectionStatement()
+    ~IfElseStatement()
     {
         delete condition;
         delete statement1;

@@ -10,9 +10,24 @@
 class Mips //call like this:  "Mips::move(...);"
 {
 public:
+    static std::string branch(std::string label)
+    {
+        std::string tmp = "\tb\t$" + label + "\n";
+        tmp += "\tnop\n";
+        return tmp;
+    }
+
+    static std::string beq(int reg1, int reg2, std::string label)
+    {
+        // need $ for label?
+        std::string tmp = "\tbeq\t$" + std::to_string(reg1) + ",$" + std::to_string(reg2) + ", " + label + "\n";
+        tmp += "\tnop\n";
+        return tmp;
+    }
+
     static std::string move(int regNum1, int regNum2)
     {
-        return "\tmove\t$" + std::to_string(regNum1) + "," + "$" + std::to_string(regNum2) + "\n";
+        return "\tmove\t$" + std::to_string(regNum1) + ",$" + std::to_string(regNum2) + "\n";
     }
 
     static std::string load_word(int regNum, int addressOffset, bool fromStack)
@@ -26,7 +41,7 @@ public:
         {
             out += "($fp)\n";
         }
-        
+
         return out;
     }
 
@@ -41,7 +56,7 @@ public:
         {
             out += "($fp)\n";
         }
-        
+
         return out;
     }
 
@@ -93,8 +108,8 @@ public:
     {
         return "\tsltiu\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum) + "," + std::to_string(immediate) + "\n";
     }
-    
-    static std::string xor(int destRegNum, int sourceRegNum1, int sourceRegNum2)
+
+    static std::string xor_(int destRegNum, int sourceRegNum1, int sourceRegNum2)
     {
         return "\txor\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
@@ -104,7 +119,7 @@ public:
         return "\txori\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum) + "," + std::to_string(immediate) + "\n";
     }
 
-    static std::string and(int destRegNum, int sourceRegNum1, int sourceRegNum2)
+    static std::string and_(int destRegNum, int sourceRegNum1, int sourceRegNum2)
     {
         return "\tand\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
@@ -114,7 +129,7 @@ public:
         return "\tandi\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum) + "," + std::to_string(immediate) + "\n";
     }
 
-    static std::string or(int destRegNum, int sourceRegNum1, int sourceRegNum2)
+    static std::string or_(int destRegNum, int sourceRegNum1, int sourceRegNum2)
     {
         return "\tor\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
@@ -134,14 +149,14 @@ public:
         return "\tsra\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
 
-    static std::string jump(std::string r1 = "$31") //default jump to return address
+    static std::string jump(int r1 = 31) //default jump to return address
     {
-        std::string tmp = "\tj\t" + r1 + "\n";
+        std::string tmp = "\tj\t$" + std::to_string(r1) + "\n";
         tmp += "\tnop\n";
         return tmp;
     }
 
-    static std::string jump_to_label(std::string name)
+    static std::string jal(std::string name)
     {
         return "\tjal\t" + name + "\n";
     }

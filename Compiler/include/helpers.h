@@ -27,7 +27,7 @@ public:
 
     Label() : count(0){};
 
-    std::string makeUnique(std::string base)
+    std::string uniquefy(std::string base)
     {
         return base + "_" + std::to_string(count++);
     };
