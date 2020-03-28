@@ -1,7 +1,7 @@
 #if !defined(JUMP_H)
 #define JUMP_H
 
-#include "helpers.h"
+#include "../helpers.h"
 
 class ReturnStatement : public Node
 {
