@@ -12,7 +12,7 @@ class SwitchStatement : public Node
     const LabeledStatementList *lsList;
 
 public:
-    SwitchStatement(nodePtr c, nodePtr s) : condition(c), lsList(s){};
+    SwitchStatement(nodePtr c, const LabeledStatementList *s) : condition(c), lsList(s){};
 
     void print(std::ostream &out, VariableBindings &bindings) const override;
 

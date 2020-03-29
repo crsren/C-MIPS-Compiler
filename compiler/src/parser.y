@@ -15,6 +15,7 @@
 	std::string * str;
 	const List * list; //to get labels in switch statement
 	double num;
+	// Declarator* declarator;
 }
 
 %define parse.error verbose //For debugging
@@ -286,7 +287,7 @@ init_declarator // x,  x = 5
 	;
 
 init_declarator_list //
-	: init_declarator 												{ $$ = new List($1); }
+	: init_declarator 												{ $$ = new InitDeclaratorList($1); }
 	| init_declarator_list ',' init_declarator 						{ $1->add($3); $$ = $1; }
 	;
 
@@ -402,7 +403,6 @@ iteration_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/break-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/return-statement-c?view=vs-2019
 jump_statement
-	//: GOTO IDENTIFIER ';'			 										{ fprintf(stderr, "\n GOTO not implemented\n"); }
 	//| CONTINUE ';'			 												{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
 	//| BREAK ';'			 													{ fprintf(stderr, "\n BREAK not implemented\n"); }
 	| RETURN ';'															{ $$ = new ReturnStatement();	}

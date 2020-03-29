@@ -25,7 +25,6 @@ IS			(u|U|l|L)*
 "break"			{ return(BREAK); }
 "case"			{ return(CASE); }
 "char"			{ return(CHAR); }
-"const"			{ return(CONST); }
 "continue"		{ return(CONTINUE); }
 "default"		{ return(DEFAULT); }
 "do"			{ return(DO); }
@@ -34,7 +33,6 @@ IS			(u|U|l|L)*
 "enum"			{ return(ENUM); }
 "float"			{ return(FLOAT); }
 "for"			{ return(FOR); }
-"goto"			{ return(GOTO); }
 "if"			{ return(IF); }
 "int"			{ return(INT); }
 "long"			{ return(LONG); }

@@ -25,8 +25,8 @@ class InitDeclarator : public Node
     nodePtr initializer;
 
 public:
-    InitDeclarator(nodePtr d, nodePtr i) : declarator(d), initializer(i){};
-    InitDeclarator(nodePtr d) : declarator(d), initializer(nullptr){};
+    InitDeclarator(Declarator *d, nodePtr i) : declarator(d), initializer(i){};
+    InitDeclarator(Declarator *d) : declarator(d), initializer(nullptr){};
 
     void print(std::ostream &out, VariableBindings &bindings) const override;
 
@@ -39,6 +39,30 @@ public:
     {
         delete declarator;
         delete initializer;
+    }
+};
+
+class InitDeclaratorList : public Node
+{
+    // std::string specifierType = ""; // single specifier for now
+    std::list<InitDeclarator *> initDeclaratorList;
+
+public:
+    InitDeclaratorList(InitDeclarator *first)
+    {
+        initDeclaratorList.push_back(first);
+    }
+
+    void setType(std::string specifier) //set by declaration
+    {
+        // specifierType = specifier;
+        for (auto &initDeclarator : initDeclaratorList)
+            initDeclarator->setType(specifier);
+    };
+
+    void add(InitDeclarator *first)
+    {
+        initDeclaratorList.push_back(first);
     }
 };
 
