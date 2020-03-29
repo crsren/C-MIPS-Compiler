@@ -261,11 +261,6 @@ initializer
 // 	//| '*' type_qualifier_list pointer
 //	;
 
-parameter_list
-	: parameter_declaration 										{ $$ = new List($1); }
-	| parameter_list ',' parameter_declaration 						{ $1->add($3); $$ = $1; }
-	;
-
 // abstract_declarator
 // 	: pointer
 // 	| direct_abstract_declarator
@@ -350,10 +345,16 @@ declaration_list
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator 							{ $$ = new ParameterDeclaration($1, $2); }
+	: declaration_specifiers declarator 							{ $$ = new ParameterDeclaration($1*, $2); }
 	//| declaration_specifiers abstract_declarator
-	| declaration_specifiers 										{ $$ = new ParameterDeclaration($1); }
+	| declaration_specifiers 										{ $$ = new ParameterDeclaration($1*); }
 	;
+
+parameter_list
+	: parameter_declaration 										{ $$ = new ParameterList($1); }
+	| parameter_list ',' parameter_declaration 						{ $1->add($3); $$ = $1; }
+	;
+
 
 /// Statements -----------------------------------------------------------------
 

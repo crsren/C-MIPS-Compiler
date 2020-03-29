@@ -2,13 +2,14 @@
 
 void FnDefinition::print(std::ostream &out, !!!) const
 {
+
     out << Mips::segment_text();
     //get return type
     // declare if it was not already
 
     std::string name;
     // get function name via declarator
-    out << Mips::label(name);
+    out << Mips::new_label(name);
     out << Mips::tag_global(name);
 
     // New stack frame, new scope

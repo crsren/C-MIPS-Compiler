@@ -24,36 +24,45 @@ public:
 
 class ParameterDeclaration : public Node
 {
-    nodePtr specifier;      // f.e. int
-    Declarator *declarator; // not necessary! could be int foo(int, int);
+public:
+    const std::string specifier; // f.e. int
+    Declarator *declarator;      // not necessary! could be int foo(int, int);
 
-    ParameterDeclaration(nodePtr s, nodePtr d) : specifier(s), declarator(d){};
+    ParameterDeclaration(std::string s, Declarator *d) : specifier(s), declarator(d){};
 
     void print(std::ostream &out, VariableBindings &bindings) const override; //TODO: Implement
     // if declarator != nullptr; get declarator->identifier, add to local bindings;
 
     ~ParameterDeclaration()
     {
-        delete specifier;
         delete declarator;
     }
-}
+};
 
-/// USING LIST FOR NOW
-// class ParameterList : public Node
-// {
-//     std::list<nodePtr> pList;
+class ParameterList : public Node
+{
+    std::vector<const ParameterDeclaration *> pList;
 
-// public:
-//     ParameterList(nodePtr parameter)
-//     {
-//         pList.push_back(parameter);
-//     };
+public:
+    ParameterList(const ParameterDeclaration *parameter)
+    {
+        pList.push_back(parameter);
+    };
 
-//     void add(nodePtr parameter)
-//     {
-//         pList.push_back(parameter);
-//     };
-// }
+    void add(const ParameterDeclaration *parameter)
+    {
+        pList.push_back(parameter);
+    };
+
+    std::vector<std::string> &getIdentifiers()
+    {
+        std::vector<std::string> identifierVector;
+
+        for (const auto &parameter : pList)
+            identifierVector.push_back(parameter->declarator->getIdentifier());
+
+        return identifierVector;
+    };
+};
 
 #endif // FN_DECLARATOR_H

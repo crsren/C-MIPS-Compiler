@@ -2,16 +2,17 @@
 #define FN_DEFINITION_H
 
 #include "../helpers.h"
+#include "fn_declarator.h"
 
 class FnDefinition : public Node
 {
 private:
     nodePtr returnType; //TODO: this should be a Type*
-    nodePtr declarator; //TODO: this should be FnDeclarator*
+    FnDeclarator *declarator;
     nodePtr compound;
 
 public:
-    FnDefinition(nodePtr declaration_list, nodePtr declarator, nodePtr compound_stmt) : specifier(declaration_list), declarator(declarator), compound(compound_stmt){};
+    FnDefinition(nodePtr declaration_list, FnDeclarator *declarator, nodePtr compound_stmt) : returnType(declaration_list), declarator(declarator), compound(compound_stmt){};
 
     void print(std::ostream &out, VariableBindings &bindings) const override; //implement
     // cast declarator to a fnDeclarator; access fnDeclarator->paramList and
