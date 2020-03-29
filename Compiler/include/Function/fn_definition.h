@@ -6,20 +6,20 @@
 class FnDefinition : public Node
 {
 private:
-    nodePtr specifier; // return type
-    nodePtr declarator;
-    nodePtr statement;
+    nodePtr returnType; //TODO: this should be a Type*
+    nodePtr declarator; //TODO: this should be FnDeclarator*
+    nodePtr compound;
 
 public:
-    FnDefinition(nodePtr declaration_list, nodePtr declarator, nodePtr compound_stmt) : specifier(declaration_list), declarator(declarator), statement(compound_stmt){};
+    FnDefinition(nodePtr declaration_list, nodePtr declarator, nodePtr compound_stmt) : specifier(declaration_list), declarator(declarator), compound(compound_stmt){};
 
-    void print(std::ostream &out, !!!) const override; //implement
+    void print(std::ostream &out, VariableBindings &bindings) const override; //implement
 
     ~FnDefinition()
     {
-        delete specifier;
+        delete returnType;
         delete declarator;
-        delete statement;
+        delete compound;
     }
 };
 

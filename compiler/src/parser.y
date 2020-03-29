@@ -75,7 +75,7 @@
 primary_expression
 	: IDENTIFIER 												{ $$ = new Identifier(*$1); }
 	| CONSTANT 													{ $$ = new Constant($1); }
-	| STRING_LITERAL			 								{ fprintf(stderr, "\n STRING_LITERAL not implemented\n"); }
+	// | STRING_LITERAL			 								{ fprintf(stderr, "\n STRING_LITERAL not implemented\n"); }
 	| '(' expression ')' 										{ $$ = $2; }
 	;
 
@@ -262,8 +262,8 @@ initializer
 //	;
 
 parameter_list
-	: parameter_declaration
-	| parameter_list ',' parameter_declaration
+	: parameter_declaration 										{ $$ = new List($1); }
+	| parameter_list ',' parameter_declaration 						{ $1->add($3); $$ = $1; }
 	;
 
 // abstract_declarator
@@ -285,23 +285,23 @@ parameter_list
 // 	| direct_abstract_declarator '(' parameter_list ')'
 // 	;
 
-init_declarator
-	: declarator
-	| declarator '=' initializer
+init_declarator // x,  x = 5
+	: declarator 													{ $$ = new InitDeclarator($1); }
+	| declarator '=' initializer 									{ $$ = new InitDeclarator($1, $3); }
 	;
 
-init_declarator_list
-	: init_declarator
-	| init_declarator_list ',' init_declarator
+init_declarator_list //
+	: init_declarator 												{ $$ = new List($1); }
+	| init_declarator_list ',' init_declarator 						{ $1->add($3); $$ = $1; }
 	;
 
 //https://en.cppreference.com/w/c/language/declarations
 //http://c-faq.com/decl/spiral.anderson.html
 direct_declarator
-	: IDENTIFIER 													{ $$ = new SimpleDeclarator($1); } // IMPLEMENT
+	: IDENTIFIER 													{ $$ = new Identifier(*$1); } //TODO IMPLEMENT PRINT
 	| '(' declarator ')' 											{ $$ = $2; }
-	| direct_declarator '[' constant_expression ']' 				// new array declarator
-	| direct_declarator '[' ']' 									// new array declarator
+	//| direct_declarator '[' constant_expression ']' 				// new array declarator
+	//| direct_declarator '[' ']' 									// new array declarator
 	| direct_declarator '(' parameter_list ')'						{ $$ = new FnDeclarator($1, $3); }
 	// | direct_declarator '(' identifier_list ')'
 	| direct_declarator '(' ')'										{ $$ = new FnDeclarator($1); }
@@ -315,18 +315,20 @@ declarator
 //storage-class specifiers
 //type specifiers (ie primitive, user-defined)
 //type qualifiers (ie are they "modifiable")
-declaration_specifiers
+
+declaration_specifiers // for now this will always be a single type_specifier (int or void)
 	// : storage_class_specifier
 	// | storage_class_specifier declaration_specifiers
-	: type_specifier											{ $$ = new SpecifierList($1); }
-	| type_specifier declaration_specifiers						{ $2->add($1); $$ = $2; } //? why is this the other way arround
+	// : type_specifier											{ $$ = new SpecifierList($1); }
+	// | type_specifier declaration_specifiers					{ $2->add($1); $$ = $2; } //? why is this the other way arround
+	type_specifier												{ $$ = $1; }
 	;
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
 	: VOID 														{ fprint(stderr, "\n Should pass string ptr\n"); string:$$ = $1; } // { $$ = new TypeSpecifier("void"); }
 	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
 	| SHORT		            	 								{ fprintf(stderr, "\n SHORT not implemented\n"); }
-	| INT 														{ $$ = $1; } // { $$ = new TypeSpecifier("int"); }
+	| INT 														{ fprint(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("int"); }
 	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
 	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
 	| DOUBLE			 										{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
@@ -337,9 +339,9 @@ type_specifier // could do this directly using lexer token as well! // OR JUST P
 
 //primitive data type variable declaration
 //or any user-defined type structure declaration
-declaration
+declaration // int x = 4, z = 7, ...;
 	//: declaration_specifiers ';'
-	| declaration_specifiers init_declarator_list ';'				{ $$ = new VarDeclaration($1, $2); } //! implement
+	| declaration_specifiers init_declarator_list ';'				{ $$ = new Declaration($1, $2); } //! implement
 	;
 
 declaration_list
@@ -348,9 +350,9 @@ declaration_list
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator
+	: declaration_specifiers declarator 							{ $$ = new ParameterDeclaration($1, $2); }
 	//| declaration_specifiers abstract_declarator
-	| declaration_specifiers
+	| declaration_specifiers 										{ $$ = new ParameterDeclaration($1); }
 	;
 
 /// Statements -----------------------------------------------------------------
@@ -379,9 +381,9 @@ expression_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/switch-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/if-statement-c?view=vs-2019
 selection_statement
-	: IF '(' expression ')' statement 								{ $$ = new SelectionStatement($3, $5); }
-	| IF '(' expression ')' statement ELSE statement 				{ $$ = new SelectionStatement($3, $5, $7); }
-	| SWITCH '(' expression ')' '{' statement_list '}'			 			    { $$ = new SwitchStatement($3, $5); }
+	: IF '(' expression ')' statement 												{ $$ = new SelectionStatement($3, $5); }
+	| IF '(' expression ')' statement ELSE statement 								{ $$ = new SelectionStatement($3, $5, $7); }
+	| SWITCH '(' expression ')' '{' statement_list '}'			 			    	{ $$ = new SwitchStatement($3, $5); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/while-statement-c?view=vs-2019

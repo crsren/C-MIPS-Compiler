@@ -10,6 +10,11 @@
 class Mips //call like this:  "Mips::move(...);"
 {
 public:
+    static std::string load_immediate(int toReg, int value)
+    {
+        return "\tli\t$" + std::to_string(toReg) + ", " + std::to_string(value) + "\n";
+    }
+
     static std::string branch(const std::string &label)
     {
         // need $ for label?
