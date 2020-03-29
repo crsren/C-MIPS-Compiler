@@ -339,9 +339,9 @@ type_specifier // could do this directly using lexer token as well! // OR JUST P
 
 //primitive data type variable declaration
 //or any user-defined type structure declaration
-declaration // int x = 4, z = 7, ...;
+declaration // int x = 4, z = 7, f(int a, int b), ...;
 	//: declaration_specifiers ';'
-	| declaration_specifiers init_declarator_list ';'				{ $$ = new Declaration($1, $2); } //! implement
+	| declaration_specifiers init_declarator_list ';'				{ fprint(stderr, "Type is: %s\n", *$1); $2->setType(*$1); $$ = $2; }//{ $$ = new Declaration($1, $2); } //! implement
 	;
 
 declaration_list

@@ -3,19 +3,25 @@
 
 #include "helpers.h"
 
-class VarDeclarator
+class Declarator //this is used as varDeclarator and as the base class for fnDeclarator
 {
     const std::string identifier;
 
 public:
-    VarDeclarator(const std::string &s) identifier(s){};
+    Declarator(const std::string &s) : identifier(s){};
+
+    std::string getIdentifier()
+    {
+        return identifier;
+    }
 };
 
-//TODO: class ArrayDeclarator
+//TODO: class ArrayDeclarator : public Declarator
 
-class InitDeclarator
+class InitDeclarator : public Node
 {
-    nodePtr declarator; // TO DO: is it always a VarDeclarator*??
+    std::string specifierType = ""; // single specifier for now
+    Declarator *declarator;
     nodePtr initializer;
 
 public:
@@ -23,6 +29,11 @@ public:
     InitDeclarator(nodePtr d) : declarator(d), initializer(nullptr){};
 
     void print(std::ostream &out, VariableBindings &bindings) const override;
+
+    void setType(std::string specifier) //set by declaration
+    {
+        specifierType = specifier;
+    };
 
     ~InitDeclarator()
     {

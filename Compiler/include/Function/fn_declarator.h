@@ -2,8 +2,9 @@
 #define FN_DECLARATOR_H
 
 #include "../helpers.h"
+#include "../Declaration/declarators.h"
 
-class FnDeclarator // : public Node // have to recheck
+class FnDeclarator : public Declarator
 {
 private:
     nodePtr identifier;    // function identifier
@@ -23,12 +24,13 @@ public:
 
 class ParameterDeclaration : public Node
 {
-    nodePtr specifier;  // f.e. int
-    nodePtr declarator; // not necessary! could be int foo(int, int);
+    nodePtr specifier;      // f.e. int
+    Declarator *declarator; // not necessary! could be int foo(int, int);
 
     ParameterDeclaration(nodePtr s, nodePtr d) : specifier(s), declarator(d){};
 
     void print(std::ostream &out, VariableBindings &bindings) const override; //TODO: Implement
+    // if declarator != nullptr; get declarator->identifier, add to local bindings;
 
     ~ParameterDeclaration()
     {
