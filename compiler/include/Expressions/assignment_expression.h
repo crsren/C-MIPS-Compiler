@@ -15,7 +15,7 @@ public:
     //simple "=", possible associated binary operation has been daelt with in parser
     AssignmentExpression(Node *l, Node *r) : left(l), right(r){};
 
-    void print(std::ostream &out, VariableBindings bindings) const override
+    void print(std::ostream &out, LocalVariableBindings bindings) const override
     {
         
     }

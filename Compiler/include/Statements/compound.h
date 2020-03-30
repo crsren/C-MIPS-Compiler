@@ -1,7 +1,7 @@
 #if !defined(COMPOUND_H)
 #define COMPOUND_H
 
-#include "helpers.h"
+#include "../helpers.h"
 
 // Input: (node* declarationlist, node* statementlist)
 class Compound : public Node
@@ -13,7 +13,7 @@ private:
 public:
     Compound(nodePtr d, nodePtr s) : dList(d), sList(s){};
 
-    void print(std::ostream &out, VariableBindings bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings bindings) const override;
 
     ~Compound()
     {

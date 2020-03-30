@@ -11,7 +11,7 @@ class FnParameterDeclaration : public Node
 public:
     FnParameterDeclaration(nodePtr s, nodePtr d) : specifiers(s), declarator(d){};
 
-    void print(std::ostream &out, VariableBindings bindings) const override; // implement
+    void print(std::ostream &out, LocalVariableBindings bindings) const override; // implement
 
     ~FnParameterDeclaration()
     {

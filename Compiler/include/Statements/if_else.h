@@ -17,7 +17,7 @@ public:
     // if else statement
     IfElseStatement(nodePtr c, nodePtr s1, nodePtr s2) : condition(c), statement1(s1), statement2(s2), has_else(true){};
 
-    void print(std::ostream &out, VariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
 
     ~IfElseStatement()
     {

@@ -9,7 +9,6 @@
 
 class List : public Node
 {
-private:
     std::list<nodePtr> items;
 
 public:

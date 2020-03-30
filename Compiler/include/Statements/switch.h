@@ -14,7 +14,7 @@ class SwitchStatement : public Node
 public:
     SwitchStatement(nodePtr c, nodePtr s) : condition(c), lsList(s){};
 
-    void print(std::ostream &out, VariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
 
     ~SwitchStatement()
     {
@@ -62,7 +62,7 @@ public:
         items.push_back(ls);
     }
 
-    // void evaluateLabels(std::ostream &out, VariableBindings &bindings)
+    // void evaluateLabels(std::ostream &out, LocalVariableBindings &bindings)
     // {
     //     for (const auto &ls : items)
     //     {

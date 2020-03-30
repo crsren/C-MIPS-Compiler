@@ -7,13 +7,13 @@
 class FnDeclarator : public Declarator
 {
 private:
-    nodePtr identifier;    // function identifier
+    // nodePtr identifier;    // function identifier
     nodePtr parameterList; //parameter
 
 public:
     FnDeclarator(nodePtr d, nodePtr l = nullptr) : identifier(d), parameterList(l){};
 
-    virtual void print(std::ostream &out, VariableBindings &bindings) const override; //TODO: implement
+    virtual void print(std::ostream &out, LocalVariableBindings &bindings) const override; //TODO: implement
 
     ~FnDeclarator()
     {
@@ -30,7 +30,7 @@ public:
 
     ParameterDeclaration(std::string s, Declarator *d) : specifier(s), declarator(d){};
 
-    void print(std::ostream &out, VariableBindings &bindings) const override; //TODO: Implement
+    void print(std::ostream &out, LocalVariableBindings &bindings) const override; //TODO: Implement
     // if declarator != nullptr; get declarator->identifier, add to local bindings;
 
     ~ParameterDeclaration()

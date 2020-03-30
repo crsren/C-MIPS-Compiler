@@ -15,6 +15,11 @@ public:
         return "\tli\t$" + std::to_string(toReg) + ", " + std::to_string(value) + "\n";
     }
 
+    static std::string load_address(int toReg, std::string adressLabel)
+    {
+        return "\tla\t$" + std::to_string(toReg) + ", " + adressLabel + "\n";
+    }
+
     static std::string branch(const std::string &label)
     {
         // need $ for label?
@@ -59,6 +64,12 @@ public:
         return out;
     }
 
+    static std::string load_word_reg(int destRegNum, int addressOffset, int addressRegNum)
+    {
+        std::string out = "\tlw\t$" + std::to_string(destRegNum) + "," + std::to_string(addressOffset) + "($" + std::to_string(addressRegNum) + ")\n";
+        return out;
+    }
+
     static std::string store_word(int regNum, int addressOffset, bool toStack)
     {
         std::string out = "\tsw\t$" + std::to_string(regNum) + ",-" + std::to_string(addressOffset);
@@ -74,9 +85,35 @@ public:
         return out;
     }
 
+    static std::string store_word_reg(int sourceRegNum, int addressOffset, int addressRegNum)
+    {
+        std::string out = "\tsw\t$" + std::to_string(sourceRegNum) + "," + std::to_string(addressOffset) + "($" + std::to_string(addressRegNum) + ")\n";
+        return out;
+    }
+
+    static std::string add_(int destRegNum, int sourceRegNum1, int sourceRegNum2)
+    {
+        return "\tadd\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
+    }
+
     static std::string addu(int destRegNum, int sourceRegNum1, int sourceRegNum2)
     {
         return "\taddu\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
+    }
+
+    static std::string addi(int destRegNum, int sourceRegNum, int immediate)
+    {
+        return "\taddi\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum) + "," + std::to_string(immediate) + "\n";
+    }
+
+    static std::string addiu(int destRegNum, int sourceRegNum, int immediate)
+    {
+        return "\taddiu\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum) + "," + std::to_string(immediate) + "\n";
+    }
+
+    static std::string sub_(int destRegNum, int sourceRegNum1, int sourceRegNum2)
+    {
+        return "\tsub\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
 
     static std::string subu(int destRegNum, int sourceRegNum1, int sourceRegNum2)
@@ -153,6 +190,11 @@ public:
         return "\tori\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum) + "," + std::to_string(immediate) + "\n";
     }
 
+    static std::string nor_(int destRegNum, int sourceRegNum1, int sourceRegNum2)
+    {
+        return "\tnor\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
+    }
+
     static std::string sll(int destRegNum, int sourceRegNum1, int sourceRegNum2)
     {
         return "\tsll\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
@@ -190,9 +232,14 @@ public:
         return label + ":\n";
     }
 
+    static std::string word_data(const std::string &identifier, int value)
+    {
+        return identifier + ":\n\t.word\t" + std::to_string(value) + "\n";
+    }
+
     static std::string tag_global(const std::string &tag)
     {
-        return ".globl" + tag + "\n";
+        return ".globl\t" + tag + "\n";
     }
 };
 

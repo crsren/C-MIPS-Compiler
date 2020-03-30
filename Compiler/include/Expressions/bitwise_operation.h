@@ -11,7 +11,7 @@ class BitwiseOperation : public BinaryOperation
 public:
     BitwiseOperation(nodePtr l, const std::string &s, nodePtr r) : BinaryOperation(l, s, r){};
 
-    void print(std::ostream &out, VariableBindings bindings) const override
+    void print(std::ostream &out, LocalVariableBindings bindings) const override
     {
         left -> print(out, bindings);
         int leftExpressionAddressOffset = bindings.getCurrentExpressionAddressOffset();
@@ -48,13 +48,13 @@ public:
 
         switch(operationSymbolNumber)
         {
-            case 0: out << Mips::xor(2, 2, 3);
+            case 0: out << Mips::xor_(2, 2, 3);
                     break;
 
-            case 1: out << Mips::and(2, 2, 3);
+            case 1: out << Mips::and_(2, 2, 3);
                     break;
 
-            case 2: out << Mips::or(2, 2, 3);
+            case 2: out << Mips::or_(2, 2, 3);
                     break;
 
             case 3: out << Mips::sll(2, 2, 3);

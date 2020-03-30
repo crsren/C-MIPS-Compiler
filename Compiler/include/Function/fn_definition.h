@@ -14,7 +14,7 @@ private:
 public:
     FnDefinition(nodePtr declaration_list, FnDeclarator *declarator, nodePtr compound_stmt) : returnType(declaration_list), declarator(declarator), compound(compound_stmt){};
 
-    void print(std::ostream &out, VariableBindings &bindings) const override; //implement
+    void print(std::ostream &out, LocalVariableBindings &bindings) const override; //implement
     // cast declarator to a fnDeclarator; access fnDeclarator->paramList and
     // for each item in the list get paramDeclarator->identifier and push into local bindings
 

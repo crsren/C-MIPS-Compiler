@@ -10,7 +10,7 @@ class BooleanOperation : public BinaryOperation
 public:
     BooleanOperation(nodePtr l, const std::string &s, nodePtr r) : BinaryOperation(l, s, r){};
 
-    void print(std::ostream &out, VariableBindings bindings) const override
+    void print(std::ostream &out, LocalVariableBindings bindings) const override
     {
         left -> print(out, bindings);
         int leftExpressionAddressOffset = bindings.getCurrentExpressionAddressOffset();
@@ -65,11 +65,11 @@ public:
                     out << Mips::xori(2, 2, 1);
                     break;
             
-            case 4: out << Mips::xor(2, 2, 3);
+            case 4: out << Mips::xor_(2, 2, 3);
                     out << Mips::sltiu(2, 2, 1);
                     break;
             
-            case 5: out << Mips::xor(2, 2, 3);
+            case 5: out << Mips::xor_(2, 2, 3);
                     out << Mips::sltu(2, 0, 2);
                     break;
         }
