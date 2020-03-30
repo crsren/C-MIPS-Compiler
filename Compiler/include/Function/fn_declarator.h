@@ -7,8 +7,8 @@
 class FnDeclarator : public Declarator
 {
 private:
-    nodePtr identifier;    // function identifier
-    nodePtr parameterList; //parameter
+    nodePtr identifier;           // function identifier
+    ParameterList *parameterList; //parameter
 
 public:
     FnDeclarator(nodePtr d, nodePtr l = nullptr) : identifier(d), parameterList(l){};
@@ -20,6 +20,11 @@ public:
         delete identifier;
         delete parameterList;
     };
+
+    ParameterList *getParameterList()
+    {
+        return parameterList; // use: this->getParameterList()->getIdentifiers(); in fnDefinition
+    }
 };
 
 class ParameterDeclaration : public Node
