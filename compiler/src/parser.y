@@ -87,8 +87,8 @@ postfix_expression
 	| postfix_expression '(' argument_expression_list ')'		{ $$ = new fnCall($1, $3); }
 	//| postfix_expression '.' IDENTIFIER
 	//| postfix_expression PTR_OP IDENTIFIER
-	| postfix_expression INC_OP 								{ $$ = new postOperation("+", $1); }	
-	| postfix_expression DEC_OP 								{ $$ = new postOperation("-", $1); }
+	// | postfix_expression INC_OP 								{ $$ = new postOperation("+", $1); }	
+	// | postfix_expression DEC_OP 								{ $$ = new postOperation("-", $1); }
 	;
 
 argument_expression_list
@@ -98,8 +98,8 @@ argument_expression_list
 
 unary_expression
 	: postfix_expression 		 								{ $$ = $1; }								
-	| INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
-	| DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
+	// | INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
+	// | DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
 	| unary_operator cast_expression			 				{ fprintf(stderr, "\n UNARY_OPERATOR not implemented\n"); }
 	// | SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	// | SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
