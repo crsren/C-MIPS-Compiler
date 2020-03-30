@@ -8,11 +8,11 @@ class FnDefinition : public Node
 {
 private:
     nodePtr returnType; //TODO: this should be a Type*
-    FnDeclarator *declarator;
+    FnDeclarator *fnDeclarator;
     nodePtr compound;
 
 public:
-    FnDefinition(nodePtr declaration_list, FnDeclarator *declarator, nodePtr compound_stmt) : returnType(declaration_list), declarator(declarator), compound(compound_stmt){};
+    FnDefinition(nodePtr declaration_list, FnDeclarator *declarator, nodePtr compound_stmt) : returnType(declaration_list), fnDeclarator(declarator), compound(compound_stmt){};
 
     void print(std::ostream &out, LocalVariableBindings &bindings) const override; //implement
     // cast declarator to a fnDeclarator; access fnDeclarator->paramList and
@@ -21,7 +21,7 @@ public:
     ~FnDefinition()
     {
         delete returnType;
-        delete declarator;
+        delete fnDeclarator;
         delete compound;
     }
 };

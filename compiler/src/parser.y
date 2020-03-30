@@ -15,6 +15,7 @@
 	std::string * str;
 	const List * list; //to get labels in switch statement
 	double num;
+	// Declarator* declarator;
 }
 
 %define parse.error verbose //For debugging
@@ -286,7 +287,7 @@ init_declarator // x,  x = 5
 	;
 
 init_declarator_list //
-	: init_declarator 												{ $$ = new List($1); }
+	: init_declarator 												{ $$ = new InitDeclaratorList($1); }
 	| init_declarator_list ',' init_declarator 						{ $1->add($3); $$ = $1; }
 	;
 
@@ -314,22 +315,22 @@ declarator
 declaration_specifiers // for now this will always be a single type_specifier (int or void)
 	// : storage_class_specifier
 	// | storage_class_specifier declaration_specifiers
-	// : type_specifier											{ $$ = new SpecifierList($1); }
-	// | type_specifier declaration_specifiers					{ $2->add($1); $$ = $2; } //? why is this the other way arround
-	type_specifier												{ $$ = $1; }
-	;
+	// : type_specifier												{ $$ = new SpecifierList($1); }
+	// | type_specifier declaration_specifiers						{ $2->add($1); $$ = $2; } //? why is this the other way arround
+	type_specifier													{ $$ = $1; }
+	;	
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
-	: VOID 														{ fprint(stderr, "\n Should pass string ptr\n"); string:$$ = $1; } // { $$ = new TypeSpecifier("void"); }
-	| CHAR			 		            						{ fprintf(stderr, "\n CHAR not implemented\n"); }
-	| SHORT		            	 								{ fprintf(stderr, "\n SHORT not implemented\n"); }
-	| INT 														{ fprint(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("int"); }
-	| LONG			 	            							{ fprintf(stderr, "\n LONG not implemented\n"); }
-	| FLOAT		            	 								{ fprintf(stderr, "\n FLOAT not implemented\n"); }
-	| DOUBLE			 										{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
-	//| struct_specifier			 							{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
-	//| enum_specifier			 								{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
-	//| TYPE_NAME			 					        		{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
+	: VOID 															{ fprint(stderr, "\n Should pass string ptr\n"); string:$$ = $1; } // { $$ = new TypeSpecifier("void"); }
+	| CHAR			 		            							{ fprintf(stderr, "\n CHAR not implemented\n"); }
+	| SHORT		            	 									{ fprintf(stderr, "\n SHORT not implemented\n"); }
+	| INT 															{ fprint(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("int"); }
+	| LONG			 	            								{ fprintf(stderr, "\n LONG not implemented\n"); }
+	| FLOAT		            	 									{ fprintf(stderr, "\n FLOAT not implemented\n"); }
+	| DOUBLE			 											{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
+	//| struct_specifier			 								{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
+	//| enum_specifier			 									{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
+	//| TYPE_NAME			 					        			{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
 	//;	
 
 //primitive data type variable declaration
@@ -382,9 +383,9 @@ expression_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/switch-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/if-statement-c?view=vs-2019
 selection_statement
-	: IF '(' expression ')' statement 												{ $$ = new SelectionStatement($3, $5); }
-	| IF '(' expression ')' statement ELSE statement 								{ $$ = new SelectionStatement($3, $5, $7); }
-	| SWITCH '(' expression ')' '{' statement_list '}'			 			    	{ $$ = new SwitchStatement($3, $5); }
+	: IF '(' expression ')' statement 								{ $$ = new SelectionStatement($3, $5); }
+	| IF '(' expression ')' statement ELSE statement 				{ $$ = new SelectionStatement($3, $5, $7); }
+	| SWITCH '(' expression ')' '{' statement_list '}'				{ $$ = new SwitchStatement($3, $5); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/while-statement-c?view=vs-2019
@@ -402,29 +403,28 @@ iteration_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/break-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/return-statement-c?view=vs-2019
 jump_statement
-	//: GOTO IDENTIFIER ';'			 										{ fprintf(stderr, "\n GOTO not implemented\n"); }
-	//| CONTINUE ';'			 												{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
-	//| BREAK ';'			 													{ fprintf(stderr, "\n BREAK not implemented\n"); }
-	| RETURN ';'															{ $$ = new ReturnStatement();	}
-	| RETURN expression ';'													{ $$ = new ReturnStatement($2); }
+	//| CONTINUE ';'			 									{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
+	//| BREAK ';'			 										{ fprintf(stderr, "\n BREAK not implemented\n"); }
+	| RETURN ';'													{ $$ = new ReturnStatement();	}
+	| RETURN expression ';'											{ $$ = new ReturnStatement($2); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
 labeled_statement
     // "ching: <something>" ; goto ching:
 	//: IDENTIFIER ':' statement
-	// for switch only:			 							{ fprintf(stderr, "\n IDENTIFIER not implemented\n"); }
+	// for switch only:			 									{ fprintf(stderr, "\n IDENTIFIER not implemented\n"); }
 	: CASE constant_expression ':' statement			 			{ new LabeledStatement($2, $4); }
 	| DEFAULT ':' statement			 								{ new LabeledStatement($3); }
 	;
 
 statement
-	: labeled_statement														{ $$ = $1; }
-	| compound_statement													{ $$ = $1; }
-	| expression_statement													{ $$ = $1; }
-	| selection_statement													{ $$ = $1; }
-	| iteration_statement													{ $$ = $1; }
-	| jump_statement														{ $$ = $1; }
+	: labeled_statement												{ $$ = $1; }
+	| compound_statement											{ $$ = $1; }
+	| expression_statement											{ $$ = $1; }
+	| selection_statement											{ $$ = $1; }
+	| iteration_statement											{ $$ = $1; }
+	| jump_statement												{ $$ = $1; }
 	;
 
 //// Global & Top Level -----------------------------------------------------------------
@@ -441,16 +441,16 @@ function_definition
 
  //decarations in global scope
 external_declaration
-	: function_definition													{ $$ = $1; }
-	| declaration															{ $$ = $1; }
+	: function_definition											{ $$ = $1; }
+	| declaration													{ $$ = $1; }
 	;
 
 translation_unit //top level list
-	: external_declaration													{ $$ = new List($1); }
-	| translation_unit external_declaration									{ $1->add($2); $$ = $1; }
+	: external_declaration											{ $$ = new List($1); }
+	| translation_unit external_declaration							{ $1->add($2); $$ = $1; }
 	;
 
-root: translation_unit														{ g_root = $1; }
+root: translation_unit												{ g_root = $1; }
 
 %%
 
