@@ -1,7 +1,7 @@
-#if !defined(FN_PARAMETER_H)
+#ifndef FN_PARAMETER_H
 #define FN_PARAMETER_H
 
-#include "helpers.h"
+#include "../helpers.h"
 
 class FnParameterDeclaration : public Node
 {

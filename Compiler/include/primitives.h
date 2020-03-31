@@ -1,4 +1,4 @@
-#if !defined(PRIMITIVES_H)
+#ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
 #include "helpers.h"
@@ -14,26 +14,32 @@ private:
 public:
     Constant(const double &value) : value(value){};
 
-    void print(std::ostream &out, VariableBindings bindings) const override
+    void print(std::ostream &out, LocalVariableBindings & bindings) const override
     {
-        // This must be in local scope TODO
-        // if (stackFrame == nullptr)
-        //     return;
+        if(bindings)
+        {
+            out << Mips::load_immediate(8, value);
+            out << Mips::store_word(8, bindings.getCurrentExpressionAddressOffset(), false);
+            //stackFrame->Push(); TODO
+        }
+        else
+        {
 
-        out << Mips::load_immediate(8, value);
-        out << Mips::store_word(8, bindings.getCurrentExpressionAddressOffset(), false);
-        //stackFrame->Push(); TODO
+        }
     };
 };
 
-//TODO: IMPLEMENT PRINT
-class Identifier : public Node
+class Identifier
 {
 private:
     const std::string name;
 
 public:
     Identifier(const std::string &name) : name(name){};
+
+    std::string getName() {
+        return name;
+    }
 };
 
 #endif // PRIMITIVES_H

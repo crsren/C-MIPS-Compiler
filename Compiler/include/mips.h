@@ -44,9 +44,9 @@ public:
         return tmp;
     }
 
-    static std::string move(int fromReg, int toReg)
+    static std::string move(int toReg, int fromReg)
     {
-        return "\add\t$" + std::to_string(fromReg) + ",$" + std::to_string(toReg) + ",$0\n";
+        return "\add\t$" + std::to_string(toReg) + ",$" + std::to_string(fromReg) + ",$0\n";
     }
 
     static std::string load_word(int regNum, int addressOffset, bool fromStack)

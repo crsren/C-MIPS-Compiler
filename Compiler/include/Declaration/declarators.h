@@ -9,7 +9,8 @@ protected:
     const std::string identifier;
 
 public:
-    Declarator(const std::string &s) : identifier(s){}
+    bool isFunction;
+    Declarator(const std::string &s) : identifier(s), isFunction(false) {}
 
     const std::string getIdentifier() const
     {

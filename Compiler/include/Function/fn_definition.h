@@ -7,7 +7,8 @@
 class FnDefinition : public Node
 {
 private:
-    nodePtr returnType; //TODO: this should be a Type*
+    /*nodePtr*/
+    std::string returnType; //TODO: this should be a Type*
     FnDeclarator *fnDeclarator;
     nodePtr compound;
 
@@ -20,7 +21,6 @@ public:
 
     ~FnDefinition()
     {
-        delete returnType;
         delete fnDeclarator;
         delete compound;
     }

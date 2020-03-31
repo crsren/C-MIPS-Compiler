@@ -7,11 +7,11 @@
 class UnaryOperation : public Node
 {
 private:
-    std::string operationSymbol;
+    const unsigned char operationSymbol;
     nodePtr postfixExpression;
 
 public:
-    UnaryOperation(std::string s, nodePtr uExp) : operationSymbol(s), postfixExpression(uExp){};
+    UnaryOperation(unsigned char s, nodePtr uExp) : operationSymbol(s), postfixExpression(uExp){};
 
     ~UnaryOperation()
     {
@@ -25,27 +25,27 @@ public:
         out << Mips::load_word(2, bindings.getCurrentExpressionAddressOffset(), false);
 
         int operationSymbolNumber;
-        if(operationSymbol == "+")
+        if(operationSymbol == '+')
         {
             operationSymbolNumber = 0;
         }
-        else if(operationSymbol == "-")
+        else if(operationSymbol == '-')
         {
             operationSymbolNumber = 1;
         }
-        else if(operationSymbol == "~")
+        else if(operationSymbol == '~')
         {
             operationSymbolNumber = 2;
         }
-        else if(operationSymbol == "!")
+        else if(operationSymbol == '!')
         {
             operationSymbolNumber = 3;
         }
-        // else if(operationSymbol == "&")
+        // else if(operationSymbol == '&')
         // {
         //     operationSymbolNumber = 4;
         // }
-        // else if(operationSymbol == "*")
+        // else if(operationSymbol == '*')
         // {
         //     operationSymbolNumber = 5;
         // }

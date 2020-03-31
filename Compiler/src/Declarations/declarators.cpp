@@ -7,7 +7,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
 
     if (specifierType == "" && initializer != nullptr) // the variable has already been defined and we assign a value to it
     {
-        if (bindings == NULL) // global
+        if (!bindings) // global
         {
             initializer -> print(out, bindings);
             out << Mips::load_address(1, identifier);
@@ -23,9 +23,9 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
 
     else if (specifierType == "int") // the variable is being declared
     {
-        if (initializer != nullptr) // we assign a value to the variable being declared
+        if (initializer) // we assign a value to the variable being declared
         {
-            if(bindings == NULL) // global
+            if(!bindings) // global
             {
                 GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, INTEGER);
                 out << Mips::segment_data();
@@ -45,13 +45,13 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
         }
         else // the variable is just declared without being initialized
         {
-             if(bindings == NULL) // global
+             if(!bindings) // global
             {
                 GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, INTEGER);
                 out << Mips::segment_data();
                 out << Mips::word_data(identifier, 0);
                 
-                out << Mips::segment_text(); // ****************************************NOT SURE**************************************
+                out << Mips::segment_text();
             }
             else // local
             {
@@ -61,43 +61,11 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
         }
     }
 
-    else if (specifierType == "void") // the variable is being declared
+    
+// ************************************************ NOT SURE WHAT TO DO HERE ************************************************
+    else if (specifierType == "void" && initializer == nullptr) // the function is being declared
     {
-        if (initializer != nullptr) // we assign a value to the variable being declared
-        {
-            if(bindings == NULL) // global
-            {
-                GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, INTEGER);
-                out << Mips::segment_data();
-                out << Mips::word_data(identifier, 0);
-                
-                out << Mips::segment_text();
-                initializer -> print(out, bindings);
-                out << Mips::load_address(1, identifier);
-                out << Mips::store_word_reg(2, 0, 1);
-            }
-            else // local
-            {
-                bindings.insertLocalVariableBinding(identifier, INTEGER);
-                initializer -> print(out, bindings);
-                out << Mips::store_word(2, bindings.getLocalVariableAddressOffset(identifier), false);
-            }
-        }
-        else // the variable is just declared without being initialized
-        {
-             if(bindings == NULL) // global
-            {
-                GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, INTEGER);
-                out << Mips::segment_data();
-                out << Mips::word_data(identifier, 0);
-                
-                out << Mips::segment_text(); // ****************************************NOT SURE**************************************
-            }
-            else // local
-            {
-                bindings.insertLocalVariableBinding(identifier, INTEGER);
-                out << Mips::store_word(0, bindings.getLocalVariableAddressOffset(identifier), false);
-            }
-        }
+        GlobalVariableBindings::instance().insertFunctionBinding(identifier, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber)
     }
+// **************************************************************************************************************************
 };

@@ -6,8 +6,8 @@
 class FnCall : public Node
 {
 private:
-    nodePtr postfix;
-    nodePtr argumentList;
+    Identifier* identifier;
+    ListPtr argumentList; 
 
 public:
     FnCall(nodePtr p, nodePtr a) : postfix(p), argumentList(a){};
@@ -20,5 +20,7 @@ public:
         delete argumentList;
     }
 };
+
+
 
 #endif // FN_CALL_H

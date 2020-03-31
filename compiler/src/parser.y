@@ -13,9 +13,12 @@
 %union{
 	const Node * nodePtr;
 	std::string * str;
-	const List * list; //to get labels in switch statement
+	const Identifier * identifier;
 	double num;
-	// Declarator* declarator;
+	Declarator* declarator;
+
+	const List * listPtr; //to get labels in switch statement
+	const ParameterList * paramList;
 }
 
 %define parse.error verbose //For debugging
@@ -54,7 +57,8 @@
 %nterm <nodePtr> conditional_expression assignment_expression expression
 %nterm <nodePtr> constant_expression initializer //identifier_list
 // Declarations:
-%nterm <nodePtr> parameter_list init_declarator init_declarator_list
+%nterm <paramList> parameter_list
+%nterm <nodePtr> init_declarator init_declarator_list
 %nterm <nodePtr> direct_declarator declarator declaration_specifiers
 %nterm <nodePtr> declaration declaration_list parameter_declaration
 // Statements:
@@ -79,7 +83,7 @@ primary_expression
 	// | STRING_LITERAL			 								{ fprintf(stderr, "\n STRING_LITERAL not implemented\n"); }
 	| '(' expression ')' 										{ $$ = $2; }
 	;
-
+// 
 postfix_expression
 	: primary_expression 										{ $$ = $1; }
 	| postfix_expression '[' expression ']'			 			{ fprintf(stderr, "\n ARRAY ACCESS not implemented\n"); }
@@ -98,9 +102,9 @@ argument_expression_list
 
 unary_expression
 	: postfix_expression 		 								{ $$ = $1; }								
-	| INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
+	| INC_OP unary_expression 			 						{ fprintf(stderr, "\n INC_OP not implemented\n"); }//{ $$ = new preOperation("+", $2); }
 	| DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
-	| unary_operator cast_expression			 				{ fprintf(stderr, "\n UNARY_OPERATOR not implemented\n"); }
+	| unary_operator cast_expression			 				{ $$ = new unaryOperation($1[0],$2) }
 	// | SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	// | SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	;

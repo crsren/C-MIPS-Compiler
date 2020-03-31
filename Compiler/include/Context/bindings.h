@@ -76,7 +76,7 @@ struct Function
 {
     PrimitiveDataTypeCode functionReturnDataTypeCode;
 
-    int numberOfParameters; // assuming all int
+    //int numberOfParameters; // assuming all int
 };
 
 // struct containing information on the variable declaration
@@ -103,7 +103,7 @@ class GlobalVariableBindings // usage: GlobalBindings::instance().<function>();
     //
     // note that it is static since the global variables are shared by every
     // local scope and thus, by every instance of the VariableBindings class
-    std::unordered_map<std::string, Variable> variableBindings;
+    std::unordered_map<std::string, Variable> globalBindings;
 
     // note that this map holds the identifiers and the data of the functions
     //
@@ -129,7 +129,7 @@ public:
         var.addressOffset = -1;
         var.is_array = false;
         var.variableDataTypeCode = dataTypeCode;
-        variableBindings.insert(std::make_pair(id, var));
+        globalBindings.insert(std::make_pair(id, var));
     }
 
     void insertGlobalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
@@ -154,15 +154,26 @@ public:
         varArray.setArrayDimensionalSizes(arrayDimensionSizes_i);
         var.arrayVariable = varArray;
 
-        variableBindings.insert(std::make_pair(id, var));
+        globalBindings.insert(std::make_pair(id, var));
     }
 
-    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber)
+    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
     {
         Function func;
         func.functionReturnDataTypeCode = dataTypeCode;
-        func.numberOfParameters = paramNumber;
         functionBindings.insert(std::make_pair(id, func));
+    }
+
+    bool functionBindingExists(const std::string &id) const
+    {
+        if (functionBindings.find(id) == functionBindings.end())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 };
 
@@ -172,7 +183,7 @@ public:
 class LocalVariableBindings
 {
     // holds the identifiers and the data of the local within the current scope
-    std::unordered_map<std::string, Variable> bindings; //localBindings;
+    std::unordered_map<std::string, Variable> localBindings; //localBindings;
 
     // the stackFrameSize is the value that must be added to the stack pointer
     // to pop the current stack frame out of the stack
@@ -225,15 +236,15 @@ public:
 
     void insertLocalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
     {
-        incrementStackFrameSize();
         Variable var;
         var.addressOffset = getStackFrameSize();
         var.is_array = false;
-        var.variableDataTypeCode = dataTypeCode;
-        if (dataTypeCode == DOUBLE)
-        {
-            incrementStackFrameSize();
-        }
+        // var.variableDataTypeCode = dataTypeCode;
+        // if (dataTypeCode == DOUBLE)
+        // {
+        //     incrementStackFrameSize();
+        // }
+        incrementStackFrameSize();
         localBindings.insert(std::make_pair(id, var));
     }
 

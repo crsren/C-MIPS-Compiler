@@ -1,18 +1,20 @@
 #include "../../include/Function/fn_call.h"
 
-void FnCall::print(std::ostream &out, !!!) const
+void FnCall::print(std::ostream &out, LocalVariableBindings bindings) const
 {
-    // get function name
-    string name;
+    out << Mips::sub_(29, 29, bindings.getStackFrameSize()); // note $sp = $29
 
-    // store first for arguments in register
+    int stackFrameOffset = 8;
 
-    // Set stack pointer
+    for (const auto & argument : argumentList)
+    {
+        argument -> print(out, bindings);
+        out << Mips::store_word(2, stackFrameOffset, true);
+        stackFrameOffset += 4;
+        // store answer that is in register $2 
+    }
 
-    //jump to function label
-    Mips::jump_to_label(name);
+    std::string functionIdentifier = identifier->getName();
 
-    //pop arguments
-
-    // store return value to $2 or $3
+    Mips::jal(functionIdentifier);
 };

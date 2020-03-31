@@ -1,11 +1,11 @@
-#include "Statements/switch.h"
+#include "../../include/Statements/switch.h"
 
 void SwitchStatement::print(std::ostream &out, VariableBindings &bindings) const
 {
     std::string END = Label::instance().uniquify("switch_end");
 
     condition->print(out, bindings);
-    out << Mips::move(2, 3); // valid case value in $3
+    out << Mips::move(3, 2); // valid case value in $3
 
     // Branching conditions
     for (const auto &labeledStatement : lsList->items)

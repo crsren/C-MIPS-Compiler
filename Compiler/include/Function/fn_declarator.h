@@ -7,17 +7,15 @@
 class FnDeclarator : public Declarator
 {
 private:
-    nodePtr identifier;           // function identifier
     ParameterList *parameterList; //parameter
 
 public:
-    FnDeclarator(nodePtr d, nodePtr l = nullptr) : identifier(d), parameterList(l){};
+    FnDeclarator(ParameterList *l = nullptr) : parameterList(l), isFunction(true) {};
 
-    virtual void print(std::ostream &out, LocalVariableBindings &bindings) const override; //TODO: implement
+    virtual void print(std::ostream &out, LocalVariableBindings &bindings) const override;
 
     ~FnDeclarator()
     {
-        delete identifier;
         delete parameterList;
     };
 
@@ -27,16 +25,23 @@ public:
     }
 };
 
-class ParameterDeclaration : public Node
-{
-public:
+class ParameterDeclaration
+{    
     const std::string specifier; // f.e. int
     Declarator *declarator;      // not necessary! could be int foo(int, int);
 
+public:
+
     ParameterDeclaration(std::string s, Declarator *d) : specifier(s), declarator(d){};
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override; //TODO: Implement
-    // if declarator != nullptr; get declarator->identifier, add to local bindings;
+    Declarator* getDeclarator() {
+        return declarator;
+    }
+
+    std::string getSpecifier()
+    {
+        return specifier;
+    }
 
     ~ParameterDeclaration()
     {
@@ -59,14 +64,9 @@ public:
         pList.push_back(parameter);
     };
 
-    std::vector<std::string> &getIdentifiers()
+    std::list<const ParameterDeclaration *> getParameterList()
     {
-        std::vector<std::string> identifierVector;
-
-        for (const auto &parameter : pList)
-            identifierVector.push_back(parameter->declarator->getIdentifier());
-
-        return identifierVector;
+        return pList;
     };
 };
 
