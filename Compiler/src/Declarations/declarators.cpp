@@ -5,7 +5,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
     std::string identifier = declarator->getIdentifier()->getName();
     // this.specifierType is the type (got this from declaration class before this print function is being called )
 
-    if (specifierType == "" && initializer != nullptr) // the variable has already been defined and we assign a value to it
+    if ( (specifierType == "") && (initializer != nullptr) && !(declarator->isFunction) ) // the variable has already been declared and we assign a value to it
     {
         if (bindings == nullptr) // global
         {
@@ -23,7 +23,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
 
     else if (specifierType == "int") // the variable is being declared
     {
-        if (initializer) // we assign a value to the variable being declared
+        if ( (initializer != nullptr) && !(declarator->isFunction) ) // we assign a value to the variable being declared
         {
             if (bindings == nullptr) // global
             {
@@ -43,7 +43,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                 out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifier), false);
             }
         }
-        else // the variable is just declared without being initialized
+        else if ( (initializer == nullptr) && !(declarator->isFunction) )// the variable is just declared without being initialized
         {
             if (bindings == nullptr) // global
             {
@@ -59,12 +59,14 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                 out << Mips::store_word(0, bindings->getLocalVariableAddressOffset(identifier), false);
             }
         }
+        else if ( (initializer == nullptr) && (declarator->isFunction) )
+        {
+            GlobalVariableBindings::instance().insertFunctionBinding(identifier, INTEGER);
+        }
     }
 
-    // ************************************************ NOT SURE WHAT TO DO HERE ************************************************
-    else if (specifierType == "void" && initializer == nullptr) // the function is being declared
+    else if ( (specifierType == "void") && (initializer == nullptr) && (declarator->isFunction) ) // the function is being declared
     {
-        GlobalVariableBindings::instance().insertFunctionBinding(identifier, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber) // KIMON
+        GlobalVariableBindings::instance().insertFunctionBinding(identifier, VOID);
     }
-    // **************************************************************************************************************************
 };
