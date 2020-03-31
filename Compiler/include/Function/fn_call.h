@@ -6,13 +6,13 @@
 class FnCall : public Node
 {
 private:
-    Identifier* identifier;
-    ListPtr argumentList; 
+    Identifier *identifier;
+    ListPtr argumentList;
 
 public:
     FnCall(nodePtr p, nodePtr a) : postfix(p), argumentList(a){};
 
-    void print(std::ostream &out, LocalVariableBindings bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
 
     ~FnCall()
     {
@@ -20,7 +20,5 @@ public:
         delete argumentList;
     }
 };
-
-
 
 #endif // FN_CALL_H
