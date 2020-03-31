@@ -16,7 +16,7 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
         }
     }
 
-    LocalVariableBindings *localVariableBindings = new LocalVariableBindings(); // KIMON CHECK IS THIS RIGHT?
+    LocalVariableBindings *localVariableBindings = new LocalVariableBindings(0, 4); // KIMON CHECK IS THIS RIGHT?
 
     out << Mips::segment_text();
     out << Mips::tag_global(functionIdentifier);
