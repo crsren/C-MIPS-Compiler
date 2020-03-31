@@ -2,6 +2,7 @@
 #define ASSIGNMENT_EXPRESSION_H
 
 #include "../helpers.h"
+#include "Expressions/primitives.h"
 
 #include <string>
 
@@ -17,7 +18,19 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings bindings) const override
     {
-        
+        int rhsExpressionStackPointer = bindings.getCurrentExpressionAddressOffset();
+
+        right -> print(out, bindings);
+
+        Identifier* identifierPtr = std::dynamic_cast<Identifier*>(left);
+
+        std::string identifierName = identifierPtr->getName();
+
+        out << Mips::load_word(2, rhsExpressionStackPointer, false);
+
+        out << Mips::store_word(2, bindings.getLocalVariableAddressOffset(identifierName), false);
+
+        bindings.decrementCurrentExpressionAddressOffsetBy(bindings.getCurrentExpressionAddressOffset() - rhsExpressionStackPointer);
     }
 };
 

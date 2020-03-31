@@ -104,7 +104,7 @@ unary_expression
 	: postfix_expression 		 								{ $$ = $1; }
 	// | INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
 	// | DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
-	| unary_operator cast_expression			 				{ fprintf(stderr, "\n UNARY_OPERATOR not implemented\n"); }
+		| unary_operator cast_expression			 				{ $$ = new UnaryOperation($1, $3); }
 	// | SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	// | SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	;
@@ -193,7 +193,7 @@ assignment_expression
 
 	// middle will be assignment string ("*=")
 	// → remove last char ("=") and use BinaryOperation
-	| unary_expression ASSIGN assignment_expression 			{ $2[strlen(p)-1]='\0'; $$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
+	| unary_expression ASSIGN assignment_expression 			{ $2[strlen(p)-1]='\0'; $$ = new AssignmentExpression($1-, new ArithmeticOperation($1, *$2, $3)); }
 	;
 
 expression

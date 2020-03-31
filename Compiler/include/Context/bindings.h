@@ -132,6 +132,18 @@ public:
         globalBindings.insert(std::make_pair(id, var));
     }
 
+    bool globalVariableBindingExists(const std::string &id) const
+    {
+        if (globalBindings.find(id) == globalBindings.end())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     void insertGlobalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
     {
         Variable var;
@@ -246,6 +258,18 @@ public:
         // }
         incrementStackFrameSize();
         localBindings.insert(std::make_pair(id, var));
+    }
+
+    bool localVariableBindingExists(const std::string &id) const
+    {
+        if (localBindings.find(id) == localBindings.end())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     void insertLocalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)

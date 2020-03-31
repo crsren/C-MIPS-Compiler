@@ -49,18 +49,25 @@ public:
         return "\add\t$" + std::to_string(toReg) + ",$" + std::to_string(fromReg) + ",$0\n";
     }
 
-    static std::string load_word(int regNum, int addressOffset, bool fromStack)
+    static std::string load_word(int regNum, int addressOffset, bool fromStack) //local
     {
         std::string out = "\tlw\t$" + std::to_string(regNum) + ",-" + std::to_string(addressOffset);
-        if (fromStack)
+        if (fromStack) //using stack pointer
         {
             out += "($sp)\n";
         }
-        else
+        else //using frame pointer
         {
             out += "($fp)\n";
         }
 
+        return out;
+    }
+
+    static std::string load_global_word(int regNum, std::string variableIdentifier)
+    {
+        std::string out = "\tlui\t$1,%hi(" + variableIdentifier + ")\n";
+        out += "\tlw\t$" + std::to_string(regNum) + ",%lo(" + variableIdentifier + ")($1)\n";
         return out;
     }
 

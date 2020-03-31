@@ -29,7 +29,7 @@ public:
     };
 };
 
-class Identifier
+class Identifier : public Node
 {
 private:
     const std::string name;
@@ -37,7 +37,21 @@ private:
 public:
     Identifier(const std::string &name) : name(name){};
 
-    std::string getName() {
+    void print(std::ostream &out, LocalVariableBindings & bindings) const override
+    {
+        if (bindings.localVariableBindingExists(name))
+        {
+            out << Mips::load_word(2, bindings.getLocalVariableAddressOffset(name), false); // Use frame pointer
+        }
+        else if(GlobalVariableBindings::instance().globalVariableBindingExists(name))
+        {
+            out << Mips::load_global_word(2, name);
+        }
+    }
+
+
+    std::string getName()
+    {
         return name;
     }
 };
