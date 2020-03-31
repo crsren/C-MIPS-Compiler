@@ -15,15 +15,15 @@ public:
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
         left->print(out, bindings);
-        int leftExpressionAddressOffset = bindings.getCurrentExpressionAddressOffset();
+        int leftExpressionAddressOffset = bindings->getCurrentExpressionAddressOffset();
 
-        bindings.incrementCurrentExpressionAddressOffset();
+        bindings->incrementCurrentExpressionAddressOffset();
         right->print(out, bindings);
 
         out << Mips::load_word(2, leftExpressionAddressOffset, false);
-        out << Mips::load_word(3, bindings.getCurrentExpressionAddressOffset(), false);
+        out << Mips::load_word(3, bindings->getCurrentExpressionAddressOffset(), false);
 
-        bindings.decrementCurrentExpressionAddressOffsetBy(bindings.getCurrentExpressionAddressOffset() - leftExpressionAddressOffset);
+        bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset);
 
         switch (operationSymbol[0])
         {
@@ -48,7 +48,7 @@ public:
             break;
         }
 
-        out << Mips::store_word(2, bindings.getCurrentExpressionAddressOffset(), false);
+        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
     }
 };
 

@@ -6,17 +6,21 @@ FS			(f|F|l|L)
 IS			(u|U|l|L)*
 
 %{
+// As in Lab: Avoid error "error: `fileno' was not declared in this scope"
+extern "C" int fileno(FILE *stream);
+
 //for debugging in VSstudio
-#define YY_NO_UNISTD_H
+//#define YY_NO_UNISTD_H
 
 // To get rid of register warning for c++=17
-#if (__cplusplus - 0) >= 201703L
-  #define __REGISTER
-#else
-  #define __REGISTER                             register
-#endif
+// #if (__cplusplus - 0) >= 201703L
+//   #define __REGISTER
+// #else
+//   #define __REGISTER                             register
+// #endif
 
 #include "parser.tab.hpp"
+#include <stdio.h>
 
 %}
 
@@ -45,8 +49,6 @@ IS			(u|U|l|L)*
 "unsigned"		{ return(UNSIGNED); }
 "void"			{ return(VOID); }
 "while"			{ return(WHILE); }
-
-{L}({L}|{D})*		{ return(check_type()); }
 
 0[xX]{H}+{IS}?		{ return(CONSTANT); }
 0{D}+{IS}?			{ return(CONSTANT); }

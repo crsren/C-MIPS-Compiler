@@ -1,2 +1,4 @@
 "struct"		{ return(STRUCT); }
 "enum"			{ return(ENUM); }
+
+{L}({L}|{D})*		{ return(check_type()); }

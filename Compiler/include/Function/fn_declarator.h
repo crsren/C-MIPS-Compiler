@@ -4,27 +4,6 @@
 #include "../helpers.h"
 #include "../Declaration/declarators.h"
 
-class ParameterList;
-
-class FnDeclarator : public Declarator
-{
-private:
-    ParameterList *parameterList; //parameter
-
-public:
-    FnDeclarator(Declarator *declarator, ParameterList *l = nullptr) : Declarator(declarator->getIdentifier(), true), parameterList(l){};
-
-    ~FnDeclarator()
-    {
-        delete parameterList;
-    };
-
-    ParameterList *getParameterList()
-    {
-        return parameterList; // use: this->getParameterList()->getIdentifiers(); in fnDefinition
-    }
-};
-
 class ParameterDeclaration
 {
     const std::string specifier; // f.e. int
@@ -49,7 +28,7 @@ public:
     }
 };
 
-class ParameterList : public Node
+class ParameterList
 {
     std::vector<ParameterDeclaration *> pList;
 
@@ -67,6 +46,24 @@ public:
     std::vector<ParameterDeclaration *> getItems()
     {
         return pList;
+    };
+};
+
+class FnDeclarator : public Declarator
+{
+    ParameterList *parameterList; //parameter
+
+public:
+    FnDeclarator(Declarator *declarator, ParameterList *l = nullptr) : Declarator(declarator->getIdentifier(), true), parameterList(l){};
+
+    ParameterList *getParameterList()
+    {
+        return parameterList; // use: this->getParameterList()->getIdentifiers(); in fnDefinition
+    }
+
+    ~FnDeclarator()
+    {
+        delete parameterList;
     };
 };
 

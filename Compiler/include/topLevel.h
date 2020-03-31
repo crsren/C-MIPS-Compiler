@@ -1,4 +1,8 @@
-// include all files here for easier access in parser
+#if !defined(TOP_LEVEL_H)
+#define TOP_LEVEL_H
+
+// - Include all files here for easier access in parser
+// - Define parseAST() to be found in parser.y (builds the AST and outputs its root node)
 
 // Declaration
 //#include "Declaration/declaration.h"
@@ -29,3 +33,7 @@
 
 // Context
 #include "Context/bindings.h"
+
+extern Node *parseAST(const char *input);
+
+#endif // TOP_LEVEL_H

@@ -8,21 +8,22 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    // const Node *root = parseAST();
-    const Node *root = parseAST(argv[1]); //for debuggin in VS
+
+    const Node *root = parseAST(argv[1]);
 
     cout << '\n';
 
     //root->print(cout, NULL);
-
+    ofstream output("chingchong.txt");
     if (output.is_open())
     {
-        root->print(output, NULL);
-
+        output << ".data\n";
+        root->print(output, nullptr);
     }
     else
     {
-        std::cerr << "Could not open output file.";
+        cerr << "Could not open output file.";
+        return -1;
     }
 
     return 0;

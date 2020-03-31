@@ -49,7 +49,8 @@
 /// Non-Terminals (can be broken down into terminals)
 %nterm <character> unary_operator
 // Expressions:
-%nterm <nodePtr> primary_expression postfix_expression argument_expression_list
+%nterm <listPtr> argument_expression_list
+%nterm <nodePtr> primary_expression postfix_expression
 %nterm <nodePtr> unary_expression cast_expression multiplicative_expression
 %nterm <nodePtr> additive_expression shift_expression relational_expression
 %nterm <nodePtr> equality_expression and_expression exclusive_or_expression
@@ -90,8 +91,8 @@ primary_expression
 postfix_expression
 	: primary_expression 										{ $$ = $1; }
 	| postfix_expression '[' expression ']'			 			{ fprintf(stderr, "\n ARRAY ACCESS not implemented\n"); }
-	| postfix_expression '(' ')'								{ $$ = new fnCall($1); }
-	| postfix_expression '(' argument_expression_list ')'		{ $$ = new fnCall($1, $3); }
+	| postfix_expression '(' ')'								{ $$ = new FnCall($1); }
+	| postfix_expression '(' argument_expression_list ')'		{ $$ = new FnCall($1, $3); }
 	//| postfix_expression '.' IDENTIFIER
 	//| postfix_expression PTR_OP IDENTIFIER
 	// | postfix_expression INC_OP 								{ $$ = new postOperation("+", $1); }
@@ -533,7 +534,7 @@ root: translation_unit												{ g_root = $1; }
 const Node *g_root;
 
 // Function to parse AST to main (to match declaration in main.cpp)
-const Node *parseAST(const char *inputFile)
+const Node *parseAST(const char *input)
 {
 	yyin = fopen(input, "r");
 	if (!yyin)
@@ -544,5 +545,10 @@ const Node *parseAST(const char *inputFile)
 
 	g_root=NULL;
     yyparse();
-    return g_root;
+
+	fclose(input);
+
+	if(g_root)
+		fprintf(stderr, "Error while parsing! No root pointer passed.");
+	return g_root;
 }
