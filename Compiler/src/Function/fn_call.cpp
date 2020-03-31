@@ -1,6 +1,6 @@
 #include "../../include/Function/fn_call.h"
 
-void FnCall::print(std::ostream &out, LocalVariableBindings bindings) const
+void FnCall::print(std::ostream &out, LocalVariableBindings &bindings) const
 {
     out << Mips::sub_(29, 29, bindings.getStackFrameSize()); // note $sp = $29
 

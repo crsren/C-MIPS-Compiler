@@ -13,7 +13,7 @@ protected:
 public:
     BinaryOperation(nodePtr l, std::string symbol, nodePtr r) : left(l), operationSymbol(symbol), right(r){};
 
-    virtual void print(std::ostream &out, LocalVariableBindings bindings) const = 0; //implement
+    virtual void print(std::ostream &out, LocalVariableBindings &bindings) const = 0; //implement
 
     ~BinaryOperation()
     {

@@ -18,7 +18,7 @@ public:
         delete postfixExpression;
     }
 
-    void print(std::ostream &out, LocalVariableBindings bindings) const override
+    void print(std::ostream &out, LocalVariableBindings &bindings) const override
     {
         postfixExpression -> print(out, bindings);
         

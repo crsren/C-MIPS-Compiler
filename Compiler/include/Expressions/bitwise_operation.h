@@ -11,7 +11,7 @@ class BitwiseOperation : public BinaryOperation
 public:
     BitwiseOperation(nodePtr l, const std::string &s, nodePtr r) : BinaryOperation(l, s, r){};
 
-    void print(std::ostream &out, LocalVariableBindings bindings) const override
+    void print(std::ostream &out, LocalVariableBindings &bindings) const override
     {
         left -> print(out, bindings);
         int leftExpressionAddressOffset = bindings.getCurrentExpressionAddressOffset();
