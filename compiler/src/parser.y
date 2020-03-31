@@ -28,9 +28,9 @@
 /// Lexer tokens
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
-%token AND_OP OR_OP ASSIGN     
+%token AND_OP OR_OP ASSIGN
 %token TYPE_NAME
-%token TYPEDEF  STATIC 
+%token TYPEDEF  STATIC
 %token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST  VOID
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
@@ -62,7 +62,7 @@
 %nterm <nodePtr> direct_declarator declarator declaration_specifiers
 %nterm <nodePtr> declaration declaration_list parameter_declaration
 // Statements:
-%nterm <nodePtr> labeled_statement compound_statement 
+%nterm <nodePtr> labeled_statement compound_statement
 %nterm <nodePtr> expression_statement selection_statement iteration_statement
 %nterm <nodePtr> jump_statement statement statement_list
 // Global & Top Level
@@ -72,7 +72,7 @@
 %start root
 %%
 
-// Grammar based on Jeff Lee's ANSI C Yacc grammar 
+// Grammar based on Jeff Lee's ANSI C Yacc grammar
 // https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
 
 //// Expressions -----------------------------------------------------------------
@@ -83,7 +83,7 @@ primary_expression
 	// | STRING_LITERAL			 								{ fprintf(stderr, "\n STRING_LITERAL not implemented\n"); }
 	| '(' expression ')' 										{ $$ = $2; }
 	;
-// 
+//
 postfix_expression
 	: primary_expression 										{ $$ = $1; }
 	| postfix_expression '[' expression ']'			 			{ fprintf(stderr, "\n ARRAY ACCESS not implemented\n"); }
@@ -91,8 +91,8 @@ postfix_expression
 	| postfix_expression '(' argument_expression_list ')'		{ $$ = new fnCall($1, $3); }
 	//| postfix_expression '.' IDENTIFIER
 	//| postfix_expression PTR_OP IDENTIFIER
-	| postfix_expression INC_OP 								{ $$ = new postOperation("+", $1); }	
-	| postfix_expression DEC_OP 								{ $$ = new postOperation("-", $1); }
+	// | postfix_expression INC_OP 								{ $$ = new postOperation("+", $1); }
+	// | postfix_expression DEC_OP 								{ $$ = new postOperation("-", $1); }
 	;
 
 argument_expression_list
@@ -101,10 +101,10 @@ argument_expression_list
 	;
 
 unary_expression
-	: postfix_expression 		 								{ $$ = $1; }								
-	| INC_OP unary_expression 			 						{ fprintf(stderr, "\n INC_OP not implemented\n"); }//{ $$ = new preOperation("+", $2); }
-	| DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
-	| unary_operator cast_expression			 				{ $$ = new unaryOperation($1[0],$2) }
+	: postfix_expression 		 								{ $$ = $1; }
+	// | INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
+	// | DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
+	| unary_operator cast_expression			 				{ fprintf(stderr, "\n UNARY_OPERATOR not implemented\n"); }
 	// | SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	// | SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	;
@@ -124,7 +124,7 @@ cast_expression
 	;
 
 multiplicative_expression
-	: cast_expression 											{ $$ = $1; }					
+	: cast_expression 											{ $$ = $1; }
 	| multiplicative_expression '*' cast_expression 			{ $$ = new ArithmeticOperation($1,"*", $3); }
 	| multiplicative_expression '/' cast_expression 			{ $$ = new ArithmeticOperation($1, "/", $3); }
 	| multiplicative_expression '%' cast_expression 			{ $$ = new ArithmeticOperation($1, "%", $3); }
@@ -146,7 +146,7 @@ relational_expression
 	: shift_expression 											{ $$ = $1; }
 	| relational_expression '<' shift_expression 				{ $$ = new BooleanOperation($1, "<", $3); }
 	| relational_expression '>' shift_expression 				{ $$ = new BooleanOperation($1, ">", $3); }
-	| relational_expression LE_OP shift_expression				{ $$ = new BooleanOperation($1, "<=", $3); } 				
+	| relational_expression LE_OP shift_expression				{ $$ = new BooleanOperation($1, "<=", $3); }
 	| relational_expression GE_OP shift_expression				{ $$ = new BooleanOperation($1, ">=", $3); }
 	;
 
@@ -247,7 +247,7 @@ initializer
 
 
 // identifier_list
-// 	: IDENTIFIER 							
+// 	: IDENTIFIER
 // 	| identifier_list ',' IDENTIFIER
 // 	;
 
@@ -322,7 +322,7 @@ declaration_specifiers // for now this will always be a single type_specifier (i
 	// : type_specifier												{ $$ = new SpecifierList($1); }
 	// | type_specifier declaration_specifiers						{ $2->add($1); $$ = $2; } //? why is this the other way arround
 	type_specifier													{ $$ = $1; }
-	;	
+	;
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
 	: VOID 															{ fprint(stderr, "\n Should pass string ptr\n"); string:$$ = $1; } // { $$ = new TypeSpecifier("void"); }
@@ -335,7 +335,7 @@ type_specifier // could do this directly using lexer token as well! // OR JUST P
 	//| struct_specifier			 								{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
 	//| enum_specifier			 									{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
 	//| TYPE_NAME			 					        			{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
-	//;	
+	//;
 
 //primitive data type variable declaration
 //or any user-defined type structure declaration
@@ -363,7 +363,7 @@ parameter_list
 
 /// Statements -----------------------------------------------------------------
 
-// C89 does not allow declarations after statements 
+// C89 does not allow declarations after statements
 // https://stackoverflow.com/questions/6488503/c89-mixing-variable-declarations-and-code
 compound_statement
 	: '{' '}' 														{ $$ = nullptr; }
@@ -538,7 +538,7 @@ const Node *parseAST(const char *inputFile)
 	// 	fprintf(stderr, "(%s) could not be opened", input);
 	// 	return nullptr;
 	// }
-    
+
 	g_root=NULL;
     yyparse();
     return g_root;
