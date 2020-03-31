@@ -9,17 +9,17 @@ class LabeledStatementList;
 class SwitchStatement : public Node
 {
     nodePtr condition;
-    const LabeledStatementList *lsList;
+    const List *sList;
 
 public:
-    SwitchStatement(nodePtr c, const LabeledStatementList *s) : condition(c), lsList(s){};
+    SwitchStatement(nodePtr c, const List *s) : condition(c), sList(s){};
 
     void print(std::ostream &out, LocalVariableBindings &bindings) const override;
 
     ~SwitchStatement()
     {
         delete condition;
-        delete lsList;
+        delete sList;
     }
 };
 

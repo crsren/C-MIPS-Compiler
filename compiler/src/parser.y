@@ -18,7 +18,7 @@
 	const Declarator* declarator;
 	const Identifier * identifier;
 	const List * listPtr; //to get labels in switch statement
-	const ParameterList * paramList;
+	const ParameterList * paramListPtr;
 }
 
 %define parse.error verbose //For debugging
@@ -44,9 +44,9 @@
 %type <str> IDENTIFIER //STRING_LITERAL
 %type <str> ASSIGN
 %type <str> VOID CHAR SHORT INT LONG FLOAT DOUBLE //TYPE_NAME
+%type <str> type_specifier
 
 /// Non-Terminals (can be broken down into terminals)
-%nterm <str> type_specifier
 %nterm <character> unary_operator
 // Expressions:
 %nterm <nodePtr> primary_expression postfix_expression argument_expression_list
@@ -57,14 +57,17 @@
 %nterm <nodePtr> conditional_expression assignment_expression expression
 %nterm <nodePtr> constant_expression initializer //identifier_list
 // Declarations:
-%nterm <paramList> parameter_list
-%nterm <nodePtr> init_declarator init_declarator_list
+%nterm <paramListPtr> parameter_list
+%nterm <listPtr>  init_declarator_list declaration_list 
+%nterm <nodePtr> init_declarator 
 %nterm <nodePtr> direct_declarator declarator declaration_specifiers
-%nterm <nodePtr> declaration declaration_list parameter_declaration
+%nterm <nodePtr> declaration  parameter_declaration
 // Statements:
+%nterm <nodePtr> selection_statement
+%nterm <listPtr> statement_list
 %nterm <nodePtr> labeled_statement compound_statement
-%nterm <nodePtr> expression_statement selection_statement iteration_statement
-%nterm <nodePtr> jump_statement statement statement_list
+%nterm <nodePtr> expression_statement iteration_statement
+%nterm <nodePtr> jump_statement statement
 // Global & Top Level
 %nterm <nodePtr> function_definition external_declaration translation_unit
 
@@ -325,23 +328,23 @@ declaration_specifiers // for now this will always be a single type_specifier (i
 	;
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
-	: VOID 															{ fprint(stderr, "\n Should pass string ptr\n"); string:$$ = $1; } // { $$ = new TypeSpecifier("void"); }
-	| CHAR			 		            							{ fprintf(stderr, "\n CHAR not implemented\n"); }
-	| SHORT		            	 									{ fprintf(stderr, "\n SHORT not implemented\n"); }
+	: VOID 															{ fprint(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("void"); }
+	// | CHAR			 		            							{ fprintf(stderr, "\n CHAR not implemented\n"); }
+	// | SHORT		            	 									{ fprintf(stderr, "\n SHORT not implemented\n"); }
 	| INT 															{ fprint(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("int"); }
-	| LONG			 	            								{ fprintf(stderr, "\n LONG not implemented\n"); }
-	| FLOAT		            	 									{ fprintf(stderr, "\n FLOAT not implemented\n"); }
-	| DOUBLE			 											{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
+	// | LONG			 	            								{ fprintf(stderr, "\n LONG not implemented\n"); }
+	// | FLOAT		            	 									{ fprintf(stderr, "\n FLOAT not implemented\n"); }
+	// | DOUBLE			 											{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
 	//| struct_specifier			 								{ fprintf(stderr, "\nSTRUCT_SPECIFIER not implemented\n"); }
 	//| enum_specifier			 									{ fprintf(stderr, "\n ENUM_SPECIFIER not implemented\n"); }
 	//| TYPE_NAME			 					        			{ fprintf(stderr, "\n TYPE_NAME not implemented\n"); }
-	//;
+	;
 
 //primitive data type variable declaration
 //or any user-defined type structure declaration
 declaration // int x = 4, z = 7, f(int a, int b), ...;
 	//: declaration_specifiers ';'
-	| declaration_specifiers init_declarator_list ';'				{ fprint(stderr, "Type is: %s\n", *$1); $2->setType(*$1); $$ = $2; }//{ $$ = new Declaration($1, $2); } //! implement
+	: declaration_specifiers init_declarator_list ';'				{ fprint(stderr, "Type is: %s\n", *$1); $2->setType(*$1); $$ = $2; }//{ $$ = new Declaration($1, $2); } //! implement
 	;
 
 declaration_list
@@ -389,7 +392,7 @@ expression_statement
 selection_statement
 	: IF '(' expression ')' statement 								{ $$ = new SelectionStatement($3, $5); }
 	| IF '(' expression ')' statement ELSE statement 				{ $$ = new SelectionStatement($3, $5, $7); }
-	| SWITCH '(' expression ')' '{' statement_list '}'				{ $$ = new SwitchStatement($3, $5); }
+	| SWITCH '(' expression ')' '{' statement_list '}'				{ $$ = new SwitchStatement($3, $6); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/while-statement-c?view=vs-2019
@@ -437,7 +440,7 @@ statement
 //https://stackoverflow.com/questions/18820751/identifier-list-vs-parameter-type-list-in-c/18820829#18820829
 function_definition
 	// : declaration_specifiers declarator declaration_list compound_statement
-	: declaration_specifiers declarator compound_statement 					{ $$ = new FnDefinition($1, $2, $3); }
+	: declaration_specifiers declarator compound_statement 			{ $$ = new FnDefinition($1, $2, $3); }
 	// Functions with return type int/int* aren't required to have a declaration
 	//| declarator declaration_list compound_statement
 	//| declarator compound_statement
