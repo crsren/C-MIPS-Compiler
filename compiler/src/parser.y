@@ -537,10 +537,10 @@ const Node *parseAST(const char *inputFile)
 {
 	yyin = fopen(input, "r");
 	if (!yyin)
-	// {
-	// 	fprintf(stderr, "(%s) could not be opened", input);
-	// 	return nullptr;
-	// }
+	 {
+		fprintf(stderr, "(%s) could not be opened", input);
+		return nullptr;
+	}
 
 	g_root=NULL;
     yyparse();
