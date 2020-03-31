@@ -2,17 +2,18 @@
 #define DECLARATOR_H
 
 #include "../helpers.h"
+#include "Expressions/primitives.h"
 
 class Declarator //this is used as varDeclarator and as the base class for fnDeclarator
 {
 protected:
-    const std::string identifier;
+    Identifier *identifier;
 
 public:
-    bool isFunction;
-    Declarator(const std::string &s) : identifier(s), isFunction(false) {}
+    const bool isFunction;
+    Declarator(Identifier *s, bool isF) : identifier(s), isFunction(isF) {}
 
-    const std::string getIdentifier() const
+    Identifier *getIdentifier() const
     {
         return identifier;
     }
@@ -23,7 +24,7 @@ public:
 class InitDeclarator : public Node
 {
     std::string specifierType = ""; // single specifier for now
-    Declarator* declarator;
+    Declarator *declarator;
     nodePtr initializer;
 
 public:
@@ -36,7 +37,7 @@ public:
         delete initializer;
     }
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
     void setType(std::string specifier) //set by declaration
     {

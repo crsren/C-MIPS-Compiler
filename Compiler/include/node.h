@@ -11,7 +11,7 @@ class Node
 {
 public:
     virtual ~Node(){};
-    virtual void print(std::ostream &out, LocalVariableBindings &bindings) const { std::cerr << "Unimplemented node.\n"; };
+    virtual void print(std::ostream &out, LocalVariableBindings *bindings) const = 0;
     //const = 0;
 };
 

@@ -4,15 +4,15 @@
 #include "../helpers.h"
 #include "../Declaration/declarators.h"
 
+class ParameterList;
+
 class FnDeclarator : public Declarator
 {
 private:
     ParameterList *parameterList; //parameter
 
 public:
-    FnDeclarator(ParameterList *l = nullptr) : parameterList(l), isFunction(true) {};
-
-    virtual void print(std::ostream &out, LocalVariableBindings &bindings) const override;
+    FnDeclarator(Declarator *declarator, ParameterList *l = nullptr) : Declarator(declarator->getIdentifier(), true), parameterList(l){};
 
     ~FnDeclarator()
     {
@@ -26,15 +26,15 @@ public:
 };
 
 class ParameterDeclaration
-{    
+{
     const std::string specifier; // f.e. int
     Declarator *declarator;      // not necessary! could be int foo(int, int);
 
 public:
-
     ParameterDeclaration(std::string s, Declarator *d) : specifier(s), declarator(d){};
 
-    Declarator* getDeclarator() {
+    Declarator *getDeclarator()
+    {
         return declarator;
     }
 
@@ -51,20 +51,20 @@ public:
 
 class ParameterList : public Node
 {
-    std::vector<const ParameterDeclaration *> pList;
+    std::vector<ParameterDeclaration *> pList;
 
 public:
-    ParameterList(const ParameterDeclaration *parameter)
+    ParameterList(ParameterDeclaration *parameter)
     {
         pList.push_back(parameter);
     };
 
-    void add(const ParameterDeclaration *parameter)
+    void add(ParameterDeclaration *parameter)
     {
         pList.push_back(parameter);
     };
 
-    std::list<const ParameterDeclaration *> getParameterList()
+    std::vector<ParameterDeclaration *> getItems()
     {
         return pList;
     };

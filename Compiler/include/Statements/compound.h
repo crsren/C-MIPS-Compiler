@@ -13,7 +13,7 @@ private:
 public:
     Compound(List *d, List *s) : dList(d), sList(s){};
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
     ~Compound()
     {

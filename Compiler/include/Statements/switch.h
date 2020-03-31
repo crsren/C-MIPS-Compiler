@@ -14,7 +14,7 @@ class SwitchStatement : public Node
 public:
     SwitchStatement(nodePtr c, const List *s) : condition(c), sList(s){};
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
     ~SwitchStatement()
     {

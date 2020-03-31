@@ -11,7 +11,7 @@ private:
 public:
     ReturnStatement(nodePtr e = nullptr) : expression(e){};
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
     ~ReturnStatement() { delete expression; };
 };

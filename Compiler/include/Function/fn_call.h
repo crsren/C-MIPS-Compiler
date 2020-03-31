@@ -12,7 +12,7 @@ private:
 public:
     FnCall(nodePtr p, nodePtr a) : postfix(p), argumentList(a){};
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
     ~FnCall()
     {

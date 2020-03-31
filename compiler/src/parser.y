@@ -301,13 +301,13 @@ init_declarator_list //
 //https://en.cppreference.com/w/c/language/declarations
 //http://c-faq.com/decl/spiral.anderson.html
 direct_declarator
-	: IDENTIFIER 													{ $$ = new Identifier(*$1); } //TODO IMPLEMENT PRINT
+	: IDENTIFIER 													{ $$ = new Declarator(new Identifier(*$1), false); } //TODO IMPLEMENT PRINT
 	| '(' declarator ')' 											{ $$ = $2; }
 	//| direct_declarator '[' constant_expression ']' 				// new array declarator
 	//| direct_declarator '[' ']' 									// new array declarator
-	| direct_declarator '(' parameter_list ')'						{ $$ = new FnDeclarator($1, $3); }
+	| direct_declarator '(' parameter_list ')'						{ $$ = new FnDeclarator($1, $3); delete $1; }
 	// | direct_declarator '(' identifier_list ')'
-	| direct_declarator '(' ')'										{ $$ = new FnDeclarator($1); }
+	| direct_declarator '(' ')'										{ $$ = new FnDeclarator($1); delete $1; }
 	;
 
 declarator

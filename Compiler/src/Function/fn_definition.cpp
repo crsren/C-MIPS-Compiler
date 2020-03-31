@@ -1,8 +1,8 @@
 #include "../../include/Function/fn_definition.h"
 
-void FnDefinition::print(std::ostream &out, LocalVariableBindings &bindings) const
+void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
-    std::string functionIdentifier = fnDeclarator -> getIdentifier();
+    std::string functionIdentifier = fnDeclarator->getIdentifier()->getName();
 
     if (GlobalVariableBindings::instance().functionBindingExists(functionIdentifier) == false) //if it hasn't been declared before
     {
@@ -10,36 +10,35 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings &bindings) con
         {
             GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, INTEGER);
         }
-        else if(returnType == "void")
+        else if (returnType == "void")
         {
             GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, VOID);
         }
     }
 
-    LocalVariableBindings localVariableBindings;
+    LocalVariableBindings *localVariableBindings = new LocalVariableBindings(); // KIMON CHECK IS THIS RIGHT?
 
     out << Mips::segment_text();
     out << Mips::tag_global(functionIdentifier);
-    
+
     out << Mips::new_label(functionIdentifier);
-    
+
     out << Mips::store_word(31, 0, true); // $31 = $ra
     out << Mips::store_word(30, 4, true); // $30 = $fp
 
     out << Mips::move(30, 29);
 
-    localVariableBindings.increaseStackFrameSizeBy(8);
+    localVariableBindings->increaseStackFrameSizeBy(8);
 
+    std::vector<ParameterDeclaration *> paramList = fnDeclarator->getParameterList()->getItems();
 
-    std::list<const ParameterDeclaration *> paramList = fnDeclarator->getParameterList();
-
-    for(int i = 0; i < paramList.size(); i++)
+    for (int i = 0; i < paramList.size(); i++)
     {
         std::string parameterSpecifier = paramList.at(i)->getSpecifier();
-        std::string parameterIdentifier = paramList.at(i)->getDeclarator()->getIdentifier();
+        std::string parameterIdentifier = paramList.at(i)->getDeclarator()->getIdentifier()->getName();
         bool isFn = paramList.at(i)->getDeclarator()->isFunction;
 
-        if(isFn)
+        if (isFn)
         {
             if (parameterSpecifier == "void")
             {
@@ -54,12 +53,12 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings &bindings) con
         {
             if (parameterSpecifier == "int")
             {
-                localVariableBindings.insertLocalVariableBinding(parameterIdentifier, INTEGER);
+                localVariableBindings->decrementCurrentExpressionAddressOffsetBy(parameterIdentifier, INTEGER); // KIMON
             }
         }
     }
 
-    compound -> print(out, localVariableBindings);
+    compound->print(out, localVariableBindings);
 
     out << Mips::load_word(31, 0, false);
     out << Mips::load_word(30, 4, false);

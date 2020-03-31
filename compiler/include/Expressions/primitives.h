@@ -14,17 +14,16 @@ private:
 public:
     Constant(const double &value) : value(value){};
 
-    void print(std::ostream &out, LocalVariableBindings & bindings) const override
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
-        if(bindings)
+        if (bindings) // KIMON is this supposed to be local?
         {
             out << Mips::load_immediate(8, value);
-            out << Mips::store_word(8, bindings.getCurrentExpressionAddressOffset(), false);
+            out << Mips::store_word(8, bindings->getCurrentExpressionAddressOffset(), false);
             //stackFrame->Push(); TODO
         }
-        else
+        else // global
         {
-
         }
     };
 };
@@ -37,18 +36,17 @@ private:
 public:
     Identifier(const std::string &name) : name(name){};
 
-    void print(std::ostream &out, LocalVariableBindings & bindings) const override
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
-        if (bindings.localVariableBindingExists(name))
+        if (bindings->localVariableBindingExists(name))
         {
-            out << Mips::load_word(2, bindings.getLocalVariableAddressOffset(name), false); // Use frame pointer
+            out << Mips::load_word(2, bindings->getLocalVariableAddressOffset(name), false); // Use frame pointer
         }
-        else if(GlobalVariableBindings::instance().globalVariableBindingExists(name))
+        else if (GlobalVariableBindings::instance().globalVariableBindingExists(name))
         {
             out << Mips::load_global_word(2, name);
         }
     }
-
 
     std::string getName()
     {

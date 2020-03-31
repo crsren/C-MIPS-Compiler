@@ -17,7 +17,7 @@ public:
         items.push_back(first);
     };
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
         for (const auto &i : items)
             i->print(out, bindings);

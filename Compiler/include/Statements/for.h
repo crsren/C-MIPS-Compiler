@@ -19,7 +19,7 @@ public:
     ForStatement(nodePtr e1, nodePtr e2, nodePtr s)
         : init(e1), condition(e2), alteration(nullptr), statement(s){};
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
     ~ForStatement()
     {

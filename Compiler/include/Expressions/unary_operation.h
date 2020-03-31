@@ -18,11 +18,11 @@ public:
         delete postfixExpression;
     }
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
         postfixExpression->print(out, bindings);
 
-        out << Mips::load_word(2, bindings.getCurrentExpressionAddressOffset(), false);
+        out << Mips::load_word(2, bindings->getCurrentExpressionAddressOffset(), false);
 
         switch (operationSymbol[0])
         {
@@ -63,7 +63,7 @@ public:
             //         break;
         }
 
-        out << Mips::store_word(2, bindings.getCurrentExpressionAddressOffset(), false);
+        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
     }
 };
 

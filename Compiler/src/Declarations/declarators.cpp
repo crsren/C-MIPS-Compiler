@@ -1,13 +1,13 @@
 #include "../../include/Declaration/declarators.h"
 
-void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) const
+void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
-    std::string identifier = declarator->getIdentifier();
+    std::string identifier = declarator->getIdentifier()->getName();
     // this.specifierType is the type (got this from declaration class before this print function is being called )
 
     if (specifierType == "" && initializer != nullptr) // the variable has already been defined and we assign a value to it
     {
-        if (&bindings == nullptr) // global
+        if (bindings == nullptr) // global
         {
             initializer->print(out, bindings);
             out << Mips::load_address(1, identifier);
@@ -17,7 +17,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
         else // local
         {
             initializer->print(out, bindings);
-            out << Mips::store_word(2, bindings.getLocalVariableAddressOffset(identifier), false);
+            out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifier), false);
         }
     }
 
@@ -38,9 +38,9 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
             }
             else // local
             {
-                bindings.insertLocalVariableBinding(identifier, INTEGER);
+                bindings->insertLocalVariableBinding(identifier, INTEGER);
                 initializer->print(out, bindings);
-                out << Mips::store_word(2, bindings.getLocalVariableAddressOffset(identifier), false);
+                out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifier), false);
             }
         }
         else // the variable is just declared without being initialized
@@ -55,8 +55,8 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
             }
             else // local
             {
-                bindings.insertLocalVariableBinding(identifier, INTEGER);
-                out << Mips::store_word(0, bindings.getLocalVariableAddressOffset(identifier), false);
+                bindings->insertLocalVariableBinding(identifier, INTEGER);
+                out << Mips::store_word(0, bindings->getLocalVariableAddressOffset(identifier), false);
             }
         }
     }
@@ -64,7 +64,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
     // ************************************************ NOT SURE WHAT TO DO HERE ************************************************
     else if (specifierType == "void" && initializer == nullptr) // the function is being declared
     {
-        GlobalVariableBindings::instance().insertFunctionBinding(identifier, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber)
+        GlobalVariableBindings::instance().insertFunctionBinding(identifier, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber) // KIMON
     }
     // **************************************************************************************************************************
 };

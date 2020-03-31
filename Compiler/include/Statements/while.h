@@ -13,7 +13,7 @@ public:
     WhileStatement(nodePtr c, nodePtr s)
         : condition(c), statement(s){};
 
-    void print(std::ostream &out, LocalVariableBindings &bindings) const override;
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
     ~WhileStatement()
     {
