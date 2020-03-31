@@ -94,7 +94,7 @@ struct Variable
 };
 
 class GlobalVariableBindings // usage: GlobalBindings::instance().<function>();
-{   
+{
     // note that this map holds the identifiers and the data of the global
     // variables
     //
@@ -115,11 +115,9 @@ class GlobalVariableBindings // usage: GlobalBindings::instance().<function>();
     std::unordered_map<std::string, Function> functionBindings;
 
 public:
-    GlobalVariableBindings() {};
-
-    GlobalVariableBindings instance()
+    static GlobalVariableBindings &instance()
     {
-        static GlobalVariableBindings instance; //Insantiated on first use
+        static GlobalVariableBindings instance; //Instantiated on first use
         return instance;
     };
 
@@ -214,7 +212,7 @@ class LocalVariableBindings
 
 public:
     LocalVariableBindings(int stackFrameSize_i = 0, int currentExpressionAddressOffset_i = 4) : stackFrameSize(stackFrameSize_i),
-                                                                                           currentExpressionAddressOffset(currentExpressionAddressOffset_i)
+                                                                                                currentExpressionAddressOffset(currentExpressionAddressOffset_i)
     {
     }
 
@@ -297,8 +295,6 @@ public:
 
         localBindings.insert(std::make_pair(id, var));
     }
-    
-
 
     void incrementStackFrameSize()
     {
