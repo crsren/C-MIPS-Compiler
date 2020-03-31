@@ -11,12 +11,12 @@
 
 // Possible types that terminals can be
 %union{
-	const Node * nodePtr;
-	std::string * str;
-	const Identifier * identifier;
+	const std::string * str;
 	double num;
-	Declarator* declarator;
 
+	const Node * nodePtr;
+	const Declarator* declarator;
+	const Identifier * identifier;
 	const List * listPtr; //to get labels in switch statement
 	const ParameterList * paramList;
 }
@@ -38,16 +38,16 @@
 %nonassoc ')'
 %nonassoc ELSE
 
-/// Symbol types
-// Terminals (Lexer tokens used as argument)
-// TODO: unary_operator
+//// Symbol types
+/// Terminals (Lexer tokens used as argument)
 %type <num> CONSTANT
 %type <str> IDENTIFIER //STRING_LITERAL
 %type <str> ASSIGN
 %type <str> VOID CHAR SHORT INT LONG FLOAT DOUBLE //TYPE_NAME
 
-// Non-Terminals (can be broken down into terminals)
+/// Non-Terminals (can be broken down into terminals)
 %nterm <str> type_specifier
+%nterm <character> unary_operator
 // Expressions:
 %nterm <nodePtr> primary_expression postfix_expression argument_expression_list
 %nterm <nodePtr> unary_expression cast_expression multiplicative_expression
@@ -104,18 +104,18 @@ unary_expression
 	: postfix_expression 		 								{ $$ = $1; }
 	// | INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
 	// | DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
-		| unary_operator cast_expression			 				{ $$ = new UnaryOperation($1, $3); }
+		| unary_operator cast_expression			 				{ $$ = new UnaryOperation($1, $2); }
 	// | SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	// | SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	;
 
 unary_operator
-	: '&'
-	| '*'
-	| '+'
-	| '-'
-	| '~'
-	| '!'
+	: '&' 														{ $$ = new std::string("&"); }
+	| '*' 														{ $$ = new std::string("*"); }
+	| '+' 														{ $$ = new std::string("+"); }
+	| '-' 														{ $$ = new std::string("-"); }
+	| '~' 														{ $$ = new std::string("~"); }
+	| '!' 														{ $$ = new std::string("!"); }
 	;
 
 cast_expression
@@ -321,7 +321,7 @@ declaration_specifiers // for now this will always be a single type_specifier (i
 	// | storage_class_specifier declaration_specifiers
 	// : type_specifier												{ $$ = new SpecifierList($1); }
 	// | type_specifier declaration_specifiers						{ $2->add($1); $$ = $2; } //? why is this the other way arround
-	type_specifier													{ $$ = $1; }
+	:type_specifier													{ $$ = $1; }
 	;
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
@@ -409,7 +409,7 @@ iteration_statement
 jump_statement
 	//| CONTINUE ';'			 									{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
 	//| BREAK ';'			 										{ fprintf(stderr, "\n BREAK not implemented\n"); }
-	| RETURN ';'													{ $$ = new ReturnStatement();	}
+	: RETURN ';'													{ $$ = new ReturnStatement();	}
 	| RETURN expression ';'											{ $$ = new ReturnStatement($2); }
 	;
 
