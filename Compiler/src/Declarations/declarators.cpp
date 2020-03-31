@@ -1,13 +1,13 @@
 #include "../../include/Declaration/declarators.h"
 
-void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) const override
+void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) const
 {
     std::string identifier = declarator->getIdentifier();
     // this.specifierType is the type (got this from declaration class before this print function is being called )
 
     if (specifierType == "" && initializer != nullptr) // the variable has already been defined and we assign a value to it
     {
-        if (!bindings) // global
+        if (&bindings == nullptr) // global
         {
             initializer->print(out, bindings);
             out << Mips::load_address(1, identifier);
@@ -25,7 +25,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
     {
         if (initializer) // we assign a value to the variable being declared
         {
-            if (bindings == NULL) // global
+            if (bindings == nullptr) // global
             {
                 GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, INTEGER);
                 out << Mips::segment_data();
@@ -45,7 +45,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings &bindings) c
         }
         else // the variable is just declared without being initialized
         {
-            if (!bindings) // global
+            if (bindings == nullptr) // global
             {
                 GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, INTEGER);
                 out << Mips::segment_data();
