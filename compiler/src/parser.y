@@ -3,7 +3,7 @@
 
 	//matched below context-free grammar
 	 extern const Node *g_root;
-	 FILE *yyin; // Lexer input file
+	 extern FILE *yyin; // Lexer input file
 
 	int yylex(void);
   	void yyerror(const char *);

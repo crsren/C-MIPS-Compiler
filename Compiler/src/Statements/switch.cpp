@@ -1,6 +1,6 @@
 #include "../../include/Statements/switch.h"
 
-void SwitchStatement::print(std::ostream &out, LocalVariableBindings &bindings) const
+void SwitchStatement::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
     // Cast List to labeledStatementList
     const LabeledStatementList *lsList = dynamic_cast<const LabeledStatementList *>(sList);

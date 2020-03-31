@@ -30,7 +30,6 @@ IS			(u|U|l|L)*
 "do"			{ return(DO); }
 "double"		{ return(DOUBLE); }
 "else"			{ return(ELSE); }
-"enum"			{ return(ENUM); }
 "float"			{ return(FLOAT); }
 "for"			{ return(FOR); }
 "if"			{ return(IF); }
@@ -41,7 +40,6 @@ IS			(u|U|l|L)*
 "signed"		{ return(SIGNED); }
 "sizeof"		{ return(SIZEOF); }
 "static"		{ return(STATIC); }
-"struct"		{ return(STRUCT); }
 "switch"		{ return(SWITCH); }
 "typedef"		{ return(TYPEDEF); }
 "unsigned"		{ return(UNSIGNED); }

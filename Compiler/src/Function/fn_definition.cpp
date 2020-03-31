@@ -53,7 +53,7 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
         {
             if (parameterSpecifier == "int")
             {
-                localVariableBindings->decrementCurrentExpressionAddressOffsetBy(parameterIdentifier, INTEGER); // KIMON
+                localVariableBindings->insertLocalVariableBinding(parameterIdentifier, INTEGER);
             }
         }
     }

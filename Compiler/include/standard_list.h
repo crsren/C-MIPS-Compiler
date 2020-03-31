@@ -1,5 +1,5 @@
-#ifndef LIST_H
-#define LIST_H
+#ifndef STANDARD_LIST_H
+#define STANDARD_LIST_H
 
 #include "helpers.h"
 
@@ -9,9 +9,8 @@
 
 class List : public Node
 {
-    std::list<nodePtr> items;
-
 public:
+    std::list<nodePtr> items;
     List(nodePtr first)
     {
         items.push_back(first);
@@ -23,10 +22,10 @@ public:
             i->print(out, bindings);
     }
 
-    virtual void add(nodePtr ptr)
+    void add(nodePtr ptr)
     {
         items.push_back(ptr);
     };
 };
 
-#endif // LIST_H
+#endif // STANDARD_LIST_H

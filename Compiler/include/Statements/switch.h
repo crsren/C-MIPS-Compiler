@@ -1,8 +1,8 @@
 #if !defined(SWITCH_H)
 #define SWITCH_H
 
-#include "../helpers.h"
-#include "../list.h"
+#include "helpers.h"
+#include "standard_list.h"
 
 class LabeledStatementList;
 

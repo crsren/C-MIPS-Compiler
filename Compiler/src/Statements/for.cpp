@@ -1,6 +1,6 @@
 #include "Statements/for.h"
 
-void ForStatement::print(std::ostream &out, VariableBindings &bindings) const
+void ForStatement::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
     std::string FOR = Label::instance().uniquify("for_c");
     std::string DO = Label::instance().uniquify("for_do");

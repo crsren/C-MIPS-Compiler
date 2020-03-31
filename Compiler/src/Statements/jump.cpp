@@ -1,6 +1,6 @@
 #include "Statements/jump.h"
 
-void ReturnStatement::print(std::ostream &out, VariableBindings &bindings) const
+void ReturnStatement::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
     if (expression)
         expression->print(out, bindings);

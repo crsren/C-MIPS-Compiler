@@ -1,22 +1,23 @@
 #ifndef FN_CALL_H
 #define FN_CALL_H
 
-#include "../helpers.h"
+#include "helpers.h"
+#include "Expressions/primitives.h"
 
 class FnCall : public Node
 {
 private:
     Identifier *identifier;
-    ListPtr argumentList;
+    List *argumentList;
 
 public:
-    FnCall(nodePtr p, nodePtr a) : postfix(p), argumentList(a){};
+    FnCall(Identifier *p, List *a) : identifier(p), argumentList(a){};
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
     ~FnCall()
     {
-        delete postfix;
+        delete identifier;
         delete argumentList;
     }
 };

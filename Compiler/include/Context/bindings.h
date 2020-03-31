@@ -8,12 +8,12 @@
 
 enum PrimitiveDataTypeCode
 {
-    INTEGER,
-    DOUBLE,
-    FLOAT,
-    CHAR,
-    UNSIGNED,
-    VOID
+    _INTEGER,
+    _DOUBLE,
+    _FLOAT,
+    _CHAR,
+    _UNSIGNED,
+    _VOID
     // ,
     // ENUMERATION
 };

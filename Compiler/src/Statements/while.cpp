@@ -1,6 +1,6 @@
 #include "Statements/while.h"
 
-void WhileStatement::print(std::ostream &out, VariableBindings &bindings) const
+void WhileStatement::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
     // No need to enter scope as this is done in the compound statement
 

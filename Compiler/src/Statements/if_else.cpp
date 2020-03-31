@@ -1,6 +1,6 @@
 #include "Statements/if_else.h"
 
-void IfElseStatement::print(std::ostream &out, VariableBindings &bindings) const
+void IfElseStatement::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
     // No need to enter scope as this is done in the compound statement
 
