@@ -3,14 +3,14 @@
 
 // This header includes library and helper classes/functions used across the AST
 
-#include "node.h"
-#include "mips.h"
-#include "Context/bindings.h"
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <list>
+
+#include "node.h"
+#include "mips.h"
+#include "Context/bindings.h"
 
 // Singletons
 //https://stackoverflow.com/questions/1008019/c-singleton-design-pattern

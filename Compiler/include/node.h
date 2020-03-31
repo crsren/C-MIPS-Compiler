@@ -1,7 +1,8 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "helpers.h"
+#include <iostream>
+#include "Context/bindings.h"
 
 class Node;
 typedef const Node *nodePtr;
