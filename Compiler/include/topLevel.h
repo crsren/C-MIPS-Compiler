@@ -1,7 +1,7 @@
 // include all files here for easier access in parser
 
 // Declaration
-#include "Declaration/declaration.h"
+//#include "Declaration/declaration.h"
 #include "Declaration/declarators.h"
 //#include "Declaration/type_specifiers.h"
 
