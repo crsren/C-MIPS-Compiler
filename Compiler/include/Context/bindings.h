@@ -154,7 +154,7 @@ public:
             arraySize *= arrayDimensionSizes_i[i];
         }
         arraySize *= 4;
-        if (dataTypeCode == DOUBLE)
+        if (dataTypeCode == _DOUBLE)
         {
             arraySize *= 2;
         }
@@ -282,7 +282,7 @@ public:
             arraySize *= arrayDimensionSizes_i[i];
         }
         arraySize *= 4;
-        if (dataTypeCode == DOUBLE)
+        if (dataTypeCode == _DOUBLE)
         {
             arraySize *= 2;
         }

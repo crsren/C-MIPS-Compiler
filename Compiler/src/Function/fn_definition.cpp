@@ -8,11 +8,11 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
     {
         if (returnType == "int")
         {
-            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, INTEGER);
+            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _INTEGER);
         }
         else if (returnType == "void")
         {
-            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, VOID);
+            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _VOID);
         }
     }
 
@@ -42,18 +42,18 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
         {
             if (parameterSpecifier == "void")
             {
-                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, VOID);
+                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _VOID);
             }
             else if (parameterSpecifier == "int")
             {
-                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, INTEGER);
+                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _INTEGER);
             }
         }
         else
         {
             if (parameterSpecifier == "int")
             {
-                localVariableBindings->insertLocalVariableBinding(parameterIdentifier, INTEGER);
+                localVariableBindings->insertLocalVariableBinding(parameterIdentifier, _INTEGER);
             }
         }
     }
