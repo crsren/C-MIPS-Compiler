@@ -6,73 +6,77 @@ FS			(f|F|l|L)
 IS			(u|U|l|L)*
 
 %{
+// As in Lab: Avoid error "error: `fileno' was not declared in this scope"
+extern "C" int fileno(FILE *stream);
+
 //for debugging in VSstudio
 #define YY_NO_UNISTD_H
 
 // To get rid of register warning for c++=17
-#if (__cplusplus - 0) >= 201703L
-  #define __REGISTER
-#else
-  #define __REGISTER                             register
-#endif
+// #if (__cplusplus - 0) >= 201703L
+//   #define __REGISTER
+// #else
+//   #define __REGISTER                             register
+// #endif
 
 #include "parser.tab.hpp"
+#include <stdio.h>
 
 %}
+
+%option noyywrap
+%option never-interactive
 
 %%
 
 "break"			{ return(BREAK); }
 "case"			{ return(CASE); }
 "char"			{ return(CHAR); }
-"const"			{ return(CONST); }
-"continue"		{ return(CONTINUE); }
+"continue"	{ return(CONTINUE); }
 "default"		{ return(DEFAULT); }
-"do"			{ return(DO); }
+"do"			  { return(DO); }
 "double"		{ return(DOUBLE); }
 "else"			{ return(ELSE); }
-"enum"			{ return(ENUM); }
 "float"			{ return(FLOAT); }
-"for"			{ return(FOR); }
-"goto"			{ return(GOTO); }
-"if"			{ return(IF); }
-"int"			{ return(INT); }
+"for"			  { return(FOR); }
+"if"			  { return(IF); }
+"int"			  { yylval.str = new std::string(yytext); return(INT); }
 "long"			{ return(LONG); }
 "return"		{ return(RETURN); }
 "short"			{ return(SHORT); }
 "signed"		{ return(SIGNED); }
 "sizeof"		{ return(SIZEOF); }
 "static"		{ return(STATIC); }
-"struct"		{ return(STRUCT); }
 "switch"		{ return(SWITCH); }
 "typedef"		{ return(TYPEDEF); }
-"unsigned"		{ return(UNSIGNED); }
-"void"			{ return(VOID); }
+"unsigned"	{ return(UNSIGNED); }
+"void"			{ yylval.str = new std::string(yytext); return(VOID); }
 "while"			{ return(WHILE); }
 
-{L}({L}|{D})*		{ return(check_type()); }
-
+[0-9]+            { yylval.num = atoi(yytext); return CONSTANT; }
+{L}({L}|{D})*     { yylval.str = new std::string(yytext); return IDENTIFIER; }
 0[xX]{H}+{IS}?		{ return(CONSTANT); }
-0{D}+{IS}?			{ return(CONSTANT); }
-{D}+{IS}?			{ return(CONSTANT); }
+0{D}+{IS}?			  { return(CONSTANT); }
+{D}+{IS}?			    { return(CONSTANT); }
 L?'(\\.|[^\\'])+'	{ return(CONSTANT); }
 
-{D}+{E}{FS}?			{ return(CONSTANT); }
+{D}+{E}{FS}?			      { return(CONSTANT); }
 {D}*"."{D}+({E})?{FS}?	{ return(CONSTANT); }
 {D}+"."{D}*({E})?{FS}?	{ return(CONSTANT); }
 
-L?\"(\\.|[^\\"])*\"	{ return(STRING_LITERAL); }
+L?\"(\\.|[^\\"])*\"	    { return(STRING_LITERAL); }
 
-">>="			{ return(RIGHT_ASSIGN); }
-"<<="			{ return(LEFT_ASSIGN); }
-"+="			{ return(ADD_ASSIGN); }
-"-="			{ return(SUB_ASSIGN); }
-"*="			{ return(MUL_ASSIGN); }
-"/="			{ return(DIV_ASSIGN); }
-"%="			{ return(MOD_ASSIGN); }
-"&="			{ return(AND_ASSIGN); }
-"^="			{ return(XOR_ASSIGN); }
-"|="			{ return(OR_ASSIGN); }
+">>="			|
+"<<="			|
+"+="			|
+"-="			|
+"*="			|
+"/="			|
+"%="			|
+"&="			|
+"^="			|
+"|="			{ return(ASSIGN); }
+
 ">>"			{ return(RIGHT_OP); }
 "<<"			{ return(LEFT_OP); }
 "++"			{ return(INC_OP); }
@@ -84,30 +88,32 @@ L?\"(\\.|[^\\"])*\"	{ return(STRING_LITERAL); }
 ">="			{ return(GE_OP); }
 "=="			{ return(EQ_OP); }
 "!="			{ return(NE_OP); }
-";"				{ return(';'); }
+
 ("{"|"<%")		{ return('{'); }
 ("}"|"%>")		{ return('}'); }
-","				{ return(','); }
-":"				{ return(':'); }
-"="				{ return('='); }
-"("				{ return('('); }
-")"				{ return(')'); }
 ("["|"<:")		{ return('['); }
 ("]"|":>")		{ return(']'); }
-"."				{ return('.'); }
-"&"				{ return('&'); }
-"!"				{ return('!'); }
-"~"				{ return('~'); }
-"-"				{ return('-'); }
-"+"				{ return('+'); }
-"*"				{ return('*'); }
-"/"				{ return('/'); }
-"%"				{ return('%'); }
-"<"				{ return('<'); }
-">"				{ return('>'); }
-"^"				{ return('^'); }
-"|"				{ return('|'); }
-"?"				{ return('?'); }
+
+";"				|
+","				|
+":"				|
+"="				|
+"("				|
+")"				|
+"."				|
+"&"				|
+"!"				|
+"~"				|
+"-"				|
+"+"				|
+"*"				|
+"/"				|
+"%"				|
+"<"				|
+">"				|
+"^"				|
+"|"				|
+"?"				{ return yytext[0]; }
 
 [ \t\v\n\f]		{ ; }
 .				{ fprintf (stderr, "Invalid token: %s\n", yytext); exit(1); }
