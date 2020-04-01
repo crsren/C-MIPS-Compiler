@@ -15,7 +15,7 @@ int main(int argc, char **argv) //RUN: compiler -S <input.c> -o <output.s>
         return EXIT_FAILURE;
     }
 
-    std::cerr << "DONE PARSING" << '\n';
+    cerr << "DONE PARSING" << '\n';
 
     //root->print(cout, NULL);
     std::ofstream output(argv[4]);
