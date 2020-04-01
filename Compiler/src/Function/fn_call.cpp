@@ -1,4 +1,4 @@
-#include "../../include/Function/fn_call.h"
+#include "Function/fn_call.h"
 
 void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
 {

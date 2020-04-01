@@ -34,6 +34,6 @@
 // Context
 #include "Context/bindings.h"
 
-extern Node *parseAST(const char *input);
+extern const Node *parseAST(const char *input);
 
 #endif // TOP_LEVEL_H

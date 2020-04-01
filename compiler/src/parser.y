@@ -1,5 +1,6 @@
 %code requires{
 	#include "topLevel.h"
+	#include <string>
 
 	//matched below context-free grammar
 	 extern const Node *g_root;
@@ -11,14 +12,18 @@
 
 // Possible types that terminals can be
 %union{
-	const std::string * str;
+	std::string * str;
 	double num;
 
+	List * listPtr; // not const to allow adding items
+	ParameterList * paramListPtr;
+	InitDeclaratorList * initDeclaratorListPtr;
+
 	const Node * nodePtr;
-	const Declarator* declarator;
-	const Identifier * identifier;
-	const List * listPtr; //to get labels in switch statement
-	const ParameterList * paramListPtr;
+	const Declarator* declaratorPtr;
+	InitDeclarator * initDeclaratorPtr; // not const since type is set later
+	const ParameterDeclaration * paramDeclPtr;
+	//const Identifier * identifierPtr;
 }
 
 %define parse.error verbose //For debugging
@@ -47,7 +52,7 @@
 %type <str> type_specifier
 
 /// Non-Terminals (can be broken down into terminals)
-%nterm <character> unary_operator
+%nterm <str> unary_operator
 // Expressions:
 %nterm <listPtr> argument_expression_list
 %nterm <nodePtr> primary_expression postfix_expression
@@ -59,10 +64,13 @@
 %nterm <nodePtr> constant_expression initializer //identifier_list
 // Declarations:
 %nterm <paramListPtr> parameter_list
-%nterm <listPtr>  init_declarator_list declaration_list 
-%nterm <nodePtr> init_declarator 
-%nterm <nodePtr> direct_declarator declarator declaration_specifiers
-%nterm <nodePtr> declaration  parameter_declaration
+%nterm <declaratorPtr> declarator direct_declarator
+%nterm <listPtr>  declaration_list
+%nterm <initDeclaratorListPtr> init_declarator_list
+%nterm <initDeclaratorPtr> init_declarator
+%nterm <str> declaration_specifiers
+%nterm <paramDeclPtr> parameter_declaration
+%nterm <nodePtr> declaration
 // Statements:
 %nterm <nodePtr> selection_statement
 %nterm <listPtr> statement_list
@@ -70,7 +78,8 @@
 %nterm <nodePtr> expression_statement iteration_statement
 %nterm <nodePtr> jump_statement statement
 // Global & Top Level
-%nterm <nodePtr> function_definition external_declaration translation_unit
+%nterm <nodePtr> function_definition external_declaration
+%nterm <listPtr> translation_unit
 
 
 %start root
@@ -108,7 +117,7 @@ unary_expression
 	: postfix_expression 		 								{ $$ = $1; }
 	// | INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
 	// | DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
-		| unary_operator cast_expression			 				{ $$ = new UnaryOperation($1, $2); }
+		| unary_operator cast_expression			 				{ $$ = new UnaryOperation(*$1, $2); }
 	// | SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	// | SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	;
@@ -197,7 +206,7 @@ assignment_expression
 
 	// middle will be assignment string ("*=")
 	// → remove last char ("=") and use BinaryOperation
-	| unary_expression ASSIGN assignment_expression 			{ $2[strlen(p)-1]='\0'; $$ = new AssignmentExpression($1-, new ArithmeticOperation($1, *$2, $3)); }
+	| unary_expression ASSIGN assignment_expression 			{ $2[(*$2).size()-1]='\0'; $$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
 	;
 
 expression
@@ -289,12 +298,12 @@ initializer
 // 	| direct_abstract_declarator '(' parameter_list ')'
 // 	;
 
-init_declarator // x,  x = 5
+init_declarator // x,  x = 5, f(b)
 	: declarator 													{ $$ = new InitDeclarator($1); }
 	| declarator '=' initializer 									{ $$ = new InitDeclarator($1, $3); }
 	;
 
-init_declarator_list //
+init_declarator_list
 	: init_declarator 												{ $$ = new InitDeclaratorList($1); }
 	| init_declarator_list ',' init_declarator 						{ $1->add($3); $$ = $1; }
 	;
@@ -325,14 +334,14 @@ declaration_specifiers // for now this will always be a single type_specifier (i
 	// | storage_class_specifier declaration_specifiers
 	// : type_specifier												{ $$ = new SpecifierList($1); }
 	// | type_specifier declaration_specifiers						{ $2->add($1); $$ = $2; } //? why is this the other way arround
-	:type_specifier													{ $$ = $1; }
+	: type_specifier													{ $$ = $1; }
 	;
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
-	: VOID 															{ fprint(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("void"); }
+	: VOID 															{ fprintf(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("void"); }
 	// | CHAR			 		            							{ fprintf(stderr, "\n CHAR not implemented\n"); }
 	// | SHORT		            	 									{ fprintf(stderr, "\n SHORT not implemented\n"); }
-	| INT 															{ fprint(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("int"); }
+	| INT 															{ fprintf(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("int"); }
 	// | LONG			 	            								{ fprintf(stderr, "\n LONG not implemented\n"); }
 	// | FLOAT		            	 									{ fprintf(stderr, "\n FLOAT not implemented\n"); }
 	// | DOUBLE			 											{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
@@ -345,7 +354,7 @@ type_specifier // could do this directly using lexer token as well! // OR JUST P
 //or any user-defined type structure declaration
 declaration // int x = 4, z = 7, f(int a, int b), ...;
 	//: declaration_specifiers ';'
-	: declaration_specifiers init_declarator_list ';'				{ fprint(stderr, "Type is: %s\n", *$1); $2->setType(*$1); $$ = $2; }//{ $$ = new Declaration($1, $2); } //! implement
+	: declaration_specifiers init_declarator_list ';'				{ $2->setType(*$1); $$ = $2; }//{ $$ = new Declaration($1, $2); } //! implement
 	;
 
 declaration_list
@@ -354,9 +363,9 @@ declaration_list
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator 							{ $$ = new ParameterDeclaration($1*, $2); }
+	: declaration_specifiers declarator 							{ $$ = new ParameterDeclaration(*$1, $2); }
 	//| declaration_specifiers abstract_declarator
-	| declaration_specifiers 										{ $$ = new ParameterDeclaration($1*); }
+	| declaration_specifiers 										{ $$ = new ParameterDeclaration(*$1); }
 	;
 
 parameter_list
@@ -371,9 +380,9 @@ parameter_list
 // https://stackoverflow.com/questions/6488503/c89-mixing-variable-declarations-and-code
 compound_statement
 	: '{' '}' 														{ $$ = nullptr; }
-	| '{' statement_list '}'										{ $$ = new CompoundStatement(nullptr, $2); }
-	| '{' declaration_list '}'										{ $$ = new CompoundStatement($2, nullptr); }
-	| '{' declaration_list statement_list '}'						{ $$ = new CompoundStatement($2, $3); }
+	| '{' statement_list '}'										{ $$ = new Compound(nullptr, $2); }
+	| '{' declaration_list '}'										{ $$ = new Compound($2, nullptr); }
+	| '{' declaration_list statement_list '}'						{ $$ = new Compound($2, $3); }
 	;
 
 
@@ -391,8 +400,8 @@ expression_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/switch-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/if-statement-c?view=vs-2019
 selection_statement
-	: IF '(' expression ')' statement 								{ $$ = new SelectionStatement($3, $5); }
-	| IF '(' expression ')' statement ELSE statement 				{ $$ = new SelectionStatement($3, $5, $7); }
+	: IF '(' expression ')' statement 								{ $$ = new IfElseStatement($3, $5); }
+	| IF '(' expression ')' statement ELSE statement 				{ $$ = new IfElseStatement($3, $5, $7); }
 	| SWITCH '(' expression ')' '{' statement_list '}'				{ $$ = new SwitchStatement($3, $6); }
 	;
 
@@ -441,7 +450,7 @@ statement
 //https://stackoverflow.com/questions/18820751/identifier-list-vs-parameter-type-list-in-c/18820829#18820829
 function_definition
 	// : declaration_specifiers declarator declaration_list compound_statement
-	: declaration_specifiers declarator compound_statement 			{ $$ = new FnDefinition($1, $2, $3); }
+	: declaration_specifiers declarator compound_statement 			{ $$ = new FnDefinition(*$1, $2, $3); }
 	// Functions with return type int/int* aren't required to have a declaration
 	//| declarator declaration_list compound_statement
 	//| declarator compound_statement
@@ -546,7 +555,7 @@ const Node *parseAST(const char *input)
 	g_root=NULL;
     yyparse();
 
-	fclose(input);
+	fclose(yyin);
 
 	if(g_root)
 		fprintf(stderr, "Error while parsing! No root pointer passed.");

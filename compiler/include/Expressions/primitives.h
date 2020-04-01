@@ -1,7 +1,7 @@
 #ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
-#include "helpers.h"
+#include "../helpers.h"
 
 // String_Literal?
 // TO DO: these classes might have a type parent class

@@ -17,6 +17,11 @@ public:
     {
         return identifier;
     }
+
+    virtual ~Declarator()
+    {
+        delete identifier;
+    }
 };
 
 //TODO: class ArrayDeclarator : public Declarator
@@ -24,12 +29,12 @@ public:
 class InitDeclarator : public Node
 {
     std::string specifierType = ""; // single specifier for now
-    Declarator *declarator;
+    const Declarator *declarator;
     nodePtr initializer;
 
 public:
-    InitDeclarator(Declarator *d, nodePtr i) : declarator(d), initializer(i){};
-    InitDeclarator(Declarator *d) : declarator(d), initializer(nullptr){};
+    InitDeclarator(const Declarator *d, nodePtr i) : declarator(d), initializer(i){};
+    InitDeclarator(const Declarator *d) : declarator(d), initializer(nullptr){};
 
     ~InitDeclarator()
     {
@@ -48,24 +53,30 @@ public:
 class InitDeclaratorList : public Node
 {
     // std::string specifierType = ""; // single specifier for now
-    std::list<InitDeclarator *> initDeclaratorList;
+    std::list<InitDeclarator *> items;
 
 public:
     InitDeclaratorList(InitDeclarator *first)
     {
-        initDeclaratorList.push_back(first);
+        items.push_back(first);
+    }
+
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override
+    {
+        for (const auto &initDeclarator : items)
+            initDeclarator->print(out, bindings);
     }
 
     void setType(std::string specifier) //set by declaration
     {
         // specifierType = specifier;
-        for (auto &initDeclarator : initDeclaratorList)
+        for (auto &initDeclarator : items)
             initDeclarator->setType(specifier);
     };
 
     void add(InitDeclarator *first)
     {
-        initDeclaratorList.push_back(first);
+        items.push_back(first);
     }
 };
 

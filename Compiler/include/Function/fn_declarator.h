@@ -6,18 +6,18 @@
 
 class ParameterDeclaration
 {
-    const std::string specifier; // f.e. int
-    Declarator *declarator;      // not necessary! could be int foo(int, int);
+    const std::string specifier;  // f.e. int
+    const Declarator *declarator; // not necessary! could be int foo(int, int);
 
 public:
-    ParameterDeclaration(std::string s, Declarator *d) : specifier(s), declarator(d){};
+    ParameterDeclaration(const std::string s, const Declarator *d = nullptr) : specifier(s), declarator(d){};
 
-    Declarator *getDeclarator()
+    const Declarator *getDeclarator() const
     {
         return declarator;
     }
 
-    std::string getSpecifier()
+    std::string getSpecifier() const
     {
         return specifier;
     }
@@ -30,20 +30,20 @@ public:
 
 class ParameterList
 {
-    std::vector<ParameterDeclaration *> pList;
+    std::vector<const ParameterDeclaration *> pList;
 
 public:
-    ParameterList(ParameterDeclaration *parameter)
+    ParameterList(const ParameterDeclaration *parameter)
     {
         pList.push_back(parameter);
     };
 
-    void add(ParameterDeclaration *parameter)
+    void add(const ParameterDeclaration *parameter)
     {
         pList.push_back(parameter);
     };
 
-    std::vector<ParameterDeclaration *> getItems()
+    std::vector<const ParameterDeclaration *> getItems()
     {
         return pList;
     };
@@ -54,9 +54,9 @@ class FnDeclarator : public Declarator
     ParameterList *parameterList; //parameter
 
 public:
-    FnDeclarator(Declarator *declarator, ParameterList *l = nullptr) : Declarator(declarator->getIdentifier(), true), parameterList(l){};
+    FnDeclarator(const Declarator *declarator, ParameterList *l = nullptr) : Declarator(declarator->getIdentifier(), true), parameterList(l){};
 
-    ParameterList *getParameterList()
+    ParameterList *getParameterList() const
     {
         return parameterList; // use: this->getParameterList()->getIdentifiers(); in fnDefinition
     }

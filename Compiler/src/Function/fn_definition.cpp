@@ -30,7 +30,8 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
 
     localVariableBindings->increaseStackFrameSizeBy(8);
 
-    std::vector<ParameterDeclaration *> paramList = fnDeclarator->getParameterList()->getItems();
+    const FnDeclarator *cast_fnDeclarator = dynamic_cast<const FnDeclarator *>(fnDeclarator);
+    std::vector<const ParameterDeclaration *> paramList = cast_fnDeclarator->getParameterList()->getItems();
 
     for (int i = 0; i < paramList.size(); i++)
     {

@@ -2,7 +2,7 @@
 #define ASSIGNMENT_EXPRESSION_H
 
 #include "../helpers.h"
-#include "Expressions/primitives.h"
+#include "../Expressions/primitives.h"
 
 #include <string>
 
@@ -13,8 +13,8 @@ private:
     nodePtr right;
 
 public:
-    //simple "=", possible associated binary operation has been daelt with in parser
-    AssignmentExpression(Node *l, Node *r) : left(l), right(r){};
+    //simple "=", possible associated binary operation has been dealt with in parser
+    AssignmentExpression(nodePtr l, nodePtr r) : left(l), right(r){};
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
