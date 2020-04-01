@@ -338,10 +338,10 @@ declaration_specifiers // for now this will always be a single type_specifier (i
 	;
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
-	: VOID 															{ $$ = $1; } // { $$ = new TypeSpecifier("void"); }
+	: VOID 															{ $$ = new std::string("void"); } // { $$ = new TypeSpecifier("void"); }
 	// | CHAR			 		            							{ fprintf(stderr, "\n CHAR not implemented\n"); }
 	// | SHORT		            	 									{ fprintf(stderr, "\n SHORT not implemented\n"); }
-	| INT 															{ fprintf(stderr, "typeSpecifier\n");$$ = $1; } // { $$ = new TypeSpecifier("int"); }
+	| INT 															{ fprintf(stderr, "typeSpecifier\n"); $$ = new std::string("int"); } // { $$ = new TypeSpecifier("int"); }
 	// | LONG			 	            								{ fprintf(stderr, "\n LONG not implemented\n"); }
 	// | FLOAT		            	 									{ fprintf(stderr, "\n FLOAT not implemented\n"); }
 	// | DOUBLE			 											{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
