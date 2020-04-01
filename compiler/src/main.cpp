@@ -14,7 +14,7 @@ int main(int argc, char **argv) //RUN: compiler -S <input.c> -o <output.s>
         cerr << "\nThe root node was nullptr" << endl;
         return EXIT_FAILURE;
     }
-    cout << '\n';
+    cerr << "DONE PARSING" << '\n';
 
     //root->print(cout, NULL);
     ofstream output(argv[4]);

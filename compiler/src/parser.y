@@ -101,7 +101,7 @@ postfix_expression
 	: primary_expression 										{ $$ = $1; }
 	| postfix_expression '[' expression ']'			 			{ fprintf(stderr, "\n ARRAY ACCESS not implemented\n"); }
 	| postfix_expression '(' ')'								{ $$ = new FnCall($1); }
-	| postfix_expression '(' argument_expression_list ')'		{ $$ = new FnCall($1, $3); }
+	| postfix_expression '(' argument_expression_list ')'		{ fprintf(stderr, "FnCall\n"); $$ = new FnCall($1, $3); }
 	//| postfix_expression '.' IDENTIFIER
 	//| postfix_expression PTR_OP IDENTIFIER
 	// | postfix_expression INC_OP 								{ $$ = new postOperation("+", $1); }
@@ -315,7 +315,7 @@ direct_declarator
 	| '(' declarator ')' 											{ $$ = $2; }
 	//| direct_declarator '[' constant_expression ']' 				// new array declarator
 	//| direct_declarator '[' ']' 									// new array declarator
-	| direct_declarator '(' parameter_list ')'						{ $$ = new FnDeclarator($1, $3); delete $1; }
+	| direct_declarator '(' parameter_list ')'						{ fprintf(stderr, "direct_declarator\n"); $$ = new FnDeclarator($1, $3); delete $1; }
 	// | direct_declarator '(' identifier_list ')'
 	| direct_declarator '(' ')'										{ $$ = new FnDeclarator($1); delete $1; }
 	;
@@ -338,10 +338,10 @@ declaration_specifiers // for now this will always be a single type_specifier (i
 	;
 
 type_specifier // could do this directly using lexer token as well! // OR JUST PARSE NEW STD::STRING
-	: VOID 															{ fprintf(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("void"); }
+	: VOID 															{ $$ = $1; } // { $$ = new TypeSpecifier("void"); }
 	// | CHAR			 		            							{ fprintf(stderr, "\n CHAR not implemented\n"); }
 	// | SHORT		            	 									{ fprintf(stderr, "\n SHORT not implemented\n"); }
-	| INT 															{ fprintf(stderr, "\n Should pass string ptr\n"); $$ = $1; } // { $$ = new TypeSpecifier("int"); }
+	| INT 															{ fprintf(stderr, "typeSpecifier\n");$$ = $1; } // { $$ = new TypeSpecifier("int"); }
 	// | LONG			 	            								{ fprintf(stderr, "\n LONG not implemented\n"); }
 	// | FLOAT		            	 									{ fprintf(stderr, "\n FLOAT not implemented\n"); }
 	// | DOUBLE			 											{ fprintf(stderr, "\n DOUBLE not implemented\n"); }
@@ -380,7 +380,7 @@ parameter_list
 // https://stackoverflow.com/questions/6488503/c89-mixing-variable-declarations-and-code
 compound_statement
 	: '{' '}' 														{ $$ = nullptr; }
-	| '{' statement_list '}'										{ $$ = new Compound(nullptr, $2); }
+	| '{' statement_list '}'										{ fprintf(stderr, "Compound\n"); $$ = new Compound(nullptr, $2); }
 	| '{' declaration_list '}'										{ $$ = new Compound($2, nullptr); }
 	| '{' declaration_list statement_list '}'						{ $$ = new Compound($2, $3); }
 	;
@@ -423,7 +423,7 @@ jump_statement
 	//| CONTINUE ';'			 									{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
 	//| BREAK ';'			 										{ fprintf(stderr, "\n BREAK not implemented\n"); }
 	: RETURN ';'													{ $$ = new ReturnStatement();	}
-	| RETURN expression ';'											{ $$ = new ReturnStatement($2); }
+	| RETURN expression ';'											{ fprintf(stderr, "ReturnStatement\n"); $$ = new ReturnStatement($2); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
@@ -450,7 +450,7 @@ statement
 //https://stackoverflow.com/questions/18820751/identifier-list-vs-parameter-type-list-in-c/18820829#18820829
 function_definition
 	// : declaration_specifiers declarator declaration_list compound_statement
-	: declaration_specifiers declarator compound_statement 			{ $$ = new FnDefinition(*$1, $2, $3); }
+	: declaration_specifiers declarator compound_statement 			{ fprintf(stderr, "FnDefinition\n"); $$ = new FnDefinition(*$1, $2, $3); }
 	// Functions with return type int/int* aren't required to have a declaration
 	//| declarator declaration_list compound_statement
 	//| declarator compound_statement
@@ -458,12 +458,12 @@ function_definition
 
  //decarations in global scope
 external_declaration
-	: function_definition											{ $$ = $1; }
+	: function_definition											{ fprintf(stderr, "external fn definition\n");$$ = $1; }
 	| declaration													{ $$ = $1; }
 	;
 
 translation_unit //top level list
-	: external_declaration											{ $$ = new List($1); }
+	: external_declaration											{ fprintf(stderr, "translation_unit item\n");$$ = new List($1); }
 	| translation_unit external_declaration							{ $1->add($2); $$ = $1; }
 	;
 
