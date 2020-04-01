@@ -467,7 +467,7 @@ translation_unit //top level list
 	| translation_unit external_declaration							{ $1->add($2); $$ = $1; }
 	;
 
-root: translation_unit												{ fprintf(stderr, "Toot toot itse the roote\n"); g_root = $1; }
+root: translation_unit												{ g_root = $1; }
 
 %%
 
