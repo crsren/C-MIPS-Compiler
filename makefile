@@ -1,7 +1,7 @@
 CC := g++ # this is the main compiler
 # CC := clang --analyze # and comment out the linker last line
 
-CFLAGS := -g -Wall -Wextra -Wpedantic -std=c++11
+CFLAGS := -g -Wall -Wextra -Wpedantic -std=c++11 -Wno-c++11-extensions
 
 COMPINC := -Icompiler/include
 COMPBUILDDIR := compiler/build

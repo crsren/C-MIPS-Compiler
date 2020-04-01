@@ -31,15 +31,15 @@ extern "C" int fileno(FILE *stream);
 "break"			{ return(BREAK); }
 "case"			{ return(CASE); }
 "char"			{ return(CHAR); }
-"continue"		{ return(CONTINUE); }
+"continue"	{ return(CONTINUE); }
 "default"		{ return(DEFAULT); }
-"do"			{ return(DO); }
+"do"			  { return(DO); }
 "double"		{ return(DOUBLE); }
 "else"			{ return(ELSE); }
 "float"			{ return(FLOAT); }
-"for"			{ return(FOR); }
-"if"			{ return(IF); }
-"int"			{ return(INT); }
+"for"			  { return(FOR); }
+"if"			  { return(IF); }
+"int"			  { return(INT); }
 "long"			{ return(LONG); }
 "return"		{ return(RETURN); }
 "short"			{ return(SHORT); }
@@ -48,20 +48,22 @@ extern "C" int fileno(FILE *stream);
 "static"		{ return(STATIC); }
 "switch"		{ return(SWITCH); }
 "typedef"		{ return(TYPEDEF); }
-"unsigned"		{ return(UNSIGNED); }
+"unsigned"	{ return(UNSIGNED); }
 "void"			{ return(VOID); }
 "while"			{ return(WHILE); }
 
+[0-9]+            { yylval.num = atoi(yytext); return CONSTANT; }
+{L}({L}|{D})*     { yylval.str = new std::string(yytext); return IDENTIFIER; }
 0[xX]{H}+{IS}?		{ return(CONSTANT); }
-0{D}+{IS}?			{ return(CONSTANT); }
-{D}+{IS}?			{ return(CONSTANT); }
+0{D}+{IS}?			  { return(CONSTANT); }
+{D}+{IS}?			    { return(CONSTANT); }
 L?'(\\.|[^\\'])+'	{ return(CONSTANT); }
 
-{D}+{E}{FS}?			{ return(CONSTANT); }
+{D}+{E}{FS}?			      { return(CONSTANT); }
 {D}*"."{D}+({E})?{FS}?	{ return(CONSTANT); }
 {D}+"."{D}*({E})?{FS}?	{ return(CONSTANT); }
 
-L?\"(\\.|[^\\"])*\"	{ return(STRING_LITERAL); }
+L?\"(\\.|[^\\"])*\"	    { return(STRING_LITERAL); }
 
 ">>="			|
 "<<="			|

@@ -16,5 +16,5 @@ add_subdirectory(src)
 # Appending flags to CMake variables to remove flex register warning
 #add_definitions("-Wno-deprecated-register")
 #list(APPEND flags "-Wno-deprecated-register")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated-register")
 

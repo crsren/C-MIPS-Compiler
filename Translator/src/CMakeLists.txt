@@ -12,7 +12,3 @@ set(SRC_PARSER
 add_executable(translator ${SRC_TRANS} ${INCLUDE_TRANS} main.cpp ${SRC_PARSER}) 
 
 target_include_directories(translator PUBLIC "${CMAKE_SOURCE_DIR}/include")
-
-
-# This requires c++ 14
-target_compile_features(translator PUBLIC cxx_std_14)
