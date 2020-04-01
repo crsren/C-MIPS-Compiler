@@ -4,21 +4,21 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
+//using namespace std;
 
 int main(int argc, char **argv) //RUN: compiler -S <input.c> -o <output.s>
 {
     const Node *root = parseAST(argv[2]);
     if (root == nullptr) //REMOVE LATER
     {
-        cerr << "\nThe root node was nullptr" << endl;
+        std::cerr << "\nThe root node was nullptr" << std::endl;
         return EXIT_FAILURE;
     }
 
-    cerr << "DONE PARSING" << '\n';
+    std::cerr << "DONE PARSING" << '\n';
 
     //root->print(cout, NULL);
-    ofstream output(argv[4]);
+    std::ofstream output(argv[4]);
     if (output.is_open())
     {
         output << ".data\n";
@@ -26,7 +26,7 @@ int main(int argc, char **argv) //RUN: compiler -S <input.c> -o <output.s>
     }
     else
     {
-        cerr << "Could not open output file.\n";
+        std::cerr << "Could not open output file.\n";
         return -1;
     }
 
