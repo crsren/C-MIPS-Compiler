@@ -315,9 +315,9 @@ direct_declarator
 	| '(' declarator ')' 											{ $$ = $2; }
 	//| direct_declarator '[' constant_expression ']' 				// new array declarator
 	//| direct_declarator '[' ']' 									// new array declarator
-	| direct_declarator '(' parameter_list ')'						{ fprintf(stderr, "direct_declarator\n"); $$ = new FnDeclarator($1, $3); delete $1; }
+	| direct_declarator '(' parameter_list ')'						{ fprintf(stderr, "direct_declarator\n"); $$ = new FnDeclarator($1, $3); }
 	// | direct_declarator '(' identifier_list ')'
-	| direct_declarator '(' ')'										{ $$ = new FnDeclarator($1); delete $1; }
+	| direct_declarator '(' ')'										{ fprintf(stderr, "FnDeclarator\n"); $$ = new FnDeclarator($1); }
 	;
 
 declarator
@@ -458,8 +458,8 @@ function_definition
 
  //decarations in global scope
 external_declaration
-	: function_definition											{ fprintf(stderr, "external fn definition\n");$$ = $1; }
-	| declaration													{ $$ = $1; }
+	: function_definition											{ fprintf(stderr, "external fn definition\n"); $$ = $1; }
+	| declaration													{ fprintf(stderr, "external fn definition\n"); $$ = $1; }
 	;
 
 translation_unit //top level list
@@ -467,7 +467,7 @@ translation_unit //top level list
 	| translation_unit external_declaration							{ $1->add($2); $$ = $1; }
 	;
 
-root: translation_unit												{ g_root = $1; }
+root: translation_unit												{ fprintf(stderr, "Toot toot itse the roote\n"); g_root = $1; }
 
 %%
 
@@ -557,7 +557,7 @@ const Node *parseAST(const char *input)
 
 	fclose(yyin);
 
-	if(g_root)
+	if(!g_root)
 		fprintf(stderr, "Error while parsing! No root pointer passed.");
 	return g_root;
 }

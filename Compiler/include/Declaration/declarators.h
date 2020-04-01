@@ -11,7 +11,7 @@ protected:
 
 public:
     const bool isFunction;
-    Declarator(Identifier *s, bool isF) : identifier(s), isFunction(isF) {}
+    Declarator(Identifier* s, bool isF) : identifier(s), isFunction(isF) { }
 
     Identifier *getIdentifier() const
     {
@@ -63,11 +63,8 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
-        std::cerr << "InitDeclaratorList::print\tSTART\n";
-        std::cerr << "Print every declaration item in the list\n";
         for (const auto &initDeclarator : items)
             initDeclarator->print(out, bindings);
-        std::cerr << "InitDeclaratorList::print\tEND\n";
     }
 
     void setType(std::string specifier) //set by declaration

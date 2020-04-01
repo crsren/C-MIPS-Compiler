@@ -10,7 +10,7 @@ IS			(u|U|l|L)*
 extern "C" int fileno(FILE *stream);
 
 //for debugging in VSstudio
-//#define YY_NO_UNISTD_H
+#define YY_NO_UNISTD_H
 
 // To get rid of register warning for c++=17
 // #if (__cplusplus - 0) >= 201703L
@@ -25,6 +25,7 @@ extern "C" int fileno(FILE *stream);
 %}
 
 %option noyywrap
+%option never-interactive
 
 %%
 
@@ -39,7 +40,7 @@ extern "C" int fileno(FILE *stream);
 "float"			{ return(FLOAT); }
 "for"			  { return(FOR); }
 "if"			  { return(IF); }
-"int"			  { return(INT); }
+"int"			  { yylval.str = new std::string(yytext); return(INT); }
 "long"			{ return(LONG); }
 "return"		{ return(RETURN); }
 "short"			{ return(SHORT); }
@@ -49,7 +50,7 @@ extern "C" int fileno(FILE *stream);
 "switch"		{ return(SWITCH); }
 "typedef"		{ return(TYPEDEF); }
 "unsigned"	{ return(UNSIGNED); }
-"void"			{ return(VOID); }
+"void"			{ yylval.str = new std::string(yytext); return(VOID); }
 "while"			{ return(WHILE); }
 
 [0-9]+            { yylval.num = atoi(yytext); return CONSTANT; }

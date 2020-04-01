@@ -7,12 +7,14 @@
 class FnDefinition : public Node
 {
 private:
-    const std::string returnType; // Simple string for now
+    std::string returnType; // Simple string for now
     const Declarator *fnDeclarator;
     nodePtr compound;
 
 public:
-    FnDefinition(const std::string declaration_list, const Declarator *declarator, nodePtr compound_stmt) : returnType(declaration_list), fnDeclarator(declarator), compound(compound_stmt){};
+    FnDefinition(std::string declaration_list, const Declarator *declarator, nodePtr compound_stmt) : returnType(declaration_list), fnDeclarator(declarator), compound(compound_stmt){
+        std::cerr << "Peter und der Wolf" << std::endl;
+    };
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override; //implement
     // cast declarator to a fnDeclarator; access fnDeclarator->paramList and
