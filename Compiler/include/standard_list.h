@@ -18,8 +18,18 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
+        std::cerr << "List::print\tSTART\n";
+
+        std::cerr << "for (evey item in the list)\n";
         for (const auto &i : items)
+        {
+            std::cerr << "\t**************************\n";
+            std::cerr << "\tPrint the current item\n";
             i->print(out, bindings);
+            std::cerr << "\t**************************\n\n";
+        }
+
+        std::cerr << "List::print\tSTART\n";
     }
 
     void add(nodePtr ptr)
