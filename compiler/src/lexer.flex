@@ -87,7 +87,7 @@ L?\"(\\.|[^\\"])*\"	    { return(STRING_LITERAL); }
 "<="			{ return(LE_OP); }
 ">="			{ return(GE_OP); }
 "=="			{ return(EQ_OP); }
-"!="			{ return(NE_OP); }
+"!="			{ yylval.str = new std::string(yytext); return(ASSIGN); }
 
 ("{"|"<%")		{ return('{'); }
 ("}"|"%>")		{ return('}'); }
