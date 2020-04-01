@@ -24,6 +24,8 @@ extern "C" int fileno(FILE *stream);
 
 %}
 
+%option noyywrap
+
 %%
 
 "break"			{ return(BREAK); }
