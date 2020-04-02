@@ -28,9 +28,9 @@ mips-linux-gnu-gcc -mfp32 -o mips_out -c out.s
 echo && echo "Linking the file."
 mips-linux-gnu-gcc -mfp32 -static -o res_out mips_out $C_DRIVER
 # Running the file
-if [[ -f ${MIPS} ]] ; then
+if [[ -f res_out ]] ; then
     echo "Running the file."
-    qemu-mips $BIN_DIR/${NAME}
+    qemu-mips res_out
     MIPS_RETURN=$?
 else 
     MIPS_RETURN=-1

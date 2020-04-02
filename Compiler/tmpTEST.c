@@ -1,4 +1,3 @@
 int f() {
-	int x = 4;
-	return x;
+	return 4;
 }
