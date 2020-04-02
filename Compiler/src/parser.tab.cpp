@@ -1598,7 +1598,7 @@ yyreduce:
 
   case 25:
 #line 148 "src/parser.y" /* yacc.c:1646  */
-    { (yyval.nodePtr) = new ArithmeticOperation((yyvsp[-2].nodePtr), "+", (yyvsp[0].nodePtr)); }
+    { fprintf(stderr, "ArithmeticOperation\n"); (yyval.nodePtr) = new ArithmeticOperation((yyvsp[-2].nodePtr), "+", (yyvsp[0].nodePtr)); }
 #line 1603 "src/parser.tab.cpp" /* yacc.c:1646  */
     break;
 

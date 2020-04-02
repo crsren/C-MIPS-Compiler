@@ -1,4 +1,4 @@
-#include "../../include/Declaration/declarators.h"
+#include "Declaration/init_declarator.h"
 
 void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
@@ -19,7 +19,8 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tPrint the initializer\n";
                 initializer->print(out, bindings);
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tPrinting MIPS code\n";
-                out << Mips::store_global_word(2, identifier);
+                out << Mips::load_address(1, identifier);
+                out << Mips::store_word_reg(2, 0, 1);
             }
             else // local
             {
@@ -51,7 +52,8 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     std::cerr << GlobalIndent::instance().globalIndent << "\t\t\tPrint the initializer\n";
                     initializer->print(out, bindings);
                     std::cerr << GlobalIndent::instance().globalIndent << "\t\t\tPrinting MIPS code\n";
-                    out << Mips::store_global_word(2, identifier);
+                    out << Mips::load_address(1, identifier);
+                    out << Mips::store_word_reg(2, 0, 1);
                 }
                 else // local
                 {
@@ -108,3 +110,18 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
     }
     std::cerr << GlobalIndent::instance().globalIndent << "InitDeclarator::print\tEND\n";
 };
+
+void InitDeclaratorList::print(std::ostream &out, LocalVariableBindings *bindings) const
+{
+    std::cerr << GlobalIndent::instance().globalIndent << "for (evey initDeclarator in the list)\n";
+    std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
+    GlobalIndent::instance().globalIndent += "\t";
+    for (const auto &initDeclarator : items)
+    {
+        std::cerr << GlobalIndent::instance().globalIndent << "**************************\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Print the current initDeclarator\n";
+        initDeclarator->print(out, bindings);
+        std::cerr << GlobalIndent::instance().globalIndent << "**************************\n\n";
+    }
+    GlobalIndent::instance().globalIndent = oldGlobalIndent;
+}

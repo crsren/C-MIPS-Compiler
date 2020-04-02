@@ -9,13 +9,18 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
 
     int stackFrameOffset = 8;
 
+    // KIMON: To get argumentList size: ( => amount of parameters of the called function ):
+    // int argListSize = argumentList->getSize();
+
     std::cerr << GlobalIndent::instance().globalIndent << "For (evey argument int the argument list)\n";
     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
     GlobalIndent::instance().globalIndent += "\t";
-    for (const auto argument : argumentList->items)
+
+    std::list<nodePtr> &arguments = argumentList->getItems();
+    for (const auto &argument : arguments)
     {
         std::cerr << GlobalIndent::instance().globalIndent << "**************************\n";
-        std::cerr << GlobalIndent::instance().globalIndent << "Loop Iteration:" << std::to_string(stackFrameOffset/4 - 2) << "\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Loop Iteration:" << std::to_string(stackFrameOffset / 4 - 2) << "\n";
         std::cerr << GlobalIndent::instance().globalIndent << "Print the current argument\n";
         argument->print(out, bindings);
         std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";

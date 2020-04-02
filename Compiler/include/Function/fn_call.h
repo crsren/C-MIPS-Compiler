@@ -8,10 +8,10 @@ class FnCall : public Node
 {
 private:
     nodePtr identifier;
-    const List *argumentList;
+    List *argumentList;
 
 public:
-    FnCall(nodePtr p, const List *a = nullptr) : identifier(p), argumentList(a){};
+    FnCall(nodePtr p, List *a = nullptr) : identifier(p), argumentList(a){};
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 

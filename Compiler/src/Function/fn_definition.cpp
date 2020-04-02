@@ -7,20 +7,32 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
     std::cerr << GlobalIndent::instance().globalIndent << "Get the function identifier\n";
     std::string functionIdentifier = fnDeclarator->getIdentifier()->getName();
 
+    const FnDeclarator *cast_fnDeclarator = dynamic_cast<const FnDeclarator *>(fnDeclarator);
+    std::vector<const ParameterDeclaration *> paramList;
+    int paramListSize;
+    if (cast_fnDeclarator->getParameterList())
+    {
+        std::cerr << GlobalIndent::instance().globalIndent << "if (the parameter list is not a null pointer)\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "\tGet the parameter list and assign it to a vector\n";
+        paramList = cast_fnDeclarator->getParameterList()->getItems();
+        paramListSize = cast_fnDeclarator->getParameterList()->getSize();
+    }
+
     if (!GlobalVariableBindings::instance().functionBindingExists(functionIdentifier)) //if it hasn't been declared before
     {
         std::cerr << GlobalIndent::instance().globalIndent << "if (the global function: " << functionIdentifier << " has not been declared)\n";
+
         if (returnType == "int")
         {
             std::cerr << GlobalIndent::instance().globalIndent << "\tif (the global function's: " << functionIdentifier << " return type is int)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert the global function: " << functionIdentifier << " into the functionBindings\n";
-            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _INTEGER);
+            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _INTEGER, 0);
         }
         else if (returnType == "void")
         {
             std::cerr << GlobalIndent::instance().globalIndent << "\tif (the global function's: " << functionIdentifier << " return type is void)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert the global function: " << functionIdentifier << " into the functionBindings\n";
-            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _VOID);
+            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _VOID, 0);
         }
     }
 
@@ -35,15 +47,6 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
     localVariableBindings->increaseStackFrameSizeBy(8);
 
     std::cerr << GlobalIndent::instance().globalIndent << "Cast the fnDeclarator to a pointer to a FnDeclarator\n";
-    const FnDeclarator *cast_fnDeclarator = dynamic_cast<const FnDeclarator *>(fnDeclarator);
-
-    std::vector<const ParameterDeclaration *> paramList;
-    if (cast_fnDeclarator->getParameterList())
-    {
-        std::cerr << GlobalIndent::instance().globalIndent << "if (the parameter list is not a null pointer)\n";
-        std::cerr << GlobalIndent::instance().globalIndent << "\tGet the parameter list and assign it to a vector\n";
-        paramList = cast_fnDeclarator->getParameterList()->getItems();
-    }
 
     std::cerr << GlobalIndent::instance().globalIndent << "for (evey argument in the argument list)\n";
     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
@@ -69,13 +72,13 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
             {
                 std::cerr << GlobalIndent::instance().globalIndent << "\tif (the return type of the function is void)\n";
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert Global Function Binding\n";
-                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _VOID);
+                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _VOID, 0);
             }
             else if (parameterSpecifier == "int")
             {
                 std::cerr << GlobalIndent::instance().globalIndent << "\tif (the return type of the function is int)\n";
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert Global Function Binding\n";
-                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _INTEGER);
+                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _INTEGER, 0);
             }
         }
         else
