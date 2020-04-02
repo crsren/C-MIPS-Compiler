@@ -76,7 +76,7 @@ struct Function
 {
     PrimitiveDataTypeCode functionReturnDataTypeCode;
 
-    //int numberOfParameters; // assuming all int
+    int numberOfParameters; // assuming all int
 };
 
 // struct containing information on the variable declaration
@@ -175,10 +175,11 @@ public:
         globalBindings.insert(std::make_pair(id, var));
     }
 
-    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
+    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber)
     {
         Function func;
         func.functionReturnDataTypeCode = dataTypeCode;
+        func.numberOfParameters = paramNumber;
         functionBindings.insert(std::make_pair(id, func));
     }
 

@@ -1,6 +1,6 @@
-int f()
-{
-	int y;
-	int x = y = 3;
-	return x + y;
+int x;
+
+int f() {
+	x = 8;
+	return x;
 }
