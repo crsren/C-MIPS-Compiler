@@ -15,4 +15,18 @@ public:
     //const = 0;
 };
 
+class GlobalIndent
+{
+public:
+    std::string globalIndent;
+
+    GlobalIndent() : globalIndent(""){}
+
+    static GlobalIndent &instance()
+    {
+        static GlobalIndent instance; //Insantiated on first use
+        return instance;
+    }
+};
+
 #endif // NODE_H

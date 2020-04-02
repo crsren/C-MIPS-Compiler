@@ -41,7 +41,7 @@ for FOLDER in ${INPUT_DIR}/* ; do #Each folder
 
         # Compile and run reference C code
         echo && echo "Compiling & running reference C code."
-        C_TARGET=$BIN_DIR/$NAME
+        C_TARGET=$BIN_DIR/${NAME}_c
         gcc $C_FILE $DRIVER -o $C_TARGET
         ./$C_TARGET
         REF_RETURN=$?
@@ -56,12 +56,12 @@ for FOLDER in ${INPUT_DIR}/* ; do #Each folder
 
         #Linking the file
         echo && echo "Linking the file."
-        mips-linux-gnu-gcc -mfp32 -static -o $C_FILE $BIN $DRIVER
+        mips-linux-gnu-gcc -mfp32 -static -o $BIN_DIR/${NAME}_mips $BIN $DRIVER
 
         # Running the file
         if [[ -f ${MIPS} ]] ; then
             echo "Running the file."
-            qemu-mips $C_FILE
+            qemu-mips $BIN_DIR/${NAME}_mips
             MIPS_RETURN=$?
         else 
             MIPS_RETURN=-1

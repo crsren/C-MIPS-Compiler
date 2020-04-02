@@ -18,18 +18,21 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
-        std::cerr << "List::print\tSTART\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "List::print\tSTART\n";
 
-        std::cerr << "for (evey item in the list)\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "for (evey item in the list)\n";
+        std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
+        GlobalIndent::instance().globalIndent += "\t";
         for (const auto &i : items)
         {
-            std::cerr << "\t**************************\n";
-            std::cerr << "\tPrint the current item\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "**************************\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "Print the current item\n";
             i->print(out, bindings);
-            std::cerr << "\t**************************\n\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "**************************\n\n";
         }
+        GlobalIndent::instance().globalIndent = oldGlobalIndent;
 
-        std::cerr << "List::print\tSTART\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "List::print\tEND\n";
     }
 
     void add(nodePtr ptr)

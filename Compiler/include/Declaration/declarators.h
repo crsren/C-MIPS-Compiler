@@ -63,8 +63,17 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
+        std::cerr << GlobalIndent::instance().globalIndent << "for (evey initDeclarator in the list)\n";
+        std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
+        GlobalIndent::instance().globalIndent += "\t";
         for (const auto &initDeclarator : items)
+        {
+            std::cerr << GlobalIndent::instance().globalIndent << "**************************\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "Print the current initDeclarator\n";
             initDeclarator->print(out, bindings);
+            std::cerr << GlobalIndent::instance().globalIndent << "**************************\n\n";
+        }
+        GlobalIndent::instance().globalIndent = oldGlobalIndent;
     }
 
     void setType(std::string specifier) //set by declaration
