@@ -12,7 +12,8 @@ void ReturnStatement::print(std::ostream &out, LocalVariableBindings *bindings) 
     }
 
     std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
-    out << Mips::jump();
+
+    out << Mips::function_epilogue();
 
     std::cerr << GlobalIndent::instance().globalIndent << "ReturnStatement::print\tEND\n";
 };

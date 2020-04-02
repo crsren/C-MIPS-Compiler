@@ -66,7 +66,7 @@ public:
         }
 
         std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
-        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
+        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset() - 4, false);
 
         std::cerr << GlobalIndent::instance().globalIndent << "BitwiseOperation::print\tEND\n";
     }

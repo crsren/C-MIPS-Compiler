@@ -248,6 +248,28 @@ public:
     {
         return ".globl\t" + tag + "\n";
     }
+
+    static std::string function_prologue(const std::string &functionIdentifier)
+    {
+        std::string out = "";
+        out += Mips::segment_text();
+        out += Mips::tag_global(functionIdentifier);
+        out += Mips::new_label(functionIdentifier);
+        out += Mips::store_word(31, 0, true); // $31 = $ra
+        out += Mips::store_word(30, 4, true); // $30 = $fp
+        out += Mips::move(30, 29);
+        return out;
+    }
+
+    static std::string function_epilogue()
+    {
+        std::string out = "";
+        out += Mips::load_word(31, 0, false);
+        out += Mips::load_word(30, 4, false);
+        out += Mips::move(29, 30);
+        out += Mips::jump();
+        return out;
+    }
 };
 
 #endif // MIPS_H

@@ -21,10 +21,10 @@ public:
         {
             std::cerr << GlobalIndent::instance().globalIndent << "if (this is a LOCAL constant expression)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
-            out << Mips::load_immediate(8, value);
-            out << Mips::store_word(8, bindings->getCurrentExpressionAddressOffset(), false);
+            out << Mips::load_immediate(2, value);
+            out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
             std::cerr << GlobalIndent::instance().globalIndent << "\tIncrement local stack frame size\n";
-            bindings->incrementStackFrameSize();
+            //bindings->incrementCurrentExpressionAddressOffset();
             //stackFrame->Push(); TODO
         }
         else // global

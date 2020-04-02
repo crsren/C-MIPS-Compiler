@@ -27,9 +27,12 @@ public:
         std::cerr << GlobalIndent::instance().globalIndent << "Print RHS\n";
         right->print(out, bindings);
 
+        std::cerr << GlobalIndent::instance().globalIndent << "Increment the currentExpressionAddressOffset\n";
+        bindings->incrementCurrentExpressionAddressOffset();
+
         std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
         out << Mips::load_word(2, leftExpressionAddressOffset, false);
-        out << Mips::load_word(3, bindings->getCurrentExpressionAddressOffset(), false);
+        out << Mips::load_word(3, bindings->getCurrentExpressionAddressOffset() - 4, false);
         
         std::cerr << GlobalIndent::instance().globalIndent << "Decrement the currentExpressionAddressOffset by"<< std::to_string(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset) << "\n";
         bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset);
@@ -69,7 +72,7 @@ public:
         }
 
         std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
-        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
+        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset() - 4, false);
         std::cerr << GlobalIndent::instance().globalIndent << "ArithmeticOperation::print\tEND\n";
     }
 };

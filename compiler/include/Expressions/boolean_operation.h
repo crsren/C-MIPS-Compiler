@@ -104,7 +104,7 @@ public:
 
         std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
         out << Mips::andi(2, 2, 255);
-        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
+        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset() - 4, false);
 
         std::cerr << GlobalIndent::instance().globalIndent << "BooleanOperation::print\tEND\n";
     }

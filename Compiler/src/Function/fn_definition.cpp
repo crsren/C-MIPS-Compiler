@@ -28,15 +28,8 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
     LocalVariableBindings *localVariableBindings = new LocalVariableBindings(0, 4); // KIMON CHECK IS THIS RIGHT?
 
     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
-    out << Mips::segment_text();
-    out << Mips::tag_global(functionIdentifier);
-
-    out << Mips::new_label(functionIdentifier);
-
-    out << Mips::store_word(31, 0, true); // $31 = $ra
-    out << Mips::store_word(30, 4, true); // $30 = $fp
-
-    out << Mips::move(30, 29);
+    
+    out << Mips::function_prologue(functionIdentifier);
 
     std::cerr << GlobalIndent::instance().globalIndent << "Increase the local bindings' stack frame size by 8\n";
     localVariableBindings->increaseStackFrameSizeBy(8);
@@ -102,13 +95,12 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
     std::cerr << GlobalIndent::instance().globalIndent << "Print the compound statement\n";
     compound->print(out, localVariableBindings);
 
-    std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
-    out << Mips::load_word(31, 0, false);
-    out << Mips::load_word(30, 4, false);
-
-    out << Mips::move(29, 30);
-
-    out << Mips::jump();
+    if (returnType == "void")
+    {
+        std::cerr << GlobalIndent::instance().globalIndent << "if (the return type of the function: " << fnDeclarator->getIdentifier()->getName() << " is void)\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
+        out << Mips::function_epilogue();
+    }
 
     std::cerr << GlobalIndent::instance().globalIndent << "FnDefinition::print\tEND\n";
 }
