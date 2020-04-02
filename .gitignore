@@ -25,3 +25,4 @@ Compiler/target/got/*
 ubuntu-xenial-16.04-cloudimg-console.log
 *.s
 Compiler/tmpTEST.c
+Compiler/tmpTEST.c
