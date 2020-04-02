@@ -2,17 +2,17 @@
 
 void ReturnStatement::print(std::ostream &out, LocalVariableBindings *bindings) const
 {
-    std::cerr << "ReturnStatement::print\tSTART\n";
+    std::cerr << GlobalIndent::instance().globalIndent << "ReturnStatement::print\tSTART\n";
 
     if (expression)
     {
-        std::cerr << "if (the return expression is not NULL)\n";
-        std::cerr << "\tPrint return expression\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "if (the return expression is not NULL)\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "\tPrint return expression\n";
         expression->print(out, bindings);
     }
 
-    std::cerr << "Print MIPS code\n";
+    std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
     out << Mips::jump();
 
-    std::cerr << "ReturnStatement::print\tEND\n";
+    std::cerr << GlobalIndent::instance().globalIndent << "ReturnStatement::print\tEND\n";
 };

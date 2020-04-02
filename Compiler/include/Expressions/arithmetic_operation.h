@@ -14,63 +14,63 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
-        std::cerr << "\nArithmeticOperation::print\tSTART\n";
-        std::cerr << "Print LHS\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "ArithmeticOperation::print\tSTART\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Print LHS\n";
         left->print(out, bindings);
 
-        std::cerr << "Get the currentExpressionAddressOffset\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Get the currentExpressionAddressOffset\n";
         int leftExpressionAddressOffset = bindings->getCurrentExpressionAddressOffset();
 
-        std::cerr << "Increment the currentExpressionAddressOffset\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Increment the currentExpressionAddressOffset\n";
         bindings->incrementCurrentExpressionAddressOffset();
 
-        std::cerr << "Print RHS\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Print RHS\n";
         right->print(out, bindings);
 
-        std::cerr << "Print MIPS code\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
         out << Mips::load_word(2, leftExpressionAddressOffset, false);
         out << Mips::load_word(3, bindings->getCurrentExpressionAddressOffset(), false);
-
-        std::cerr << "Decrement the currentExpressionAddressOffset by" << std::to_string(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset) << "\n";
+        
+        std::cerr << GlobalIndent::instance().globalIndent << "Decrement the currentExpressionAddressOffset by"<< std::to_string(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset) << "\n";
         bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset);
-
-        std::cerr << "Switch Statement - Checking the operation symbol\n";
+        
+        std::cerr << GlobalIndent::instance().globalIndent << "Switch Statement - Checking the operation symbol\n";
         switch (operationSymbol[0])
         {
         case '+':
-            std::cerr << "\t'+' operation symbol\n";
-            std::cerr << "\tPrint MIPS code\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'+' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tPrint MIPS code\n";
             out << Mips::addu(2, 2, 3);
             break;
 
         case '-':
-            std::cerr << "\t'-' operation symbol\n";
-            std::cerr << "\tPrint MIPS code\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'-' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tPrint MIPS code\n";
             out << Mips::subu(2, 2, 3);
             break;
 
         case '*':
-            std::cerr << "\t'*' operation symbol\n";
-            std::cerr << "\tPrint MIPS code\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'*' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tPrint MIPS code\n";
             out << Mips::mul(2, 2, 3);
             break;
 
         case '/':
-            std::cerr << "\t'/' operation symbol\n";
-            std::cerr << "\tPrint MIPS code\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'/' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tPrint MIPS code\n";
             out << Mips::div_quotient(2, 2, 3);
             break;
 
         case '%':
-            std::cerr << "\t'%' operation symbol\n";
-            std::cerr << "\tPrint MIPS code\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'%' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tPrint MIPS code\n";
             out << Mips::div_remainder(2, 2, 3);
             break;
         }
 
-        std::cerr << "Print MIPS code\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
         out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
-        std::cerr << "ArithmeticOperation::print\tEND\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "ArithmeticOperation::print\tEND\n";
     }
 };
 

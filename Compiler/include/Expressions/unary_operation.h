@@ -20,42 +20,42 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
-        std::cerr << "UnaryOperation::print\tSTART\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "UnaryOperation::print\tSTART\n";
 
-        std::cerr << "Print postfix expression\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Print postfix expression\n";
         postfixExpression->print(out, bindings);
 
-        std::cerr << "Printing MIPS code\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
         out << Mips::load_word(2, bindings->getCurrentExpressionAddressOffset(), false);
 
-        std::cerr << "Switch Statement - Checking the operation symbol\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Switch Statement - Checking the operation symbol\n";
         switch (operationSymbol[0])
         {
         case '+':
-            std::cerr << "\t'+' operation symbol\n";
-            std::cerr << "\tDO NOTHING\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'+' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tDO NOTHING\n";
             break;
 
         case '-':
-            std::cerr << "\t'-' operation symbol\n";
-            std::cerr << "\tPrint MIPS code\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'-' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tPrint MIPS code\n";
             out << Mips::sub_(2, 0, 2);
             break;
 
         case '~':
-            std::cerr << "\t'~' operation symbol\n";
-            std::cerr << "\tPrint MIPS code\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'~' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tPrint MIPS code\n";
             out << Mips::nor_(2, 0, 2);
             break;
 
         case '!':
-            std::cerr << "\t'!' operation symbol\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\t'!' operation symbol\n";
             
-            std::cerr << "\tCreate ELSE and END labels\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tCreate ELSE and END labels\n";
             std::string ELSE = Label::instance().uniquify("else");
             std::string END = Label::instance().uniquify("fi");
 
-            std::cerr << "\tPrint MIPS code\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "\tPrint MIPS code\n";
             out << Mips::beq(0, 2, ELSE); // if $2 is equal to zero
 
             out << Mips::move(2, 0); // assign $2 to 0x0
@@ -78,10 +78,10 @@ public:
             //         break;
         }
 
-        std::cerr << "Print MIPS code\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
         out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
 
-        std::cerr << "UnaryOperation::print\tEND\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "UnaryOperation::print\tEND\n";
     }
 };
 
