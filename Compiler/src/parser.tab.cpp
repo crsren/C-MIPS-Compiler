@@ -1754,7 +1754,7 @@ yyreduce:
 
   case 51:
 #line 209 "src/parser.y" /* yacc.c:1646  */
-    { fprintf(stderr, "ASSIGN\n"); (yyvsp[-1].str)->pop_back(); fprintf(stderr, "ASSIGN2\n"); (yyval.nodePtr) = new AssignmentExpression((yyvsp[-2].nodePtr), new ArithmeticOperation((yyvsp[-2].nodePtr), *(yyvsp[-1].str), (yyvsp[0].nodePtr))); }
+    { (yyvsp[-1].str)->pop_back(); (yyval.nodePtr) = new AssignmentExpression((yyvsp[-2].nodePtr), new ArithmeticOperation((yyvsp[-2].nodePtr), *(yyvsp[-1].str), (yyvsp[0].nodePtr))); }
 #line 1759 "src/parser.tab.cpp" /* yacc.c:1646  */
     break;
 
