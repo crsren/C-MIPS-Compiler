@@ -25,7 +25,7 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
     }
 
     std::cerr << GlobalIndent::instance().globalIndent << "Declare a pointer to a new LocalVariableBindings object\n";
-    LocalVariableBindings *localVariableBindings = new LocalVariableBindings(0, 4); // KIMON CHECK IS THIS RIGHT?
+    LocalVariableBindings *localVariableBindings = new LocalVariableBindings(); // KIMON CHECK IS THIS RIGHT?
 
     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
     

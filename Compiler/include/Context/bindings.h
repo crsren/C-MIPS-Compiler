@@ -76,7 +76,7 @@ struct Function
 {
     PrimitiveDataTypeCode functionReturnDataTypeCode;
 
-    //int numberOfParameters; // assuming all int
+    int numberOfParameters; // assuming all int
 };
 
 // struct containing information on the variable declaration
@@ -167,10 +167,11 @@ public:
         globalBindings.insert(std::make_pair(id, var));
     }
 
-    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
+    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int parameterNumber)
     {
         Function func;
         func.functionReturnDataTypeCode = dataTypeCode;
+        func.numberOfParameters = parameterNumber;
         functionBindings.insert(std::make_pair(id, func));
     }
 
@@ -211,7 +212,7 @@ class LocalVariableBindings
     //std::string startLabel, endLabel;
 
 public:
-    LocalVariableBindings(int stackFrameSize_i = 0, int currentExpressionAddressOffset_i = 4) : stackFrameSize(stackFrameSize_i),
+    LocalVariableBindings(int stackFrameSize_i = 0, int currentExpressionAddressOffset_i = 0) : stackFrameSize(stackFrameSize_i),
                                                                                                 currentExpressionAddressOffset(currentExpressionAddressOffset_i)
     {
     }
