@@ -40,7 +40,7 @@ extern "C" int fileno(FILE *stream);
 "float"			{ return(FLOAT); }
 "for"			  { return(FOR); }
 "if"			  { return(IF); }
-"int"			  { yylval.str = new std::string(yytext); return(INT); }
+"int"			  { return(INT); }
 "long"			{ return(LONG); }
 "return"		{ return(RETURN); }
 "short"			{ return(SHORT); }
