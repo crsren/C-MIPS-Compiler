@@ -1,7 +1,7 @@
 int f() {
-	int x = 0;
-	while(x < 4) {
-		x = x + 1;
+	int x = 1, i;
+	for(i = 0; i < 4; i= i+1) {
+		x *= 2;
 	}
 	return x;
 }

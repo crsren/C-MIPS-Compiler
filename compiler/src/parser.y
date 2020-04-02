@@ -411,8 +411,8 @@ selection_statement
 iteration_statement
 	: WHILE '(' expression ')' statement			 								{ $$ = new WhileStatement($3, $5); }
 	| DO statement WHILE '(' expression ')' ';'			 							{ fprintf(stderr, "\n DO-WHILE not implemented\n"); }
-	| FOR '(' expression_statement expression_statement ')' statement				{ $$ = new ForStatement($3, $4, $6); }
-	| FOR '(' expression_statement expression_statement expression ')' statement	{ $$ = new ForStatement($3, $4, $5, $7); }
+	| FOR '(' expression_statement expression_statement ')' statement				{ fprintf(stderr, "2arg ForStatement\n"); $$ = new ForStatement($3, $4, $6); }
+	| FOR '(' expression_statement expression_statement expression ')' statement	{ fprintf(stderr, "3arg ForStatement\n"); $$ = new ForStatement($3, $4, $5, $7); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/continue-statement-c?view=vs-2019

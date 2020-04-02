@@ -7,7 +7,7 @@ void Compound::print(std::ostream &out, LocalVariableBindings *bindings) const
     std::cerr << GlobalIndent::instance().globalIndent << "Get stack frame size\n";
     int previousStackFrameSize = bindings->getStackFrameSize();
 
-    if (dList)
+    if (dList && dList->items.size())
     {
         std::cerr << GlobalIndent::instance().globalIndent << "if (the declaration list is not a nullptr)\n";
         std::cerr << GlobalIndent::instance().globalIndent << "\tfor (evey declaration element in the declaration list)\n";
@@ -23,7 +23,7 @@ void Compound::print(std::ostream &out, LocalVariableBindings *bindings) const
         GlobalIndent::instance().globalIndent = oldGlobalIndent;
     }
 
-    if (sList)
+    if (sList && sList->items.size())
     {
         std::cerr << GlobalIndent::instance().globalIndent << "if (the statement list is not a nullptr)\n";
         std::cerr << GlobalIndent::instance().globalIndent << "\tfor (evey statement element in the statement list)\n";
