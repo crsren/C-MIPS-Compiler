@@ -19,8 +19,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tPrint the initializer\n";
                 initializer->print(out, bindings);
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tPrinting MIPS code\n";
-                out << Mips::load_address(1, identifier);
-                out << Mips::store_word_reg(2, 0, 1);
+                out << Mips::store_global_word(2, identifier);
             }
             else // local
             {
@@ -52,8 +51,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     std::cerr << GlobalIndent::instance().globalIndent << "\t\t\tPrint the initializer\n";
                     initializer->print(out, bindings);
                     std::cerr << GlobalIndent::instance().globalIndent << "\t\t\tPrinting MIPS code\n";
-                    out << Mips::load_address(1, identifier);
-                    out << Mips::store_word_reg(2, 0, 1);
+                    out << Mips::store_global_word(2, identifier);
                 }
                 else // local
                 {
