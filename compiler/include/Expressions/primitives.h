@@ -23,7 +23,7 @@ public:
             std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
             out << Mips::load_immediate(2, value);
             out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
-            std::cerr << GlobalIndent::instance().globalIndent << "\tIncrement local stack frame size\n";
+            //std::cerr << GlobalIndent::instance().globalIndent << "\tIncrement local stack frame size\n";
             //bindings->incrementCurrentExpressionAddressOffset();
             //stackFrame->Push(); TODO
         }
@@ -53,12 +53,14 @@ public:
             std::cerr << GlobalIndent::instance().globalIndent << "if (the local variable: " << name << " exists)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
             out << Mips::load_word(2, bindings->getLocalVariableAddressOffset(name), false); // Use frame pointer
+            out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
         }
         else if (GlobalVariableBindings::instance().globalVariableBindingExists(name))
         {
             std::cerr << GlobalIndent::instance().globalIndent << "if (the global variable: " << name << " exists)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
             out << Mips::load_global_word(2, name);
+            out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
         }
         std::cerr << GlobalIndent::instance().globalIndent << "Identifier::print\tEND\n";
     }

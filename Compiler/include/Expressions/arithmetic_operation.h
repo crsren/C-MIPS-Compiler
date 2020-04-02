@@ -15,10 +15,13 @@ public:
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
         std::cerr << GlobalIndent::instance().globalIndent << "ArithmeticOperation::print\tSTART\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Get the currentExpressionAddressOffset:" << std::to_string(bindings->getCurrentExpressionAddressOffset()) << "\n";
+        int originalExpressionAddressOffset = bindings->getCurrentExpressionAddressOffset();
+
         std::cerr << GlobalIndent::instance().globalIndent << "Print LHS\n";
         left->print(out, bindings);
 
-        std::cerr << GlobalIndent::instance().globalIndent << "Get the currentExpressionAddressOffset\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Get the leftExpressionAddressOffset\n";
         int leftExpressionAddressOffset = bindings->getCurrentExpressionAddressOffset();
 
         std::cerr << GlobalIndent::instance().globalIndent << "Increment the currentExpressionAddressOffset\n";
@@ -27,15 +30,18 @@ public:
         std::cerr << GlobalIndent::instance().globalIndent << "Print RHS\n";
         right->print(out, bindings);
 
+        std::cerr << GlobalIndent::instance().globalIndent << "Get the rightExpressionAddressOffset\n";
+        int rightExpressionAddressOffset = bindings->getCurrentExpressionAddressOffset();
+
         std::cerr << GlobalIndent::instance().globalIndent << "Increment the currentExpressionAddressOffset\n";
         bindings->incrementCurrentExpressionAddressOffset();
 
         std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
         out << Mips::load_word(2, leftExpressionAddressOffset, false);
-        out << Mips::load_word(3, bindings->getCurrentExpressionAddressOffset() - 4, false);
+        out << Mips::load_word(3, rightExpressionAddressOffset, false);
         
         std::cerr << GlobalIndent::instance().globalIndent << "Decrement the currentExpressionAddressOffset by"<< std::to_string(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset) << "\n";
-        bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset);
+        bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - originalExpressionAddressOffset);
         
         std::cerr << GlobalIndent::instance().globalIndent << "Switch Statement - Checking the operation symbol\n";
         switch (operationSymbol[0])
@@ -72,7 +78,7 @@ public:
         }
 
         std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
-        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset() - 4, false);
+        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
         std::cerr << GlobalIndent::instance().globalIndent << "ArithmeticOperation::print\tEND\n";
     }
 };

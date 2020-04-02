@@ -1,3 +1,3 @@
-int f() {
-	return 4;
+int x() {
+	return 5 & 9;
 }
