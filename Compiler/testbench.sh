@@ -15,6 +15,7 @@ fi
 INPUT_DIR="target/given"
 MIPS_DIR="target/got"
 BIN_DIR="target/bin"
+rm -rf ${BIN_DIR}/* ${MIPS_DIR}/*
 mkdir -p ${MIPS_DIR} ${BIN_DIR}
 chmod 755 ${INPUT_DIR} ${MIPS_DIR} ${BIN_DIR}
 
@@ -32,9 +33,9 @@ for FOLDER in ${INPUT_DIR}/* ; do #Each folder
 
         NAME=${DRIVER%%_driver.c}
         C_FILE=${NAME}.c
-        MIPS=${NAME}.s
-        BIN=${NAME}.o
         NAME=${NAME##*/}
+        MIPS=${MIPS_DIR}/${NAME}.s
+        BIN=${BIN_DIR}/${NAME}.o
         ((TOTAL++))
         echo "-----------------------------------------------------------------------"
         echo  "#${TOTAL}: ${NAME}"
@@ -48,20 +49,20 @@ for FOLDER in ${INPUT_DIR}/* ; do #Each folder
         
         # Compile C to MIPS using our compiler
         echo && echo "Compiling C to MIPS."
-        $COMPILER -S $C_FILE -o $MIPS
+        $COMPILER -S $C_FILE -o $MIPS #> /dev/null 2>&1
 
         # Compile MIPS to BIN 
         echo && echo "Compiling MIPS to BIN."
         mips-linux-gnu-gcc -mfp32 -o $BIN -c $MIPS
 
-        #Linking the file
+        # #Linking the file
         echo && echo "Linking the file."
-        mips-linux-gnu-gcc -mfp32 -static -o $BIN_DIR/${NAME}_mips $BIN $DRIVER
+        mips-linux-gnu-gcc -mfp32 -stzatic -o $BIN_DIR/${NAME} $BIN $DRIVER
 
         # Running the file
         if [[ -f ${MIPS} ]] ; then
             echo "Running the file."
-            qemu-mips $BIN_DIR/${NAME}_mips
+            qemu-mips $BIN_DIR/${NAME}
             MIPS_RETURN=$?
         else 
             MIPS_RETURN=-1
@@ -72,7 +73,7 @@ for FOLDER in ${INPUT_DIR}/* ; do #Each folder
             echo "	${NAME}, Expected ${REF_RETURN}, got ${MIPS_RETURN}"
             echo "								FAIL"
             FAILED+=($NAME)
-            #cat ${i}
+            #cat ${}
             #cat ${py_file}
         else
             echo "${REF_RETURN} == ${MIPS_RETURN}"

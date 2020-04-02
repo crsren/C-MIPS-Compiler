@@ -37,6 +37,7 @@ public:
 
         std::cerr << GlobalIndent::instance().globalIndent << "Getting the identifier name\n";
         const std::string identifierName = identifierPtr->getName();
+        std::cerr << "Get left side identifier: " << identifierName << "\n";
 
         std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
         out << Mips::load_word(2, rhsExpressionStackPointer, false);

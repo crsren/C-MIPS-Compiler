@@ -206,7 +206,7 @@ assignment_expression
 
 	// middle will be assignment string ("*=")
 	// → remove last char ("=") and use BinaryOperation
-	| unary_expression ASSIGN assignment_expression 			{ $2[(*$2).size()-1]='\0'; $$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
+	| unary_expression ASSIGN assignment_expression 			{ fprintf(stderr, "ASSIGN\n"); $2->pop_back(); fprintf(stderr, "ASSIGN2\n"); $$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
 	;
 
 expression
@@ -300,7 +300,7 @@ initializer
 
 init_declarator // x,  x = 5, f(b)
 	: declarator 													{ $$ = new InitDeclarator($1); }
-	| declarator '=' initializer 									{ $$ = new InitDeclarator($1, $3); }
+	| declarator '=' initializer 									{ fprintf(stderr, "init_declarator w initializer \n");$$ = new InitDeclarator($1, $3); }
 	;
 
 init_declarator_list
