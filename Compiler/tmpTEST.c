@@ -1,6 +1,6 @@
-int x;
+int x = 8;
 
 int f() {
-	x = 8;
+	x = 3;
 	return x;
 }

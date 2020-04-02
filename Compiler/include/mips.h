@@ -66,8 +66,8 @@ public:
 
     static std::string load_global_word(int regNum, std::string variableIdentifier)
     {
-        std::string out = "\tlui\t$1,%hi(" + variableIdentifier + ")\n";
-        out += "\tlw\t$" + std::to_string(regNum) + ",%lo(" + variableIdentifier + ")($1)\n";
+        std::string out = "\tla\t$1," + variableIdentifier + "\n";
+        out += "\tlw\t$" + std::to_string(regNum) + ",0($1)\n";
         return out;
     }
 
@@ -94,8 +94,8 @@ public:
 
     static std::string store_global_word(int regNum, std::string variableIdentifier)
     {
-        std::string out = "\tlui\t$1,%hi(" + variableIdentifier + ")\n";
-        out += "\tsw\t$" + std::to_string(regNum) + ",%lo(" + variableIdentifier + ")($1)\n";
+        std::string out = "\tla\t$1," + variableIdentifier + "\n";
+        out += "\tsw\t$" + std::to_string(regNum) + ",0($1)\n";
         return out;
     }
 

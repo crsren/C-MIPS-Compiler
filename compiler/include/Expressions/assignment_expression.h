@@ -36,14 +36,25 @@ public:
                 std::cerr << GlobalIndent::instance().globalIndent << "\tThat is not supported yet\n";
             }
 
-            std::cerr << GlobalIndent::instance().globalIndent << "Getting the identifier name\n";
+            std::cerr << GlobalIndent::instance().globalIndent << "Getting the left-side identifier name\n";
             const std::string identifierName = identifierPtr->getName();
-            std::cerr << "Get left side identifier: " << identifierName << "\n";
 
-            std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
-            out << Mips::load_word(2, rhsExpressionStackPointer, false);
+            if (bindings->localVariableBindingExists(identifierName))
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "if (the identifier:" << identifierName << " corresponds to a local variable)\n";
+                std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
+                out << Mips::load_word(2, rhsExpressionStackPointer, false);
+                out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifierName), false);
+            }
 
-            out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifierName), false);
+            else if (GlobalVariableBindings::instance().globalVariableBindingExists(identifierName))
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "if (the identifier:" << identifierName << " corresponds to a global variable)\n";
+                std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
+                out << Mips::load_word(2, rhsExpressionStackPointer, false);
+                out << Mips::store_global_word(2, identifierName);   
+            }
+            
 
             std::cerr << GlobalIndent::instance().globalIndent << "Decrement the currentExpressionAddressOffset by" << std::to_string(bindings->getCurrentExpressionAddressOffset() - rhsExpressionStackPointer) << "\n";
             bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - rhsExpressionStackPointer);
