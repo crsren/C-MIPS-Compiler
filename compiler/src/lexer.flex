@@ -40,7 +40,7 @@ extern "C" int fileno(FILE *stream);
 "float"			{ return(FLOAT); }
 "for"			  { return(FOR); }
 "if"			  { return(IF); }
-"int"			  { return(INT); }
+"int"			  { yylval.str = new std::string(yytext); return(INT); }
 "long"			{ return(LONG); }
 "return"		{ return(RETURN); }
 "short"			{ return(SHORT); }
@@ -87,7 +87,7 @@ L?\"(\\.|[^\\"])*\"	    { return(STRING_LITERAL); }
 "<="			{ return(LE_OP); }
 ">="			{ return(GE_OP); }
 "=="			{ return(EQ_OP); }
-"!="			{ yylval.str = new std::string(yytext); return(ASSIGN); }
+"!="			{ return(NE_OP); }
 
 ("{"|"<%")		{ return('{'); }
 ("}"|"%>")		{ return('}'); }
