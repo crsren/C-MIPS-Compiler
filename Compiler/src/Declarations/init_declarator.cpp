@@ -19,7 +19,10 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                 std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
                 GlobalIndent::instance().globalIndent += "\t\t";
                 std::cerr << GlobalIndent::instance().globalIndent << "Print the initializer\n";
+                out << Mips::move(9, 30);
+                out << Mips::move(30, 29);
                 initializer->print(out, bindings);
+                out << Mips::move(30, 9);
                 std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
                 out << Mips::store_global_word(2, identifier);
                 GlobalIndent::instance().globalIndent = oldGlobalIndent;
@@ -57,7 +60,10 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     out << Mips::segment_text();
 
                     std::cerr << GlobalIndent::instance().globalIndent << "Print the initializer\n";
+                    out << Mips::move(9, 30);
+                    out << Mips::move(30, 29);
                     initializer->print(out, bindings);
+                    out << Mips::move(30, 9);
                     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
                     out << Mips::store_global_word(2, identifier);
                     GlobalIndent::instance().globalIndent = oldGlobalIndent;

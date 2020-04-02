@@ -221,7 +221,7 @@ public:
 
             std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
             out << Mips::andi(2, 2, 255);
-            out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), true);
+            out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
         }
 
         std::cerr << GlobalIndent::instance().globalIndent << "BooleanOperation::print\tEND\n";

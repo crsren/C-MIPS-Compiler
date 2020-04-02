@@ -32,7 +32,7 @@ public:
             std::cerr << GlobalIndent::instance().globalIndent << "if (this is a GLOBAL constant expression)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
             out << Mips::load_immediate(2, value);
-            out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), true);
+            out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
         }
         std::cerr << GlobalIndent::instance().globalIndent << "Constant::print\tEND\n";
     };
@@ -70,7 +70,7 @@ public:
                 std::cerr << GlobalIndent::instance().globalIndent << "if (the global variable: " << name << " exists)\n";
                 std::cerr << GlobalIndent::instance().globalIndent << "\tPrinting MIPS code\n";
                 out << Mips::load_global_word(2, name);
-                out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), true);
+                out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
             }
         }
         std::cerr << GlobalIndent::instance().globalIndent << "Identifier::print\tEND\n";

@@ -90,7 +90,7 @@ public:
             postfixExpression->print(out, bindings);
 
             std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
-            out << Mips::load_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), true);
+            out << Mips::load_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
 
             std::cerr << GlobalIndent::instance().globalIndent << "Switch Statement - Checking the operation symbol\n";
             switch (operationSymbol[0])
@@ -143,7 +143,7 @@ public:
             }
 
             std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
-            out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), true);
+            out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
         }
 
         std::cerr << GlobalIndent::instance().globalIndent << "UnaryOperation::print\tEND\n";
