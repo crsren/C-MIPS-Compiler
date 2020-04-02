@@ -7,6 +7,7 @@
 // Declaration
 //#include "Declaration/declaration.h"
 #include "Declaration/declarators.h"
+#include "Declaration/init_declarator.h"
 //#include "Declaration/type_specifiers.h"
 
 // Expressions

@@ -9,8 +9,9 @@
 
 class List : public Node
 {
-public:
     std::list<nodePtr> items;
+
+public:
     List(nodePtr first)
     {
         items.push_back(first);
@@ -39,6 +40,16 @@ public:
     {
         items.push_back(ptr);
     };
+
+    std::list<nodePtr> &getItems()
+    {
+        return items;
+    }
+
+    int getSize() const
+    {
+        return items.size();
+    }
 };
 
 #endif // STANDARD_LIST_H
