@@ -1,5 +1,7 @@
 
 .DS_Store
+.vscode/settings.json
+.vscode/c_cpp_properties.json
 .vagrant/*
 *.o
 *.py
@@ -12,6 +14,8 @@ Translator/build/*
 Translator/results/*
 
 Compiler/src/parser.output
+Compiler/src/parser.tab.cpp
+Compiler/src/parser.tab.hpp
 Compiler/src/lexer.yy.cpp
 Compiler/build/*
 Compiler/target/bin/*
@@ -21,3 +25,8 @@ Compiler/target/got/*
 ubuntu-xenial-16.04-cloudimg-console.log
 *.s
 Compiler/tmpTEST.c
+Compiler/tmpTEST.c
+Compiler/tmpTEST.c
+Compiler/tmpTEST_driver.c
+Compiler/mips_out
+Compiler/res_out

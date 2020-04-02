@@ -1898,19 +1898,19 @@ yyreduce:
 
   case 75:
 #line 383 "src/parser.y" /* yacc.c:1646  */
-    { fprintf(stderr, "Compound\n"); (yyval.nodePtr) = new Compound(nullptr, (yyvsp[-1].listPtr)); }
+    { fprintf(stderr, "stmt Compound\n"); (yyval.nodePtr) = new Compound(nullptr, (yyvsp[-1].listPtr)); }
 #line 1903 "src/parser.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 76:
 #line 384 "src/parser.y" /* yacc.c:1646  */
-    { (yyval.nodePtr) = new Compound((yyvsp[-1].listPtr), nullptr); }
+    { fprintf(stderr, "dclr Compound\n");(yyval.nodePtr) = new Compound((yyvsp[-1].listPtr), nullptr); }
 #line 1909 "src/parser.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 77:
 #line 385 "src/parser.y" /* yacc.c:1646  */
-    { (yyval.nodePtr) = new Compound((yyvsp[-2].listPtr), (yyvsp[-1].listPtr)); }
+    { fprintf(stderr, "dclr stmt Compound\n");(yyval.nodePtr) = new Compound((yyvsp[-2].listPtr), (yyvsp[-1].listPtr)); }
 #line 1915 "src/parser.tab.cpp" /* yacc.c:1646  */
     break;
 
@@ -1970,13 +1970,13 @@ yyreduce:
 
   case 87:
 #line 414 "src/parser.y" /* yacc.c:1646  */
-    { fprintf(stderr, "\n FOR not implemented\n"); }
+    { fprintf(stderr, "2arg ForStatement\n"); (yyval.nodePtr) = new ForStatement((yyvsp[-3].nodePtr), (yyvsp[-2].nodePtr), (yyvsp[0].nodePtr)); }
 #line 1975 "src/parser.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 88:
 #line 415 "src/parser.y" /* yacc.c:1646  */
-    { fprintf(stderr, "\n FOR not implemented\n"); }
+    { fprintf(stderr, "3arg ForStatement\n"); (yyval.nodePtr) = new ForStatement((yyvsp[-4].nodePtr), (yyvsp[-3].nodePtr), (yyvsp[-2].nodePtr), (yyvsp[0].nodePtr)); }
 #line 1981 "src/parser.tab.cpp" /* yacc.c:1646  */
     break;
 

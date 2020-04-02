@@ -26,7 +26,6 @@ public:
         std::cerr << GlobalIndent::instance().globalIndent << "Print RHS\n";
         right->print(out, bindings);
 
-        nodePtr left;
         std::cerr << GlobalIndent::instance().globalIndent << "Cast LHS to a pointer to an Identifier\n";
         const Identifier *identifierPtr = dynamic_cast<const Identifier *>(left);
         if (identifierPtr == nullptr)
@@ -44,9 +43,9 @@ public:
 
         out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifierName), false);
 
-        std::cerr << GlobalIndent::instance().globalIndent << "Decrement the currentExpressionAddressOffset by"<< std::to_string(bindings->getCurrentExpressionAddressOffset() - rhsExpressionStackPointer) << "\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Decrement the currentExpressionAddressOffset by" << std::to_string(bindings->getCurrentExpressionAddressOffset() - rhsExpressionStackPointer) << "\n";
         bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - rhsExpressionStackPointer);
-        
+
         std::cerr << GlobalIndent::instance().globalIndent << "AssignmentExpression::print\tEND\n";
     }
 };
