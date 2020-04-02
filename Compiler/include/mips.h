@@ -212,9 +212,9 @@ public:
         return "\tsra\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
 
-    static std::string jump(int r1 = 31) //default jump to return address
+    static std::string jump_register(int regNum) //default jump to return address
     {
-        std::string tmp = "\tj\t$" + std::to_string(r1) + "\n";
+        std::string tmp = "\tjr\t$" + std::to_string(regNum) + "\n";
         tmp += "\tnop\n";
         return tmp;
     }
@@ -267,7 +267,7 @@ public:
         out += Mips::load_word(31, 0, false);
         out += Mips::load_word(30, 4, false);
         out += Mips::move(29, 30);
-        out += Mips::jump();
+        out += Mips::jump_register(31);
         return out;
     }
 };
