@@ -26,3 +26,7 @@ ubuntu-xenial-16.04-cloudimg-console.log
 *.s
 Compiler/tmpTEST.c
 Compiler/tmpTEST.c
+Compiler/tmpTEST.c
+Compiler/tmpTEST_driver.c
+Compiler/mips_out
+Compiler/res_out

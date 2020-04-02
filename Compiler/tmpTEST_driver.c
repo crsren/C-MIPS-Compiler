@@ -1,7 +1,7 @@
 
-int f(int x, int y);
+int f(int x);
 
 int main()
 {
-    return f(30,10);
+    return f(30);
 }
