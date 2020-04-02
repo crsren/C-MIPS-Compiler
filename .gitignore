@@ -30,3 +30,6 @@ Compiler/tmpTEST.c
 Compiler/tmpTEST_driver.c
 Compiler/mips_out
 Compiler/res_out
+Compiler/src/parser.tab.cpp
+Compiler/tmpTEST.c
+Compiler/tmpTEST.c

@@ -145,7 +145,7 @@ multiplicative_expression
 
 additive_expression
 	: multiplicative_expression 								{ $$ = $1; }
-	| additive_expression '+' multiplicative_expression 		{ $$ = new ArithmeticOperation($1, "+", $3); }
+	| additive_expression '+' multiplicative_expression 		{ fprintf(stderr, "ArithmeticOperation\n"); $$ = new ArithmeticOperation($1, "+", $3); }
 	| additive_expression '-' multiplicative_expression 		{ $$ = new ArithmeticOperation($1, "-", $3); }
 	;
 

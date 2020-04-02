@@ -2,7 +2,7 @@
 
 # Input arguments
 if [[ "$1" -eq "" ]]; then
-    COMPILER="build/src/COMPILER"
+    COMPILER="build/src/compiler"
     echo "Using default ${COMPILER}"
 elif [[ -f "$1" ]]; then
     COMPILER = ${1}
