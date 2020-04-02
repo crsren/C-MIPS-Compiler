@@ -17,7 +17,7 @@ REF_RETURN=$?
 rm c_out
 
 # Compile C to MIPS using our compiler
-echo && echo "Compiling C to MIPS."
+echo && echo "Compiling C to MIPS. (out.s)"
 $COMPILER -S $C_FILE -o out.s #> /dev/null 2>&
 
 # Compile MIPS to BIN
@@ -46,3 +46,5 @@ else
     echo "${REF_RETURN} == ${MIPS_RETURN}"
     echo "								pass"
 fi
+
+rm mips_out res_out
