@@ -1,3 +1,6 @@
-int x() {
-	return 5 & 9;
+int f()
+{
+	int y;
+	int x = y = 3;
+	return x + y;
 }

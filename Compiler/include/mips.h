@@ -92,6 +92,13 @@ public:
         return out;
     }
 
+    static std::string store_global_word(int regNum, std::string variableIdentifier)
+    {
+        std::string out = "\tlui\t$1,%hi(" + variableIdentifier + ")\n";
+        out += "\tsw\t$" + std::to_string(regNum) + ",%lo(" + variableIdentifier + ")($1)\n";
+        return out;
+    }
+
     static std::string store_word_reg(int sourceRegNum, int addressOffset, int addressRegNum)
     {
         std::string out = "\tsw\t$" + std::to_string(sourceRegNum) + "," + std::to_string(addressOffset) + "($" + std::to_string(addressRegNum) + ")\n";
@@ -202,14 +209,14 @@ public:
         return "\tnor\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
 
-    static std::string sll(int destRegNum, int sourceRegNum1, int sourceRegNum2)
+    static std::string sllv(int destRegNum, int sourceRegNum1, int sourceRegNum2)
     {
-        return "\tsll\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
+        return "\tsllv\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
 
-    static std::string sra(int destRegNum, int sourceRegNum1, int sourceRegNum2)
+    static std::string srav(int destRegNum, int sourceRegNum1, int sourceRegNum2)
     {
-        return "\tsra\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
+        return "\tsrav\t$" + std::to_string(destRegNum) + ",$" + std::to_string(sourceRegNum1) + ",$" + std::to_string(sourceRegNum2) + "\n";
     }
 
     static std::string jump_register(int regNum) //default jump to return address

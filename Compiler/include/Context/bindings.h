@@ -76,7 +76,7 @@ struct Function
 {
     PrimitiveDataTypeCode functionReturnDataTypeCode;
 
-    int numberOfParameters; // assuming all int
+    //int numberOfParameters; // assuming all int
 };
 
 // struct containing information on the variable declaration
@@ -114,12 +114,20 @@ class GlobalVariableBindings // usage: GlobalBindings::instance().<function>();
     // are shared by every local scope and thus, by every instance of the VariableBindings class
     std::unordered_map<std::string, Function> functionBindings;
 
+    // the currentGlobalExpressionAddressOffset is the value that must be subtracted from
+    // the stack pointer to get the memory location of the current intermediate stored
+    // expression
+    int currentGlobalExpressionAddressOffset;
+
 public:
+    GlobalVariableBindings():
+        currentGlobalExpressionAddressOffset(0){}
+
     static GlobalVariableBindings &instance()
     {
         static GlobalVariableBindings instance; //Instantiated on first use
         return instance;
-    };
+    }
 
     void insertGlobalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
     {
@@ -167,11 +175,10 @@ public:
         globalBindings.insert(std::make_pair(id, var));
     }
 
-    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int parameterNumber)
+    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
     {
         Function func;
         func.functionReturnDataTypeCode = dataTypeCode;
-        func.numberOfParameters = parameterNumber;
         functionBindings.insert(std::make_pair(id, func));
     }
 
@@ -185,6 +192,26 @@ public:
         {
             return true;
         }
+    }
+
+    int getCurrentGlobalExpressionAddressOffset() const
+    {
+        return currentGlobalExpressionAddressOffset;
+    }
+
+    void incrementCurrentGlobalExpressionAddressOffset()
+    {
+        currentGlobalExpressionAddressOffset += 4;
+    }
+
+    void decrementCurrentGlobalExpressionAddressOffset()
+    {
+        currentGlobalExpressionAddressOffset -= 4;
+    }
+
+    void decrementCurrentGlobalExpressionAddressOffsetBy(const int &position)
+    {
+        currentGlobalExpressionAddressOffset -= position;
     }
 };
 
@@ -212,10 +239,10 @@ class LocalVariableBindings
     //std::string startLabel, endLabel;
 
 public:
-    LocalVariableBindings(int stackFrameSize_i = 0, int currentExpressionAddressOffset_i = 0) : stackFrameSize(stackFrameSize_i),
-                                                                                                currentExpressionAddressOffset(currentExpressionAddressOffset_i)
-    {
-    }
+    LocalVariableBindings(int stackFrameSize_i = 0, int currentExpressionAddressOffset_i = 0):
+        stackFrameSize(stackFrameSize_i),
+        currentExpressionAddressOffset(currentExpressionAddressOffset_i)
+        {}
 
     int getStackFrameSize() const
     {
