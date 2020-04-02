@@ -18,22 +18,25 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
+        std::cerr << "\nAssignmentExpression::print\tSTART\n";
         int rhsExpressionStackPointer = bindings->getCurrentExpressionAddressOffset();
 
+        std::cerr << "Print right side\n";
         right->print(out, bindings);
 
-        nodePtr left;
         const Identifier *identifierPtr = dynamic_cast<const Identifier *>(left);
         if (identifierPtr == nullptr)
             std::cerr << "Left side of assignment could not be casted to an identifier.\n";
 
         const std::string identifierName = identifierPtr->getName();
+        std::cerr << "Get left side identifier: " << identifierName << "\n";
 
         out << Mips::load_word(2, rhsExpressionStackPointer, false);
 
         out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifierName), false);
 
         bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - rhsExpressionStackPointer);
+        std::cerr << "\nAssignmentExpression::print\tEND\n";
     }
 };
 

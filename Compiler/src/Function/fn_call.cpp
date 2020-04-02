@@ -9,19 +9,22 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
 
     int stackFrameOffset = 8;
 
-    std::cerr << "For (evey argument int the argument list)\n";
-    for (const auto argument : argumentList->items)
+    if (argumentList)
     {
-        std::cerr << "\t**************************\n";
-        std::cerr << "\tLoop Iteration:" << std::to_string(stackFrameOffset/4 - 2) << "\n";
-        std::cerr << "\tPrint the current argument\n";
-        argument->print(out, bindings);
-        std::cerr << "\tPrinting MIPS code\n";
-        out << Mips::store_word(2, stackFrameOffset, true);
-        std::cerr << "\tIncrement stackFrameOffset\n";
-        stackFrameOffset += 4;
-        std::cerr << "\t**************************\n\n";
-        // store answer that is in register $2
+        std::cerr << "For (evey argument int the argument list)\n";
+        for (const auto argument : argumentList->items)
+        {
+            std::cerr << "\t**************************\n";
+            std::cerr << "\tLoop Iteration:" << std::to_string(stackFrameOffset / 4 - 2) << "\n";
+            std::cerr << "\tPrint the current argument\n";
+            argument->print(out, bindings);
+            std::cerr << "\tPrinting MIPS code\n";
+            out << Mips::store_word(2, stackFrameOffset, true);
+            std::cerr << "\tIncrement stackFrameOffset\n";
+            stackFrameOffset += 4;
+            std::cerr << "\t**************************\n\n";
+            // store answer that is in register $2
+        }
     }
 
     std::cerr << "Cast the identifier to a pointer to an Identifier\n";

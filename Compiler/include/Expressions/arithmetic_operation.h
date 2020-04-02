@@ -14,7 +14,7 @@ public:
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override
     {
-        std::cerr << "ArithmeticOperation::print\tSTART\n";
+        std::cerr << "\nArithmeticOperation::print\tSTART\n";
         std::cerr << "Print LHS\n";
         left->print(out, bindings);
 
@@ -30,10 +30,10 @@ public:
         std::cerr << "Print MIPS code\n";
         out << Mips::load_word(2, leftExpressionAddressOffset, false);
         out << Mips::load_word(3, bindings->getCurrentExpressionAddressOffset(), false);
-        
-        std::cerr << "Decrement the currentExpressionAddressOffset by"<< std::to_string(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset) << "\n";
+
+        std::cerr << "Decrement the currentExpressionAddressOffset by" << std::to_string(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset) << "\n";
         bindings->decrementCurrentExpressionAddressOffsetBy(bindings->getCurrentExpressionAddressOffset() - leftExpressionAddressOffset);
-        
+
         std::cerr << "Switch Statement - Checking the operation symbol\n";
         switch (operationSymbol[0])
         {
