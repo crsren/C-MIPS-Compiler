@@ -1,7 +1,5 @@
 
 .DS_Store
-.vscode/settings.json
-.vscode/c_cpp_properties.json
 .vagrant/*
 *.o
 *.py
@@ -14,8 +12,6 @@ Translator/build/*
 Translator/results/*
 
 Compiler/src/parser.output
-Compiler/src/parser.tab.cpp
-Compiler/src/parser.tab.hpp
 Compiler/src/lexer.yy.cpp
 Compiler/build/*
 Compiler/target/bin/*
