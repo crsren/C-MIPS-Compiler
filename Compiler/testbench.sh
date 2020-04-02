@@ -57,7 +57,7 @@ for FOLDER in ${INPUT_DIR}/* ; do #Each folder
 
         # #Linking the file
         echo && echo "Linking the file."
-        mips-linux-gnu-gcc -mfp32 -stzatic -o $BIN_DIR/${NAME} $BIN $DRIVER
+        mips-linux-gnu-gcc -mfp32 -static -o $BIN_DIR/${NAME} $BIN $DRIVER
 
         # Running the file
         if [[ -f ${MIPS} ]] ; then

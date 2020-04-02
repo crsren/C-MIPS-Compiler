@@ -206,7 +206,7 @@ assignment_expression
 
 	// middle will be assignment string ("*=")
 	// → remove last char ("=") and use BinaryOperation
-	| unary_expression ASSIGN assignment_expression 			{ fprintf(stderr, "ASSIGN\n"); $2->pop_back(); fprintf(stderr, "ASSIGN2\n"); $$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
+	| unary_expression ASSIGN assignment_expression 			{ $2->pop_back(); $$ = new AssignmentExpression($1, new ArithmeticOperation($1, *$2, $3)); }
 	;
 
 expression
