@@ -28,7 +28,7 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
     LocalVariableBindings *localVariableBindings = new LocalVariableBindings(); // KIMON CHECK IS THIS RIGHT?
 
     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
-    
+
     out << Mips::function_prologue(functionIdentifier);
 
     std::cerr << GlobalIndent::instance().globalIndent << "Increase the local bindings' stack frame size by 8\n";
@@ -37,7 +37,7 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
     std::cerr << GlobalIndent::instance().globalIndent << "Cast the fnDeclarator to a pointer to a FnDeclarator\n";
     const FnDeclarator *cast_fnDeclarator = dynamic_cast<const FnDeclarator *>(fnDeclarator);
 
-    std::vector<const ParameterDeclaration*> paramList;
+    std::vector<const ParameterDeclaration *> paramList;
     if (cast_fnDeclarator->getParameterList())
     {
         std::cerr << GlobalIndent::instance().globalIndent << "if (the parameter list is not a null pointer)\n";

@@ -47,6 +47,11 @@ public:
     {
         return pList;
     };
+
+    int getSize() const
+    {
+        return pList.size();
+    }
 };
 
 class FnDeclarator : public Declarator
