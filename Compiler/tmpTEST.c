@@ -1,7 +1,8 @@
-int fibbonacci(int a, int b) {
-   if(a == 0){
-      return 1;
-   } else {
-      return (b+fibbonacci(a-1, b));
-   }
+int f() {
+	int y, x = 5;
+
+	y = 2 + 2* x++;
+	y -= ++x * 2;
+	x--;
+	return y + --x;
 }

@@ -1,6 +1,6 @@
-int fibbonacci(int a, int b);
+int f();
 
 int main()
 {
-    return fibbonacci(10,20);
+    return f();
 }

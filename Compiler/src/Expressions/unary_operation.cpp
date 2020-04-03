@@ -135,15 +135,28 @@ void PreOperation::print(std::ostream &out, LocalVariableBindings *bindings) con
 {
     expression->print(out, bindings); // evaluate unary expression
 
+    const Identifier * cast_identifier = dynamic_cast<const Identifier *>(expression);
+    // if nodePtr is not a Identifier* -> returns nullptr
+    // if Identifier* and nodePtr arent "related" -> returns nullptr
+    if (cast_identifier == nullptr)
+    {
+        std::cerr << GlobalIndent::instance().globalIndent << "Error: you are not supposed to have a pre-operation symbol:" << symbol << " and after a non-variable expression\n";
+    }
+
+    std::string identifier = cast_identifier->getName();
+
     // alter then store unary expression
     switch (symbol)
     {
     case '+':
         out << Mips::addiu(2, 2, 1);
+        out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifier), false);
         break;
 
     case '-':
         out << Mips::addiu(2, 2, -1);
+        out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifier), false);
+        break;
     }
 
     // Check
@@ -154,18 +167,29 @@ void PostOperation::print(std::ostream &out, LocalVariableBindings *bindings) co
 {
     expression->print(out, bindings); // evaluate postfix expression
 
-    // leave result in $2 then store altered postfix expression
+    const Identifier * cast_identifier = dynamic_cast<const Identifier *>(expression);
+    // if nodePtr is not a Identifier* -> returns nullptr
+    // if Identifier* and nodePtr arent "related" -> returns nullptr
+    if (cast_identifier == nullptr)
+    {
+        std::cerr << GlobalIndent::instance().globalIndent << "Error: you are not supposed to have a pre-operation symbol:" << symbol << " and after a non-variable expression\n";
+    }
+
+    std::string identifier = cast_identifier->getName();
 
     switch (symbol)
     {
     case '+':
-        out << Mips::addiu(3, 2, 1);
-
+        out << Mips::addiu(8, 2, 1);
+        out << Mips::store_word(8, bindings->getLocalVariableAddressOffset(identifier), false);
         break;
+
     case '-':
-        out << Mips::addiu(3, 2, -1);
+        out << Mips::addiu(8, 2, -1);
+        out << Mips::store_word(8, bindings->getLocalVariableAddressOffset(identifier), false);
+        break;
     }
 
     // Check
-    out << Mips::store_word(3, bindings->getCurrentExpressionAddressOffset(), false);
+    out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
 }
