@@ -32,7 +32,7 @@ public:
 
     std::string uniquify(std::string base)
     { // extra "_" before to ensure label is not used as variable
-        return "-" + base + "_" + std::to_string(count++);
+        return "_" + base + "_" + std::to_string(count++);
     };
 };
 
