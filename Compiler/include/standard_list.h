@@ -3,13 +3,11 @@
 
 #include "helpers.h"
 
-#include <list>
-
 // https://stackoverflow.com/questions/31513730/building-a-linked-list-in-yacc-with-left-recursive-grammar
 
 class List : public Node
 {
-    std::list<nodePtr> items;
+    std::vector<nodePtr> items;
 
 public:
     List(nodePtr first)
@@ -41,7 +39,7 @@ public:
         items.push_back(ptr);
     };
 
-    std::list<nodePtr> &getItems()
+    std::vector<nodePtr> &getItems()
     {
         return items;
     }

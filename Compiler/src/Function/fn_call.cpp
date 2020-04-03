@@ -16,7 +16,7 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
     GlobalIndent::instance().globalIndent += "\t";
 
-    std::list<nodePtr> &arguments = argumentList->getItems();
+    std::vector<nodePtr> &arguments = argumentList->getItems();
     for (const auto &argument : arguments)
     {
         std::cerr << GlobalIndent::instance().globalIndent << "**************************\n";
