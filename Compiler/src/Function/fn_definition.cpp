@@ -26,13 +26,13 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
         {
             std::cerr << GlobalIndent::instance().globalIndent << "\tif (the global function's: " << functionIdentifier << " return type is int)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert the global function: " << functionIdentifier << " into the functionBindings\n";
-            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _INTEGER, 0);
+            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _INTEGER, 0, false);
         }
         else if (returnType == "void")
         {
             std::cerr << GlobalIndent::instance().globalIndent << "\tif (the global function's: " << functionIdentifier << " return type is void)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert the global function: " << functionIdentifier << " into the functionBindings\n";
-            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _VOID, 0);
+            GlobalVariableBindings::instance().insertFunctionBinding(functionIdentifier, _VOID, 0, false);
         }
     }
 
@@ -73,13 +73,13 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
             {
                 std::cerr << GlobalIndent::instance().globalIndent << "\tif (the return type of the function is void)\n";
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert Global Function Binding\n";
-                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _VOID, 0);
+                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _VOID, 0, false);
             }
             else if (parameterSpecifier == "int")
             {
                 std::cerr << GlobalIndent::instance().globalIndent << "\tif (the return type of the function is int)\n";
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert Global Function Binding\n";
-                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _INTEGER, 0);
+                GlobalVariableBindings::instance().insertFunctionBinding(parameterIdentifier, _INTEGER, 0, false);
             }
         }
         else
@@ -91,11 +91,11 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert Local Variable Binding\n";
                 if (i < 4)
                 {
-                    localVariableBindings->insertLocalVariableBinding(parameterIdentifier, _INTEGER, -(i + 1)); // $a0, $a1, $a2, $a3
+                    localVariableBindings->insertLocalVariableBinding(parameterIdentifier, _INTEGER, -(i + 1), false); // $a0, $a1, $a2, $a3
                 }
                 else
                 {
-                    localVariableBindings->insertLocalVariableBinding(parameterIdentifier, _INTEGER, -4*(i - 3) - 1);   // $a4, ..., $a_n
+                    localVariableBindings->insertLocalVariableBinding(parameterIdentifier, _INTEGER, -4*(i - 3) - 1, false);   // $a4, ..., $a_n
                 }
             }
         }
