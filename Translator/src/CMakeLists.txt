@@ -9,6 +9,6 @@ set(SRC_PARSER
 
 
 # Add both source and headers to the executable
-add_executable(translator ${SRC_TRANS} ${INCLUDE_TRANS} main.cpp ${SRC_PARSER}) 
+add_executable(compiler ${SRC_TRANS} ${INCLUDE_TRANS} main.cpp ${SRC_PARSER}) 
 
-target_include_directories(translator PUBLIC "${CMAKE_SOURCE_DIR}/include")
+target_include_directories(compiler PUBLIC "${CMAKE_SOURCE_DIR}/include")

@@ -12,6 +12,6 @@
 #include "function.h"
 
 //extern const Node *parseAST(const char *);
-extern const Node *parseAST();
+extern const Node *parseAST(const char *input);
 
 #endif // AST_H

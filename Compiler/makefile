@@ -1,3 +1,5 @@
+bin/compiler: all
+	@bash make_all.sh
 
 all : parser lexer
 

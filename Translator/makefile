@@ -1,4 +1,9 @@
-all : lexer parser
+
+
+bin/compiler: all
+	@bash make_all.sh
+
+all : parser lexer
 
 parser : src/parser.y
 	bison -v -d src/parser.y -o src/parser.tab.cpp

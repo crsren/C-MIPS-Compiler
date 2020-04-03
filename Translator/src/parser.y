@@ -4,7 +4,7 @@
 	extern const Node *g_root;
 
 	// Declare the input file for the lexer
-	//extern FILE *yyin;
+	extern FILE *yyin;
 
 	 //declaring lex generated functions to fix possible issues as provided in 2-parser CW
 	int yylex(void);
@@ -185,16 +185,21 @@ root : translation_unit											{ g_root = $1; }
 const Node *g_root; // Definition of variable (to match declaration earlier)
 
 //const Node *parseAST(const char *inputFile)
-const Node *parseAST()
+const Node *parseAST(const char *input)
 {
-	//yyin = fopen(inputFile, "r");
-	// if (!yyin)
-	// {
-	// 	fprintf(stderr, "The input file (%s) could not be opened", inputFile);
-	// 	return nullptr;
-	// }
-    
+	yyin = fopen(input, "r");
+	if (!yyin)
+	 {
+		fprintf(stderr, "(%s) could not be opened", input);
+		return nullptr;
+	}
+
 	g_root=NULL;
     yyparse();
-    return g_root;
+
+	fclose(yyin);
+
+	if(!g_root)
+		fprintf(stderr, "Error while parsing! No root pointer passed.");
+	return g_root;
 }

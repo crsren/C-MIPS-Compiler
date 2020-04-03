@@ -2,6 +2,9 @@
 %option never-interactive
 
 %{
+extern "C" int fileno(FILE *stream);
+
+
   #define YY_NO_UNISTD_H
 
 // To get rid of register warning for c++=17

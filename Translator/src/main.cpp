@@ -9,15 +9,14 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    const Node *root = parseAST();
+    const Node *root = parseAST(argv[2]);
     //parseAST(argv[1]); for debuggin in VS
 
     cout << '\n';
 
     //root->print(cout);
 
-    string filename = "output.py";
-    ofstream output(filename);
+    ofstream output(argv[4]);
 
     if (output.is_open())
     {
@@ -33,7 +32,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        std::cerr << "Could not open output.py.\n";
+        std::cerr << "Could not open output file.\n";
     }
 
     return 0;
