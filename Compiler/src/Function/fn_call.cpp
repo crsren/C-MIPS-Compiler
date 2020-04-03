@@ -18,7 +18,7 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
         std::vector<nodePtr> arguments;
         if (argumentList)
         {
-            argumentList->getSize();
+            argumentListSize = argumentList->getSize();
             arguments = argumentList->getItems();
         }
 
@@ -76,6 +76,7 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
         std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
         out << Mips::addi(29, 29, 4-bindings->getStackFrameSize());
         out << Mips::jal(functionIdentifier);
+        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
     }
     else
     {
@@ -144,6 +145,7 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
         std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
         out << Mips::addi(29, 29, 4-GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset());
         out << Mips::jal(functionIdentifier);
+        out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
     }
     
 
