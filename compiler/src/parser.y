@@ -104,8 +104,8 @@ postfix_expression
 	| postfix_expression '(' argument_expression_list ')'		{ fprintf(stderr, "FnCall\n"); $$ = new FnCall($1, $3); }
 	//| postfix_expression '.' IDENTIFIER
 	//| postfix_expression PTR_OP IDENTIFIER
-	// | postfix_expression INC_OP 								{ $$ = new postOperation("+", $1); }
-	// | postfix_expression DEC_OP 								{ $$ = new postOperation("-", $1); }
+	| postfix_expression INC_OP 								{ $$ = new PostOperation('+', $1); }
+	| postfix_expression DEC_OP 								{ $$ = new PostOperation('-', $1); }
 	;
 
 argument_expression_list
@@ -115,11 +115,11 @@ argument_expression_list
 
 unary_expression
 	: postfix_expression 		 								{ $$ = $1; }
-	// | INC_OP unary_expression 									{ $$ = new preOperation("+", $2); }
-	// | DEC_OP unary_expression 									{ $$ = new preOperation("-",$2); }
-		| unary_operator cast_expression			 				{ $$ = new UnaryOperation(*$1, $2); }
-	// | SIZEOF unary_expression			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
-	// | SIZEOF '(' type_name ')'			 						{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
+	| INC_OP unary_expression 									{ $$ = new PreOperation($2, '+'); }
+	| DEC_OP unary_expression 									{ $$ = new PreOperation($2, '-'); }
+	| unary_operator cast_expression			 				{ $$ = new UnaryOperation(*$1, $2); }
+	// | SIZEOF unary_expression			 					{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
+	// | SIZEOF '(' type_name ')'			 					{ fprintf(stderr, "\n SIZEOF not implemented\n"); }
 	;
 
 unary_operator
