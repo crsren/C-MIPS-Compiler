@@ -77,6 +77,8 @@ struct Function
 {
     PrimitiveDataTypeCode functionReturnDataTypeCode;
 
+    bool return_type_is_pointer;
+
     int numberOfParameters; // assuming all int
 };
 
@@ -93,6 +95,8 @@ struct Variable
     // if the addressOffset is negative in the range [-4, -1] then taking |addressOffset| + 3
     // represnts the "argument register" number ($4, $5, $6, $7) in which the variable is stored
     int addressOffset;
+
+    bool is_pointer;
 
     bool is_array;
 };
@@ -132,11 +136,12 @@ public:
         return instance;
     }
 
-    void insertGlobalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
+    void insertGlobalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, bool isPointer)
     {
         Variable var;
         var.addressOffset = -1;
         var.is_array = false;
+        var.is_pointer = isPointer;
         var.variableDataTypeCode = dataTypeCode;
         globalBindings.insert(std::make_pair(id, var));
     }
@@ -153,11 +158,30 @@ public:
         }
     }
 
+    bool globalVariableIsArray(const std::string &id)
+    {
+        auto variableBinding = globalBindings.find(id);
+        return (*variableBinding).second.is_array;
+    }
+
+    bool globalVariableIsPointer(const std::string &id)
+    {
+        auto variableBinding = globalBindings.find(id);
+        return (*variableBinding).second.is_pointer;
+    }
+
+    bool functionReturnsPointer(const std::string &id)
+    {
+        auto functionBinding = functionBindings.find(id);
+        return (*functionBinding).second.return_type_is_pointer;
+    }
+
     void insertGlobalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
     {
         Variable var;
         var.addressOffset = -1;
         var.is_array = true;
+        var.is_pointer = true;
 
         int arraySize = 1;
         for (int i = 0; i < arrayDimensionSizes_i.size(); i++)
@@ -178,11 +202,12 @@ public:
         globalBindings.insert(std::make_pair(id, var));
     }
 
-    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber)
+    void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber, bool returnsPointer)
     {
         Function func;
         func.functionReturnDataTypeCode = dataTypeCode;
         func.numberOfParameters = paramNumber;
+        func.return_type_is_pointer = returnsPointer;
         functionBindings.insert(std::make_pair(id, func));
     }
 
@@ -306,12 +331,13 @@ public:
         return (*variableBinding).second.addressOffset;
     }
 
-    void insertLocalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode)
+    void insertLocalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, bool isPointer)
     {
         Variable var;
         var.addressOffset = getStackFrameSize();
         var.is_array = false;
         var.variableDataTypeCode = dataTypeCode;
+        var.is_pointer = isPointer;
         // if (dataTypeCode == DOUBLE)
         // {
         //     incrementStackFrameSize();
@@ -320,12 +346,13 @@ public:
         localBindings.insert(std::make_pair(id, var));
     }
 
-    void insertLocalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int argRegNum)
+    void insertLocalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int argRegNum, bool isPointer)
     {
         Variable var;
         var.addressOffset = argRegNum;
         var.is_array = false;
         var.variableDataTypeCode = dataTypeCode;
+        var.is_pointer = isPointer;
         // if (dataTypeCode == DOUBLE)
         // {
         //     incrementStackFrameSize();
@@ -350,6 +377,7 @@ public:
         Variable var;
         var.addressOffset = getStackFrameSize() + 4;
         var.is_array = true;
+        var.is_pointer = true;
 
         int arraySize = 1;
         for (int i = 0; i < arrayDimensionSizes_i.size(); i++)
@@ -357,10 +385,10 @@ public:
             arraySize *= arrayDimensionSizes_i[i];
         }
         arraySize *= 4;
-        if (dataTypeCode == _DOUBLE)
-        {
-            arraySize *= 2;
-        }
+        // if (dataTypeCode == _DOUBLE)
+        // {
+        //     arraySize *= 2;
+        // }
         increaseStackFrameSizeBy(arraySize);
 
         Array varArray;
@@ -369,6 +397,18 @@ public:
         var.arrayVariable = varArray;
 
         localBindings.insert(std::make_pair(id, var));
+    }
+
+    bool localVariableIsArray(const std::string &id)
+    {
+        auto variableBinding = localBindings.find(id);
+        return (*variableBinding).second.is_array;
+    }
+
+    bool localVariableIsPointer(const std::string &id)
+    {
+        auto variableBinding = localBindings.find(id);
+        return (*variableBinding).second.is_pointer;
     }
 
     void incrementStackFrameSize()
