@@ -26,3 +26,4 @@ ubuntu-xenial-16.04-cloudimg-console.log
 
 Compiler/tmpTEST.c
 Compiler/tmpTEST_driver.c
+Compiler/src/parser.tab.cpp
