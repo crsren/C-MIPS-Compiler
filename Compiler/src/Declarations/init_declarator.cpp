@@ -53,9 +53,15 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     GlobalIndent::instance().globalIndent += "\t\t\t";
                     std::cerr << GlobalIndent::instance().globalIndent << "Insert Global Variable Binding\n";
                     GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER);
+
+                    // We know the initializer will be a simple constant
+                    const Constant *constant = dynamic_cast<const Constant *>(initializer);
+                    int constValue = constant->getValue();
+
                     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
                     out << Mips::segment_data();
-                    out << Mips::word_data(identifier, 0);
+
+                    out << Mips::word_data(identifier, constValue);
 
                     out << Mips::segment_text();
 
@@ -91,9 +97,11 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
                     GlobalIndent::instance().globalIndent += "\t\t\t";
                     std::cerr << GlobalIndent::instance().globalIndent << "Insert Global Variable Binding\n";
+
                     GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER);
                     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
                     out << Mips::segment_data();
+
                     out << Mips::word_data(identifier, 0);
 
                     out << Mips::segment_text();

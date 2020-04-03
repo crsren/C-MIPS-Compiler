@@ -135,7 +135,7 @@ void PreOperation::print(std::ostream &out, LocalVariableBindings *bindings) con
 {
     expression->print(out, bindings); // evaluate unary expression
 
-    const Identifier * cast_identifier = dynamic_cast<const Identifier *>(expression);
+    const Identifier *cast_identifier = dynamic_cast<const Identifier *>(expression);
     // if nodePtr is not a Identifier* -> returns nullptr
     // if Identifier* and nodePtr arent "related" -> returns nullptr
     if (cast_identifier == nullptr)
@@ -150,13 +150,18 @@ void PreOperation::print(std::ostream &out, LocalVariableBindings *bindings) con
     {
     case '+':
         out << Mips::addiu(2, 2, 1);
-        out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifier), false);
         break;
 
     case '-':
         out << Mips::addiu(2, 2, -1);
-        out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifier), false);
         break;
+    }
+
+    if (bindings->localVariableBindingExists(identifier))
+        out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(identifier), false);
+    else
+    {
+        out << Mips::store_global_word(2, identifier);
     }
 
     // Check
@@ -167,7 +172,7 @@ void PostOperation::print(std::ostream &out, LocalVariableBindings *bindings) co
 {
     expression->print(out, bindings); // evaluate postfix expression
 
-    const Identifier * cast_identifier = dynamic_cast<const Identifier *>(expression);
+    const Identifier *cast_identifier = dynamic_cast<const Identifier *>(expression);
     // if nodePtr is not a Identifier* -> returns nullptr
     // if Identifier* and nodePtr arent "related" -> returns nullptr
     if (cast_identifier == nullptr)
@@ -181,13 +186,18 @@ void PostOperation::print(std::ostream &out, LocalVariableBindings *bindings) co
     {
     case '+':
         out << Mips::addiu(8, 2, 1);
-        out << Mips::store_word(8, bindings->getLocalVariableAddressOffset(identifier), false);
         break;
 
     case '-':
         out << Mips::addiu(8, 2, -1);
-        out << Mips::store_word(8, bindings->getLocalVariableAddressOffset(identifier), false);
         break;
+    }
+
+    if (bindings->localVariableBindingExists(identifier))
+        out << Mips::store_word(8, bindings->getLocalVariableAddressOffset(identifier), false);
+    else
+    {
+        out << Mips::store_global_word(8, identifier);
     }
 
     // Check

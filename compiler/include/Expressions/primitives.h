@@ -36,6 +36,11 @@ public:
         }
         std::cerr << GlobalIndent::instance().globalIndent << "Constant::print\tEND\n";
     };
+
+    int getValue() const
+    {
+        return value;
+    }
 };
 
 class Identifier : public Node
