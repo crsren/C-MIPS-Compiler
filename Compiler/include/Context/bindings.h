@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <stack>
 
 enum PrimitiveDataTypeCode
 {
@@ -123,8 +124,7 @@ class GlobalVariableBindings // usage: GlobalBindings::instance().<function>();
     int currentGlobalExpressionAddressOffset;
 
 public:
-    GlobalVariableBindings():
-        currentGlobalExpressionAddressOffset(0){}
+    GlobalVariableBindings() : currentGlobalExpressionAddressOffset(0) {}
 
     static GlobalVariableBindings &instance()
     {
@@ -241,12 +241,42 @@ class LocalVariableBindings
     //TODO:? Add switch label (list)
     // Loop Labels
     //std::string startLabel, endLabel;
+    std::stack<std::string> startLabels;
+    std::stack<std::string> endLabels;
 
 public:
-    LocalVariableBindings(int stackFrameSize_i = 0, int currentExpressionAddressOffset_i = 0):
-        stackFrameSize(stackFrameSize_i),
-        currentExpressionAddressOffset(currentExpressionAddressOffset_i)
-        {}
+    LocalVariableBindings(int stackFrameSize_i = 0, int currentExpressionAddressOffset_i = 0) : stackFrameSize(stackFrameSize_i),
+                                                                                                currentExpressionAddressOffset(currentExpressionAddressOffset_i){};
+
+    void push_startLabel(std::string l)
+    {
+        startLabels.push(l);
+    }
+
+    void push_endLabel(std::string l)
+    {
+        endLabels.push(l);
+    }
+
+    void pop_startLabel()
+    {
+        startLabels.pop();
+    }
+
+    void pop_endLabel()
+    {
+        endLabels.pop();
+    }
+
+    std::string get_startLabel()
+    {
+        return startLabels.top();
+    }
+
+    std::string get_endLabel()
+    {
+        return endLabels.top();
+    }
 
     int getStackFrameSize() const
     {

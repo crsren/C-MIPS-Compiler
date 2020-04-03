@@ -31,8 +31,8 @@ public:
     Label() : count(0){};
 
     std::string uniquify(std::string base)
-    {
-        return base + "_" + std::to_string(count++);
+    { // extra "_" before to ensure label is not used as variable
+        return "-" + base + "_" + std::to_string(count++);
     };
 };
 

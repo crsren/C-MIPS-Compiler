@@ -16,4 +16,15 @@ public:
     ~ReturnStatement() { delete expression; };
 };
 
+class BreakStatement : public Node
+{
+public:
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
+};
+
+class ContinueStatement : public Node
+{
+    void print(std::ostream &out, LocalVariableBindings *bindings) const override;
+};
+
 #endif // JUMP_H

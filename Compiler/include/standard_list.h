@@ -26,7 +26,8 @@ public:
         {
             std::cerr << GlobalIndent::instance().globalIndent << "**************************\n";
             std::cerr << GlobalIndent::instance().globalIndent << "Print the current item\n";
-            i->print(out, bindings);
+            if (i)
+                i->print(out, bindings);
             std::cerr << GlobalIndent::instance().globalIndent << "**************************\n\n";
         }
         GlobalIndent::instance().globalIndent = oldGlobalIndent;

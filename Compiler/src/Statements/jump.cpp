@@ -17,3 +17,15 @@ void ReturnStatement::print(std::ostream &out, LocalVariableBindings *bindings) 
 
     std::cerr << GlobalIndent::instance().globalIndent << "ReturnStatement::print\tEND\n";
 };
+
+void ContinueStatement::print(std::ostream &out, LocalVariableBindings *bindings) const
+{
+    // Continue at start of loop
+    out << Mips::branch(bindings->get_startLabel());
+}
+
+void BreakStatement::print(std::ostream &out, LocalVariableBindings *bindings) const
+{
+    // Continue at end of loop
+    out << Mips::branch(bindings->get_endLabel());
+}

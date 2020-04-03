@@ -9,10 +9,10 @@ class LabeledStatementList;
 class SwitchStatement : public Node
 {
     nodePtr condition;
-    const List *sList;
+    List *sList;
 
 public:
-    SwitchStatement(nodePtr c, const List *s) : condition(c), sList(s){};
+    SwitchStatement(nodePtr c, List *s) : condition(c), sList(s){};
 
     void print(std::ostream &out, LocalVariableBindings *bindings) const override;
 
@@ -24,53 +24,60 @@ public:
 };
 
 // Only needed for switch statement
-class LabeledStatement
+class LabeledStatement : public Node
 {
-    std::string label; //assigned in switch statement
-public:
     nodePtr statement;
     nodePtr constExpression; // needs to be accessed by switch statement
-    // case x : ...
-    LabeledStatement(nodePtr cE, nodePtr s) : constExpression(cE), statement(s), label(""){};
-    // default : ...
-    LabeledStatement(nodePtr s) : constExpression(nullptr), statement(s), label(""){};
 
-    std::string getLabel()
-    {
-        return label;
-    }
-
-    void setLabel(std::string l)
-    {
-        label = l;
-    }
-};
-
-class LabeledStatementList
-{
 public:
-    std::list<LabeledStatement *> items; // needs to be accessed by switch statement
+    // case x : ...
+    LabeledStatement(nodePtr cE, nodePtr s) : constExpression(cE), statement(s){};
+    // default : ...
+    LabeledStatement(nodePtr s) : constExpression(nullptr), statement(s){};
 
-    // std::list<int> labelList;
-    LabeledStatementList(LabeledStatement *ls)
+    void print(std::ostream &out, LocalVariableBindings *bindings) const {};
+
+    nodePtr getStatement() const
     {
-        items.push_back(ls);
+        return statement;
     }
 
-    void add(LabeledStatement *ls)
+    nodePtr getConstExpression() const
     {
-        items.push_back(ls);
+        return constExpression;
     }
-
-    // void evaluateLabels(std::ostream &out, LocalVariableBindings &bindings)
-    // {
-    //     for (const auto &ls : items)
-    //     {
-    //         ls->constExpression->print(out, bindings);
-    //         // stored in $2
-    //         // push positions in stack in labelList
-    //     }
-    // }
 };
+
+// class LabeledStatementList : public List
+// {
+//     std::vector<LabeledStatement *> items; // needs to be accessed by switch statement
+
+// public:
+//     // std::list<int> labelList;
+//     LabeledStatementList(LabeledStatement *ls)
+//     {
+//         items.push_back(ls);
+//     }
+
+//     void add(LabeledStatement *ls)
+//     {
+//         items.push_back(ls);
+//     }
+
+//     std::vector<LabeledStatement *> &getItems()
+//     {
+//         return items;
+//     }
+
+//     // void evaluateLabels(std::ostream &out, LocalVariableBindings &bindings)
+//     // {
+//     //     for (const auto &ls : items)
+//     //     {
+//     //         ls->constExpression->print(out, bindings);
+//     //         // stored in $2
+//     //         // push positions in stack in labelList
+//     //     }
+//     // }
+// };
 
 #endif // SWITCH_H

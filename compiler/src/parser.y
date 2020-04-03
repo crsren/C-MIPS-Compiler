@@ -386,14 +386,9 @@ compound_statement
 	;
 
 
-statement_list //! not sure if this has to have additional features to list
-	: statement 													{ $$ = new List($1); }
-	| statement_list statement 										{ $1->add($2); $$ = $1; }
-	;
-
 //https://docs.microsoft.com/en-us/cpp/c-language/expression-statement-c?view=vs-2019
 expression_statement
-	: ';'															{ $$ = NULL; }
+	: ';'															{ fprintf(stderr, "Empty Semicolon"); $$ = nullptr; }
 	| expression ';'												{ $$ = $1; }
 	;
 
@@ -420,28 +415,31 @@ iteration_statement
 //https://docs.microsoft.com/en-us/cpp/c-language/break-statement-c?view=vs-2019
 //https://docs.microsoft.com/en-us/cpp/c-language/return-statement-c?view=vs-2019
 jump_statement
-	//| CONTINUE ';'			 									{ fprintf(stderr, "\n CONTINUE not implemented\n"); }
-	//| BREAK ';'			 										{ fprintf(stderr, "\n BREAK not implemented\n"); }
-	: RETURN ';'													{ $$ = new ReturnStatement();	}
-	| RETURN expression ';'											{ fprintf(stderr, "ReturnStatement\n"); $$ = new ReturnStatement($2); }
+	: CONTINUE ';'			 										{ $$ = new ContinueStatement(); }
+	| BREAK ';'			 											{ $$ = new BreakStatement(); }
+	| RETURN ';'													{ $$ = new ReturnStatement();	}
+	| RETURN expression ';'											{ $$ = new ReturnStatement($2); }
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
 labeled_statement
-    // "ching: <something>" ; goto ching:
-	//: IDENTIFIER ':' statement
-	// for switch only:			 									{ fprintf(stderr, "\n IDENTIFIER not implemented\n"); }
-	: CASE constant_expression ':' statement			 			{ new LabeledStatement($2, $4); }
-	| DEFAULT ':' statement			 								{ new LabeledStatement($3); }
+	// for switch only:			 									
+	: CASE constant_expression ':' statement			 			{ fprintf(stderr, "CASE\n"); $$ = new LabeledStatement($2, $4); }
+	| DEFAULT ':' statement			 								{ fprintf(stderr, "DEFAULT\n");$$ = new LabeledStatement($3); }
 	;
 
 statement
-	: labeled_statement												{ $$ = $1; }
+	: labeled_statement												{ fprintf(stderr, "labeled_statement\n"); $$ = $1; }
 	| compound_statement											{ $$ = $1; }
 	| expression_statement											{ $$ = $1; }
 	| selection_statement											{ $$ = $1; }
 	| iteration_statement											{ $$ = $1; }
 	| jump_statement												{ $$ = $1; }
+	;
+
+statement_list //! not sure if this has to have additional features to list
+	: statement 													{ $$ = new List($1); }
+	| statement_list statement 										{ $1->add($2); $$ = $1; }
 	;
 
 //// Global & Top Level -----------------------------------------------------------------

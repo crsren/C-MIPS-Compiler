@@ -18,7 +18,8 @@ int main(int argc, char **argv) //RUN: compiler -S <input.c> -o <output.s>
         return EXIT_FAILURE;
     }
 
-    std::cerr << GlobalIndent::instance().globalIndent << "DONE PARSING" << "\n";
+    std::cerr << GlobalIndent::instance().globalIndent << "DONE PARSING"
+              << "\n";
 
     std::cerr << GlobalIndent::instance().globalIndent << "Open the output file stream: " << argv[4] << "\n";
     //root->print(cout, NULL);
@@ -29,7 +30,7 @@ int main(int argc, char **argv) //RUN: compiler -S <input.c> -o <output.s>
         std::cerr << GlobalIndent::instance().globalIndent << "if (the output file stream" << argv[4] << " was opened)\n";
         output << ".data\n";
         std::cerr << GlobalIndent::instance().globalIndent << "\tPrint AST\n";
-        root->print(output, nullptr);
+        root->print(output, nullptr); //std::cerr
     }
     else
     {
