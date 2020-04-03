@@ -186,12 +186,12 @@ inclusive_or_expression
 
 logical_and_expression
 	: inclusive_or_expression 									{ $$ = $1; }
-	| logical_and_expression AND_OP inclusive_or_expression		{ fprintf(stderr, "\n LOGICAL_AND_EXPRESSION not implemented\n"); }
+	| logical_and_expression AND_OP inclusive_or_expression		{ fprintf(stderr, "logical_and_expression\n"); $$ = new LogicalAnd($1, $3); }
 	;
 
 logical_or_expression
 	: logical_and_expression									{ $$ = $1; }
-	| logical_or_expression OR_OP logical_and_expression		{ fprintf(stderr, "\n LOGICAL_OR_EXPRESSION not implemented\n"); }
+	| logical_or_expression OR_OP logical_and_expression		{ fprintf(stderr, "logical_or_expression\n"); $$ = new LogicalOr($1, $3); }
 	;
 
 //https://en.cppreference.com/w/c/language/operator_other#Conditional_operator
