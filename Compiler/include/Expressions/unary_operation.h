@@ -2,6 +2,7 @@
 #define UNARY_OPERATION_H
 
 #include "../helpers.h"
+#include "Expressions/primitives.h"
 
 // '&' '*' '+' '-' '~' '!'
 class UnaryOperation : public Node

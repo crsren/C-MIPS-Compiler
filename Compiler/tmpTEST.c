@@ -1,7 +1,8 @@
-int x;
+int f() {
+	int y, x = 5;
 
-int f(int a, int b, int c, int d, int e, int f)
-{
-	x = 5;
-	return x-(a+b+c+d+e+f);
+	y = 2 + 2* x++;
+	y -= ++x * 2;
+	x--;
+	return y + --x;
 }

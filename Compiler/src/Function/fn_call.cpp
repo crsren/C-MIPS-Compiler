@@ -13,7 +13,7 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
 
         // KIMON: To get argumentList size: ( => amount of parameters of the called function ):
         // int argListSize = argumentList->getSize();
-
+        std::cerr << GlobalIndent::instance().globalIndent << "getting the argumentList\n";
         int argumentListSize = 0;
         std::vector<nodePtr> arguments;
         if (argumentList)
@@ -22,8 +22,42 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
             arguments = argumentList->getItems();
         }
 
-        std::cerr << GlobalIndent::instance().globalIndent << "For (evey argument in the argument list)\n";
         std::cerr << GlobalIndent::instance().globalIndent << "argumentListSize: " << argumentListSize << "\n";
+
+        if (argumentListSize <= 4)
+        {
+            std::cerr << "if (the argument list size is <= 4)";
+            std::cerr << GlobalIndent::instance().globalIndent << "For (evey argument in the argument list)\n";
+            std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
+            for (int j = argumentListSize - 1; j >= 0; j--)
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "Printing Mips code\n";
+                out << Mips::store_word(j + 4, bindings->getCurrentExpressionAddressOffset(), false);
+                std::cerr << GlobalIndent::instance().globalIndent << "Incrementing the currentExpressionAddressOffset\n";
+                bindings->incrementCurrentExpressionAddressOffset();
+            }
+            GlobalIndent::instance().globalIndent = oldGlobalIndent;
+        }
+        else
+        {
+            std::cerr << "if (the argument list size is > 4)";
+            std::cerr << GlobalIndent::instance().globalIndent << "For (evey argument in the argument list)\n";
+            std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
+            for (int j = 3; j >= 0; j--)
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "Printing Mips code\n";
+                out << Mips::store_word(j + 4, bindings->getCurrentExpressionAddressOffset(), false);
+                std::cerr << GlobalIndent::instance().globalIndent << "Incrementing the currentExpressionAddressOffset\n";
+                bindings->incrementCurrentExpressionAddressOffset();
+            }
+            GlobalIndent::instance().globalIndent = oldGlobalIndent;
+        }
+
+        std::cerr << GlobalIndent::instance().globalIndent << "Getting the before_function_call stack info\n";
+        int arg_0_AddressOffset = bindings->getCurrentExpressionAddressOffset();
+        int arg_0_StackFrameSize = bindings->getStackFrameSize();
+
+        std::cerr << GlobalIndent::instance().globalIndent << "For (evey argument in the argument list)\n";
         std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
         GlobalIndent::instance().globalIndent += "\t";
 
@@ -76,6 +110,42 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
         std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
         out << Mips::addi(29, 29, 4 - bindings->getStackFrameSize());
         out << Mips::jal(functionIdentifier);
+
+        std::cerr << GlobalIndent::instance().globalIndent << "Decrement the stack frame size by" << std::to_string(bindings->getStackFrameSize() - arg_0_StackFrameSize) << "\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "*****1*****arg_0_AddressOffset:" << arg_0_AddressOffset << " | currentExpressionAddressOffset: " << bindings->getCurrentExpressionAddressOffset() << " | stckFrameSize: " << bindings->getStackFrameSize() << "\n";
+        bindings->decrementStackFrameSizeBy(bindings->getStackFrameSize() - arg_0_StackFrameSize);
+        std::cerr << GlobalIndent::instance().globalIndent << "*****2*****arg_0_AddressOffset:" << arg_0_AddressOffset << " | currentExpressionAddressOffset: " << bindings->getCurrentExpressionAddressOffset() << " | stckFrameSize: " << bindings->getStackFrameSize() << "\n";
+
+        if (argumentListSize <= 4)
+        {
+            std::cerr << GlobalIndent::instance().globalIndent << "if (argumentListSize <= 4)\n";
+            oldGlobalIndent = GlobalIndent::instance().globalIndent;
+            GlobalIndent::instance().globalIndent += "\t";
+            for (int j = 0; j < argumentListSize; j++)
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "Decrement currentExpressionAddressOffset\n";
+                bindings->decrementCurrentExpressionAddressOffset();
+                std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
+                out << Mips::load_word(j + 4, bindings->getCurrentExpressionAddressOffset(), false);
+            }
+            GlobalIndent::instance().globalIndent = oldGlobalIndent;
+        }
+        else
+        {
+            std::cerr << GlobalIndent::instance().globalIndent << "if (argumentListSize <= 4)\n";
+            oldGlobalIndent = GlobalIndent::instance().globalIndent;
+            GlobalIndent::instance().globalIndent += "\t";
+            for (int j = 0; j < 4; j++)
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "Decrement currentExpressionAddressOffset\n";
+                bindings->decrementCurrentExpressionAddressOffset();
+                std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
+                out << Mips::load_word(j + 4, bindings->getCurrentExpressionAddressOffset(), false);
+            }
+            GlobalIndent::instance().globalIndent = oldGlobalIndent;
+        }
+
+        out << Mips::store_word(2, bindings->getCurrentExpressionAddressOffset(), false);
     }
     else
     {
@@ -87,13 +157,53 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
         // KIMON: To get argumentList size: ( => amount of parameters of the called function ):
         // int argListSize = argumentList->getSize();
 
-        int argumentListSize = argumentList->getSize();
+        std::cerr << GlobalIndent::instance().globalIndent << "getting the argumentList\n";
+        int argumentListSize = 0;
+        std::vector<nodePtr> arguments;
+        if (argumentList)
+        {
+            argumentListSize = argumentList->getSize();
+            arguments = argumentList->getItems();
+        }
+
+        std::cerr << GlobalIndent::instance().globalIndent << "argumentListSize: " << argumentListSize << "\n";
+
+        if (argumentListSize <= 4)
+        {
+            std::cerr << "if (the argument list size is <= 4)";
+            std::cerr << GlobalIndent::instance().globalIndent << "For (evey argument in the argument list)\n";
+            std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
+            for (int j = argumentListSize - 1; j >= 0; j--)
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "Printing Mips code\n";
+                out << Mips::store_word(j + 4, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
+                std::cerr << GlobalIndent::instance().globalIndent << "Incrementing the currentExpressionAddressOffset\n";
+                GlobalVariableBindings::instance().incrementCurrentGlobalExpressionAddressOffset();
+            }
+            GlobalIndent::instance().globalIndent = oldGlobalIndent;
+        }
+        else
+        {
+            std::cerr << "if (the argument list size is > 4)";
+            std::cerr << GlobalIndent::instance().globalIndent << "For (evey argument in the argument list)\n";
+            std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
+            for (int j = 3; j >= 0; j--)
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "Printing Mips code\n";
+                out << Mips::store_word(j + 4, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
+                std::cerr << GlobalIndent::instance().globalIndent << "Incrementing the currentExpressionAddressOffset\n";
+                GlobalVariableBindings::instance().incrementCurrentGlobalExpressionAddressOffset();
+            }
+            GlobalIndent::instance().globalIndent = oldGlobalIndent;
+        }
+
+        std::cerr << GlobalIndent::instance().globalIndent << "Getting the before_function_call stack info\n";
+        int arg_0_AddressOffset = GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset();
+        int arg_0_StackFrameSize = GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset();
 
         std::cerr << GlobalIndent::instance().globalIndent << "For (evey argument in the argument list)\n";
         std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
         GlobalIndent::instance().globalIndent += "\t";
-
-        std::vector<nodePtr> arguments = argumentList->getItems();
 
         int i;
         for (i = argumentListSize - 1; i >= 4; i--)
@@ -144,6 +254,42 @@ void FnCall::print(std::ostream &out, LocalVariableBindings *bindings) const
         std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
         out << Mips::addi(29, 29, 4 - GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset());
         out << Mips::jal(functionIdentifier);
+
+        std::cerr << GlobalIndent::instance().globalIndent << "Decrement the stack frame size by" << std::to_string(GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset() - arg_0_StackFrameSize) << "\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "*****1*****arg_0_AddressOffset:" << arg_0_AddressOffset << " | currentExpressionAddressOffset: " << GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset() << " | stckFrameSize: " << GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset() << "\n";
+        GlobalVariableBindings::instance().decrementCurrentGlobalExpressionAddressOffsetBy(GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset() - arg_0_StackFrameSize);
+        std::cerr << GlobalIndent::instance().globalIndent << "*****2*****arg_0_AddressOffset:" << arg_0_AddressOffset << " | currentExpressionAddressOffset: " << GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset() << " | stckFrameSize: " << GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset() << "\n";
+
+        if (argumentListSize <= 4)
+        {
+            std::cerr << GlobalIndent::instance().globalIndent << "if (argumentListSize <= 4)\n";
+            oldGlobalIndent = GlobalIndent::instance().globalIndent;
+            GlobalIndent::instance().globalIndent += "\t";
+            for (int j = 0; j < argumentListSize; j++)
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "Decrement currentExpressionAddressOffset\n";
+                GlobalVariableBindings::instance().decrementCurrentGlobalExpressionAddressOffset();
+                std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
+                out << Mips::load_word(j + 4, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
+            }
+            GlobalIndent::instance().globalIndent = oldGlobalIndent;
+        }
+        else
+        {
+            std::cerr << GlobalIndent::instance().globalIndent << "if (argumentListSize <= 4)\n";
+            oldGlobalIndent = GlobalIndent::instance().globalIndent;
+            GlobalIndent::instance().globalIndent += "\t";
+            for (int j = 0; j < 4; j++)
+            {
+                std::cerr << GlobalIndent::instance().globalIndent << "Decrement currentExpressionAddressOffset\n";
+                GlobalVariableBindings::instance().decrementCurrentGlobalExpressionAddressOffset();
+                std::cerr << GlobalIndent::instance().globalIndent << "Print MIPS code\n";
+                out << Mips::load_word(j + 4, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
+            }
+            GlobalIndent::instance().globalIndent = oldGlobalIndent;
+        }
+
+        out << Mips::store_word(2, GlobalVariableBindings::instance().getCurrentGlobalExpressionAddressOffset(), false);
     }
 
     std::cerr << GlobalIndent::instance().globalIndent << "FnCall::print\tEND\n";
