@@ -52,11 +52,15 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
                     GlobalIndent::instance().globalIndent += "\t\t\t";
                     std::cerr << GlobalIndent::instance().globalIndent << "Insert Global Variable Binding\n";
-                    GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER);
+
+                    //GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER);
+                    GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER, false);
 
                     // We know the initializer will be a simple constant
                     const Constant *constant = dynamic_cast<const Constant *>(initializer);
                     int constValue = constant->getValue();
+
+                    GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER, false);
 
                     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
                     out << Mips::segment_data();
@@ -80,7 +84,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
                     GlobalIndent::instance().globalIndent += "\t\t\t";
                     std::cerr << GlobalIndent::instance().globalIndent << "Insert Local Variable Binding\n";
-                    bindings->insertLocalVariableBinding(identifier, _INTEGER);
+                    bindings->insertLocalVariableBinding(identifier, _INTEGER, false);
                     std::cerr << GlobalIndent::instance().globalIndent << "Print the initializer\n";
                     initializer->print(out, bindings);
                     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
@@ -98,7 +102,9 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     GlobalIndent::instance().globalIndent += "\t\t\t";
                     std::cerr << GlobalIndent::instance().globalIndent << "Insert Global Variable Binding\n";
 
-                    GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER);
+                    //GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER);
+                    GlobalVariableBindings::instance().insertGlobalVariableBinding(identifier, _INTEGER, false);
+
                     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
                     out << Mips::segment_data();
 
@@ -113,7 +119,7 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
                     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
                     GlobalIndent::instance().globalIndent += "\t\t\t";
                     std::cerr << GlobalIndent::instance().globalIndent << "Insert Local Variable Binding\n";
-                    bindings->insertLocalVariableBinding(identifier, _INTEGER);
+                    bindings->insertLocalVariableBinding(identifier, _INTEGER, false);
                     std::cerr << GlobalIndent::instance().globalIndent << "Printing MIPS code\n";
                     out << Mips::store_word(0, bindings->getLocalVariableAddressOffset(identifier), false);
                     GlobalIndent::instance().globalIndent = oldGlobalIndent;
@@ -129,13 +135,13 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
         {
             std::cerr << GlobalIndent::instance().globalIndent << "\tif (the FUNCTION is JUST being declared)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert Global Function Binding\n";
-            GlobalVariableBindings::instance().insertFunctionBinding(identifier, _INTEGER, numParam);
+            GlobalVariableBindings::instance().insertFunctionBinding(identifier, _INTEGER, numParam, false);
         }
         else if ((initializer == nullptr) && (specifierType == "void"))
         {
             std::cerr << GlobalIndent::instance().globalIndent << "\tif (the FUNCTION is JUST being declared as a void)\n";
             std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert Global Function Binding\n";
-            GlobalVariableBindings::instance().insertFunctionBinding(identifier, _VOID, numParam);
+            GlobalVariableBindings::instance().insertFunctionBinding(identifier, _VOID, numParam, false);
         }
     }
     std::cerr << GlobalIndent::instance().globalIndent << "InitDeclarator::print\tEND\n";
