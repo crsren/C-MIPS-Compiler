@@ -4,9 +4,6 @@ void SwitchStatement::print(std::ostream &out, LocalVariableBindings *bindings) 
 {
     std::cerr << GlobalIndent::instance().globalIndent << "SwitchStatement::print\tSTART\n";
 
-    // Cast List to labeledStatementList
-    std::cerr << GlobalIndent::instance().globalIndent << "Cast the statementList to a pointer to a LabeledStatementList\n";
-
     std::cerr << GlobalIndent::instance().globalIndent << "Getting the END label\n";
     std::string END = Label::instance().uniquify("switch_end");
 
@@ -22,7 +19,7 @@ void SwitchStatement::print(std::ostream &out, LocalVariableBindings *bindings) 
     // Branching conditions
     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
     GlobalIndent::instance().globalIndent += "\t";
-    std::cerr << GlobalIndent::instance().globalIndent << "for (evey labeled statement element in the labeled statement list)\n";
+    std::cerr << GlobalIndent::instance().globalIndent << "for (evey statement element in the statement list (SIZE: " << sList->getSize() << "))\n";
 
     std::vector<std::string> labels;
     for (auto &statement : sList->getItems())
@@ -31,7 +28,7 @@ void SwitchStatement::print(std::ostream &out, LocalVariableBindings *bindings) 
 
         const LabeledStatement *labeledStatement = dynamic_cast<const LabeledStatement *>(statement);
 
-        if (!labeledStatement->getConstExpression())
+        if (labeledStatement->getConstExpression())
         { //case x : ...
             std::cerr << GlobalIndent::instance().globalIndent << "if (the current labeled statement has a constant expression)\n";
 
@@ -74,7 +71,7 @@ void SwitchStatement::print(std::ostream &out, LocalVariableBindings *bindings) 
 
         const LabeledStatement *labeledStatement = dynamic_cast<const LabeledStatement *>(statements.at(i));
 
-        if (!labeledStatement->getConstExpression())
+        if (labeledStatement->getConstExpression())
         {
             std::cerr << GlobalIndent::instance().globalIndent << "if (the current labeled statement is not the default)\n";
 
@@ -90,7 +87,7 @@ void SwitchStatement::print(std::ostream &out, LocalVariableBindings *bindings) 
 
     GlobalIndent::instance().globalIndent = oldGlobalIndent;
 
-    Mips::new_label(END);
+    out << Mips::new_label(END);
 
     bindings->pop_endLabel();
 

@@ -422,10 +422,9 @@ jump_statement
 	;
 
 //https://docs.microsoft.com/en-us/cpp/c-language/goto-and-labeled-statements-c?view=vs-2019
-labeled_statement
-	// for switch only:			 									
-	: CASE constant_expression ':' statement			 			{ fprintf(stderr, "CASE\n"); $$ = new LabeledStatement($2, $4); }
-	| DEFAULT ':' statement			 								{ fprintf(stderr, "DEFAULT\n");$$ = new LabeledStatement($3); }
+labeled_statement		 									
+	: CASE constant_expression ':' statement			 			{ $$ = new LabeledStatement($2, $4); }
+	| DEFAULT ':' statement			 								{ $$ = new LabeledStatement($3); }
 	;
 
 statement

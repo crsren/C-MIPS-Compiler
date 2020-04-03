@@ -1,8 +1,12 @@
 int f() {
-	int y, x = 5;
+	int z = 4;
 
-	y = 2 + 2* x++;
-	y -= ++x * 2;
-	x--;
-	return y + --x;
+	switch(z) {
+		case 1: return 9;
+		case 3 : break;
+		case 4: z = z +1;
+
+		case 5: return z;;
+		default: return 0;
+	}
 }
