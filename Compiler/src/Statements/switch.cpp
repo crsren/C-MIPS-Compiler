@@ -96,7 +96,8 @@ void SwitchStatement::print(std::ostream &out, LocalVariableBindings *bindings) 
         else
         { // regular statement
             std::cerr << GlobalIndent::instance().globalIndent << "Print regular statement \n";
-            statements.at(i)->print(out, bindings);
+            if (statements.at(i))
+                statements.at(i)->print(out, bindings);
         }
     }
 
