@@ -9,7 +9,7 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
 
     const FnDeclarator *cast_fnDeclarator = dynamic_cast<const FnDeclarator *>(fnDeclarator);
     std::vector<const ParameterDeclaration *> paramList;
-    int paramListSize;
+    int paramListSize = 0;
     if (cast_fnDeclarator->getParameterList())
     {
         std::cerr << GlobalIndent::instance().globalIndent << "if (the parameter list is not a null pointer)\n";
@@ -48,22 +48,23 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
 
     std::cerr << GlobalIndent::instance().globalIndent << "Cast the fnDeclarator to a pointer to a FnDeclarator\n";
 
-    std::cerr << GlobalIndent::instance().globalIndent << "for (evey argument in the argument list)\n";
+    std::cerr << GlobalIndent::instance().globalIndent << "for (evey parameter in the parameter list)\n";
+    std::cerr << GlobalIndent::instance().globalIndent << "paramListSize:" << paramListSize << "\n";
     std::string oldGlobalIndent = GlobalIndent::instance().globalIndent;
     GlobalIndent::instance().globalIndent += "\t";
-    for (int i = 0; i < paramList.size(); i++)
+    for (int i = paramListSize - 1; i >= 0; i--)
     {
         std::cerr << GlobalIndent::instance().globalIndent << "**************************\n";
-        std::cerr << GlobalIndent::instance().globalIndent << "Loop Iteration:" << std::to_string(i) << "\n";
+        std::cerr << GlobalIndent::instance().globalIndent << "Loop Iteration:" << std::to_string(paramListSize - i) << "\n";
 
         std::cerr << GlobalIndent::instance().globalIndent << "Get the current parameter's type specifier\n";
-        std::string parameterSpecifier = paramList.at(i)->getSpecifier();
+        std::string parameterSpecifier = paramList[i]->getSpecifier();
 
         std::cerr << GlobalIndent::instance().globalIndent << "Get the current parameter's identifier\n";
-        std::string parameterIdentifier = paramList.at(i)->getDeclarator()->getIdentifier()->getName();
+        std::string parameterIdentifier = paramList[i]->getDeclarator()->getIdentifier()->getName();
 
         std::cerr << GlobalIndent::instance().globalIndent << "Check whether the current parameter is a function\n";
-        bool isFn = paramList.at(i)->getDeclarator()->isFunction;
+        bool isFn = paramList[i]->getDeclarator()->isFunction;
 
         if (isFn)
         {
@@ -88,7 +89,14 @@ void FnDefinition::print(std::ostream &out, LocalVariableBindings *bindings) con
             {
                 std::cerr << GlobalIndent::instance().globalIndent << "\tif (the type of the variable is int)\n";
                 std::cerr << GlobalIndent::instance().globalIndent << "\t\tInsert Local Variable Binding\n";
-                localVariableBindings->insertLocalVariableBinding(parameterIdentifier, _INTEGER);
+                if (i < 4)
+                {
+                    localVariableBindings->insertLocalVariableBinding(parameterIdentifier, _INTEGER, -(i + 1)); // $a0, $a1, $a2, $a3
+                }
+                else
+                {
+                    localVariableBindings->insertLocalVariableBinding(parameterIdentifier, _INTEGER, -4*(i - 3) - 1);   // $a4, ..., $a_n
+                }
             }
         }
         std::cerr << GlobalIndent::instance().globalIndent << "**************************\n\n";

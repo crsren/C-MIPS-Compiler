@@ -88,6 +88,9 @@ struct Variable
 
     // the addressOffset is the value that must be subtracted from the stack pointer
     // to evaluate the memory location of the variable
+    //
+    // if the addressOffset is negative in the range [-4, -1] then taking |addressOffset| + 3
+    // represnts the "argument register" number ($4, $5, $6, $7) in which the variable is stored
     int addressOffset;
 
     bool is_array;
@@ -278,12 +281,25 @@ public:
         Variable var;
         var.addressOffset = getStackFrameSize();
         var.is_array = false;
-        // var.variableDataTypeCode = dataTypeCode;
+        var.variableDataTypeCode = dataTypeCode;
         // if (dataTypeCode == DOUBLE)
         // {
         //     incrementStackFrameSize();
         // }
         incrementStackFrameSize();
+        localBindings.insert(std::make_pair(id, var));
+    }
+
+    void insertLocalVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int argRegNum)
+    {
+        Variable var;
+        var.addressOffset = argRegNum;
+        var.is_array = false;
+        var.variableDataTypeCode = dataTypeCode;
+        // if (dataTypeCode == DOUBLE)
+        // {
+        //     incrementStackFrameSize();
+        // }
         localBindings.insert(std::make_pair(id, var));
     }
 

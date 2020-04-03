@@ -51,14 +51,34 @@ public:
 
     static std::string load_word(int regNum, int addressOffset, bool fromStack) //local
     {
-        std::string out = "\tlw\t$" + std::to_string(regNum) + ",-" + std::to_string(addressOffset);
-        if (fromStack) //using stack pointer
+        std::string out = "";
+        if (addressOffset >= 0)
         {
-            out += "($sp)\n";
+            out += "\tlw\t$" + std::to_string(regNum) + ",-" + std::to_string(addressOffset);
+            if (fromStack) //using stack pointer
+            {
+                out += "($sp)\n";
+            }
+            else //using frame pointer
+            {
+                out += "($fp)\n";
+            }
         }
-        else //using frame pointer
+        else if (addressOffset > -5)
         {
-            out += "($fp)\n";
+            out += Mips::move(regNum, 3 - addressOffset);
+        }
+        else
+        {
+            out += "\tlw\t$" + std::to_string(regNum) + "," + std::to_string(-addressOffset-1+16);
+            if (fromStack) //using stack pointer
+            {
+                out += "($sp)\n";
+            }
+            else //using frame pointer
+            {
+                out += "($fp)\n";
+            }
         }
 
         return out;
@@ -79,15 +99,36 @@ public:
 
     static std::string store_word(int regNum, int addressOffset, bool toStack)
     {
-        std::string out = "\tsw\t$" + std::to_string(regNum) + ",-" + std::to_string(addressOffset);
-        if (toStack)
+        std::string out = "";
+        if (addressOffset >= 0)
         {
-            out += "($sp)\n";
+            out += "\tsw\t$" + std::to_string(regNum) + ",-" + std::to_string(addressOffset);
+            if (toStack)
+            {
+                out += "($sp)\n";
+            }
+            else
+            {
+                out += "($fp)\n";
+            }
+        }
+        else if (addressOffset > -5)
+        {
+            out += Mips::move(3 - addressOffset, regNum);
         }
         else
         {
-            out += "($fp)\n";
+            out += "\tsw\t$" + std::to_string(regNum) + "," + std::to_string(-addressOffset-1+16);
+            if (toStack)
+            {
+                out += "($sp)\n";
+            }
+            else
+            {
+                out += "($fp)\n";
+            }
         }
+        
 
         return out;
     }
@@ -262,6 +303,7 @@ public:
         out += Mips::segment_text();
         out += Mips::tag_global(functionIdentifier);
         out += Mips::new_label(functionIdentifier);
+        out += Mips::addi(29, 29, -4);
         out += Mips::store_word(31, 0, true); // $31 = $ra
         out += Mips::store_word(30, 4, true); // $30 = $fp
         out += Mips::move(30, 29);
