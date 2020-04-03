@@ -49,7 +49,7 @@ for FOLDER in ${INPUT_DIR}/* ; do #Each folder
         
         # Compile C to MIPS using our compiler
         echo && echo "Compiling C to MIPS."
-        $COMPILER -S $C_FILE -o $MIPS #> /dev/null 2>&1
+        $COMPILER -S $C_FILE -o $MIPS > /dev/null 2>&1
 
         # Compile MIPS to BIN 
         echo && echo "Compiling MIPS to BIN."
