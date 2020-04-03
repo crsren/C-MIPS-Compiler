@@ -40,7 +40,7 @@ public:
         items.push_back(ptr);
     };
 
-    std::vector<nodePtr> &getItems()
+    std::vector<nodePtr> getItems() const
     {
         return items;
     }

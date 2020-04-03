@@ -8,6 +8,59 @@ void InitDeclarator::print(std::ostream &out, LocalVariableBindings *bindings) c
     std::string identifier = declarator->getIdentifier()->getName();
     // this.specifierType is the type (got this from declaration class before this print function is being called )
 
+    const ArrayDeclarator *array_declarator = dynamic_cast<const ArrayDeclarator *>(declarator);
+    if (array_declarator)
+    { // is an array
+        const List *init_list = dynamic_cast<const List *>(initializer);
+        std::vector<nodePtr> expressions;
+        if (init_list)
+        {
+            expressions = init_list->getItems();
+        }
+
+        std::cerr << "\n\n\n";
+        std::cerr << expressions.size() << "\n\n\n";
+
+        if (bindings) // local
+        {
+
+            for (int i = 0; i < array_declarator->content.size(); i++)
+            {
+                std::string alias_name = array_declarator->content.at(i);
+
+                // Get value which array index i should be initialized with
+
+                out << Mips::move(2, 0);
+                if (i < expressions.size())
+                {
+                    expressions.at(i)->print(out, bindings);
+                }
+
+                // create variable with alias_name name and value $2
+
+                bindings->insertLocalVariableBinding(alias_name, _INTEGER, false);
+                out << Mips::store_word(2, bindings->getLocalVariableAddressOffset(alias_name), false);
+            }
+        }
+        else // global
+        {
+
+            for (int i = 0; i < array_declarator->content.size(); i++)
+            {
+                std::string alias_name = array_declarator->content.at(i);
+
+                std::cerr << "\nasdf\t" << alias_name << "\n";
+
+                // Get value which array index i should be initialized with
+                out << Mips::move(2, 0);
+
+                // create variable with alias_name name and value $2
+                GlobalVariableBindings::instance().insertGlobalVariableBinding(alias_name, _INTEGER, false); //, false
+                out << Mips::store_global_word(2, alias_name);
+            }
+        }
+    }
+
     if (!declarator->isFunction)
     {
         if ((specifierType == "") && (initializer != nullptr)) // the variable has already been declared and we assign a value to it

@@ -26,4 +26,33 @@ public:
     }
 };
 
+// Not fully implemented
+class ArrayDeclarator : public Declarator
+{
+    nodePtr constantExpr;
+
+public:
+    std::vector<std::string> content;
+    ArrayDeclarator(const Declarator *declarator, nodePtr constantExpr = nullptr) : Declarator(declarator->getIdentifier(), false)
+    {
+        std::string name = identifier->getName();
+
+        // Only works for numerical indexes
+        const Constant *constantVal;
+        if (constantExpr)
+            constantVal = dynamic_cast<const Constant *>(constantExpr);
+        int arraySize = constantVal->getValue();
+
+        for (int i = 0; i < arraySize; i++)
+        {
+            content.push_back(name + std::to_string(i));
+        }
+    }
+
+    ~ArrayDeclarator()
+    {
+        delete constantExpr;
+    }
+};
+
 #endif //DECLARATORS_H

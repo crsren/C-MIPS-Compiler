@@ -35,43 +35,43 @@ enum PrimitiveDataTypeCode
 //     std::vector<PrimitiveDataType> vectorOfMemberVariables;
 // };
 
-class Array
-{
-private:
-    PrimitiveDataTypeCode arrayDataTypeCode;
-    std::vector<int> arrayDimensionalSizes;
+// class Array
+// {
+// private:
+//     PrimitiveDataTypeCode arrayDataTypeCode;
+//     std::vector<int> arrayDimensionalSizes;
 
-public:
-    int nDimensions_to_1Dimensions(const std::vector<int> &arrayIndices)
-    {
-        int offset = 0;
-        for (int dimension = 0; dimension < arrayIndices.size(); dimension++)
-        {
-            offset += arrayIndices[dimension] * arrayDimensionalSizes[dimension];
-        }
-        return offset;
-    }
+// public:
+//     int nDimensions_to_1Dimensions(const std::vector<int> &arrayIndices)
+//     {
+//         int offset = 0;
+//         for (int dimension = 0; dimension < arrayIndices.size(); dimension++)
+//         {
+//             offset += arrayIndices[dimension] * arrayDimensionalSizes[dimension];
+//         }
+//         return offset;
+//     }
 
-    void setArrayDataTypeCode(const PrimitiveDataTypeCode &dataTypeCode)
-    {
-        arrayDataTypeCode = dataTypeCode;
-    }
+//     void setArrayDataTypeCode(const PrimitiveDataTypeCode &dataTypeCode)
+//     {
+//         arrayDataTypeCode = dataTypeCode;
+//     }
 
-    void setArrayDimensionalSizes(const std::vector<int> dimensionalSizes)
-    {
-        arrayDimensionalSizes = dimensionalSizes;
-    }
+//     void setArrayDimensionalSizes(const std::vector<int> dimensionalSizes)
+//     {
+//         arrayDimensionalSizes = dimensionalSizes;
+//     }
 
-    const std::vector<int> getArrayDimensionalSizes() const
-    {
-        return arrayDimensionalSizes;
-    }
+//     const std::vector<int> getArrayDimensionalSizes() const
+//     {
+//         return arrayDimensionalSizes;
+//     }
 
-    const int getArrayDataTypeCode() const
-    {
-        return arrayDataTypeCode;
-    }
-};
+//     const int getArrayDataTypeCode() const
+//     {
+//         return arrayDataTypeCode;
+//     }
+// };
 
 struct Function
 {
@@ -87,7 +87,7 @@ struct Variable
 {
     PrimitiveDataTypeCode variableDataTypeCode;
 
-    Array arrayVariable;
+    // Array arrayVariable;
 
     // the addressOffset is the value that must be subtracted from the stack pointer
     // to evaluate the memory location of the variable
@@ -176,31 +176,31 @@ public:
         return (*functionBinding).second.return_type_is_pointer;
     }
 
-    void insertGlobalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
-    {
-        Variable var;
-        var.addressOffset = -1;
-        var.is_array = true;
-        var.is_pointer = true;
+    // void insertGlobalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
+    // {
+    //     Variable var;
+    //     var.addressOffset = -1;
+    //     var.is_array = true;
+    //     var.is_pointer = true;
 
-        int arraySize = 1;
-        for (int i = 0; i < arrayDimensionSizes_i.size(); i++)
-        {
-            arraySize *= arrayDimensionSizes_i[i];
-        }
-        arraySize *= 4;
-        if (dataTypeCode == _DOUBLE)
-        {
-            arraySize *= 2;
-        }
+    //     int arraySize = 1;
+    //     for (int i = 0; i < arrayDimensionSizes_i.size(); i++)
+    //     {
+    //         arraySize *= arrayDimensionSizes_i[i];
+    //     }
+    //     arraySize *= 4;
+    //     if (dataTypeCode == _DOUBLE)
+    //     {
+    //         arraySize *= 2;
+    //     }
 
-        Array varArray;
-        varArray.setArrayDataTypeCode(dataTypeCode);
-        varArray.setArrayDimensionalSizes(arrayDimensionSizes_i);
-        var.arrayVariable = varArray;
+    //     Array varArray;
+    //     varArray.setArrayDataTypeCode(dataTypeCode);
+    //     varArray.setArrayDimensionalSizes(arrayDimensionSizes_i);
+    //     var.arrayVariable = varArray;
 
-        globalBindings.insert(std::make_pair(id, var));
-    }
+    //     globalBindings.insert(std::make_pair(id, var));
+    // }
 
     void insertFunctionBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, int paramNumber, bool returnsPointer)
     {
@@ -319,11 +319,11 @@ public:
         return (*variableBinding).second.variableDataTypeCode;
     }
 
-    const Array &getLocalArrayVariable(const std::string &id) const
-    {
-        auto variableBinding = localBindings.find(id);
-        return (*variableBinding).second.arrayVariable;
-    }
+    // const Array &getLocalArrayVariable(const std::string &id) const
+    // {
+    //     auto variableBinding = localBindings.find(id);
+    //     return (*variableBinding).second.arrayVariable;
+    // }
 
     int getLocalVariableAddressOffset(const std::string &id) const
     {
@@ -372,38 +372,38 @@ public:
         }
     }
 
-    void insertLocalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
-    {
-        Variable var;
-        var.addressOffset = getStackFrameSize() + 4;
-        var.is_array = true;
-        var.is_pointer = true;
+    // void insertLocalArrayVariableBinding(const std::string &id, const PrimitiveDataTypeCode &dataTypeCode, const std::vector<int> arrayDimensionSizes_i)
+    // {
+    //     Variable var;
+    //     var.addressOffset = getStackFrameSize() + 4;
+    //     var.is_array = true;
+    //     var.is_pointer = true;
 
-        int arraySize = 1;
-        for (int i = 0; i < arrayDimensionSizes_i.size(); i++)
-        {
-            arraySize *= arrayDimensionSizes_i[i];
-        }
-        arraySize *= 4;
-        // if (dataTypeCode == _DOUBLE)
-        // {
-        //     arraySize *= 2;
-        // }
-        increaseStackFrameSizeBy(arraySize);
+    //     int arraySize = 1;
+    //     for (int i = 0; i < arrayDimensionSizes_i.size(); i++)
+    //     {
+    //         arraySize *= arrayDimensionSizes_i[i];
+    //     }
+    //     arraySize *= 4;
+    //     // if (dataTypeCode == _DOUBLE)
+    //     // {
+    //     //     arraySize *= 2;
+    //     // }
+    //     increaseStackFrameSizeBy(arraySize);
 
-        Array varArray;
-        varArray.setArrayDataTypeCode(dataTypeCode);
-        varArray.setArrayDimensionalSizes(arrayDimensionSizes_i);
-        var.arrayVariable = varArray;
+    //     Array varArray;
+    //     varArray.setArrayDataTypeCode(dataTypeCode);
+    //     varArray.setArrayDimensionalSizes(arrayDimensionSizes_i);
+    //     var.arrayVariable = varArray;
 
-        localBindings.insert(std::make_pair(id, var));
-    }
+    //     localBindings.insert(std::make_pair(id, var));
+    // }
 
-    bool localVariableIsArray(const std::string &id)
-    {
-        auto variableBinding = localBindings.find(id);
-        return (*variableBinding).second.is_array;
-    }
+    // bool localVariableIsArray(const std::string &id)
+    // {
+    //     auto variableBinding = localBindings.find(id);
+    //     return (*variableBinding).second.is_array;
+    // }
 
     bool localVariableIsPointer(const std::string &id)
     {

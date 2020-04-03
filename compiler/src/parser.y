@@ -71,6 +71,9 @@
 %nterm <str> declaration_specifiers
 %nterm <paramDeclPtr> parameter_declaration
 %nterm <nodePtr> declaration
+
+%nterm <listPtr> initializer_list
+
 // Statements:
 %nterm <nodePtr> selection_statement
 %nterm <listPtr> statement_list
@@ -99,9 +102,9 @@ primary_expression
 //
 postfix_expression
 	: primary_expression 										{ $$ = $1; }
-	| postfix_expression '[' expression ']'			 			{ fprintf(stderr, "\n ARRAY ACCESS not implemented\n"); }
+	| postfix_expression '[' expression ']'			 			{ fprintf(stderr, "Array\n"); $$ = new Array($1, $3); } // Assuming postfix is identifier and expression simple constant
 	| postfix_expression '(' ')'								{ $$ = new FnCall($1); }
-	| postfix_expression '(' argument_expression_list ')'		{ fprintf(stderr, "FnCall\n"); $$ = new FnCall($1, $3); }
+	| postfix_expression '(' argument_expression_list ')'		{ $$ = new FnCall($1, $3); }
 	//| postfix_expression '.' IDENTIFIER
 	//| postfix_expression PTR_OP IDENTIFIER
 	| postfix_expression INC_OP 								{ $$ = new PostOperation('+', $1); }
@@ -145,7 +148,7 @@ multiplicative_expression
 
 additive_expression
 	: multiplicative_expression 								{ $$ = $1; }
-	| additive_expression '+' multiplicative_expression 		{ fprintf(stderr, "ArithmeticOperation\n"); $$ = new ArithmeticOperation($1, "+", $3); }
+	| additive_expression '+' multiplicative_expression 		{ $$ = new ArithmeticOperation($1, "+", $3); }
 	| additive_expression '-' multiplicative_expression 		{ $$ = new ArithmeticOperation($1, "-", $3); }
 	;
 
@@ -186,12 +189,12 @@ inclusive_or_expression
 
 logical_and_expression
 	: inclusive_or_expression 									{ $$ = $1; }
-	| logical_and_expression AND_OP inclusive_or_expression		{ fprintf(stderr, "logical_and_expression\n"); $$ = new LogicalAnd($1, $3); }
+	| logical_and_expression AND_OP inclusive_or_expression		{ $$ = new LogicalAnd($1, $3); }
 	;
 
 logical_or_expression
 	: logical_and_expression									{ $$ = $1; }
-	| logical_or_expression OR_OP logical_and_expression		{ fprintf(stderr, "logical_or_expression\n"); $$ = new LogicalOr($1, $3); }
+	| logical_or_expression OR_OP logical_and_expression		{ $$ = new LogicalOr($1, $3); }
 	;
 
 //https://en.cppreference.com/w/c/language/operator_other#Conditional_operator
@@ -220,23 +223,21 @@ constant_expression // We us this in switch cases
 	: conditional_expression									{ $$ = $1; }
 	;
 
-	//https://en.cppreference.com/w/c/language/initialization
-initializer
-	: assignment_expression										{ $$ = $1; }
-
 
 //// Initialization ---------------------------------------------------------
 
-
-////initializer list "vector<in> v{1,2,3}"
-	//| '{' initializer_list '}'
-	//| '{' initializer_list ',' '}'
+	//https://en.cppreference.com/w/c/language/initialization
+initializer
+	: assignment_expression										{ $$ = $1; }
+//initializer list //"int a[3] = {1,2,3}"
+	| '{' initializer_list '}'									{ $$ = $2; }
+	| '{' initializer_list ',' '}' 								{ $$ = $2; }
 	;
 
-// initializer_list
-// 	: initializer
-// 	| initializer_list ',' initializer
-// 	;
+initializer_list
+	: initializer 												{ $$ = new List($1); }
+	| initializer_list ',' initializer 							{ $1->add($3); $$ = $1; }
+	;
 
 
 // storage_class_specifier
@@ -313,8 +314,8 @@ init_declarator_list
 direct_declarator
 	: IDENTIFIER 													{ $$ = new Declarator(new Identifier(*$1), false); } //TODO IMPLEMENT PRINT
 	| '(' declarator ')' 											{ $$ = $2; }
-	//| direct_declarator '[' constant_expression ']' 				// new array declarator
-	//| direct_declarator '[' ']' 									// new array declarator
+	| direct_declarator '[' constant_expression ']' 				{ $$ = new ArrayDeclarator($1, $3); }// treating constant expression as simple constant
+	| direct_declarator '[' ']' 									{ $$ = new ArrayDeclarator($1); }
 	| direct_declarator '(' parameter_list ')'						{ fprintf(stderr, "direct_declarator\n"); $$ = new FnDeclarator($1, $3); }
 	// | direct_declarator '(' identifier_list ')'
 	| direct_declarator '(' ')'										{ fprintf(stderr, "FnDeclarator\n"); $$ = new FnDeclarator($1); }
