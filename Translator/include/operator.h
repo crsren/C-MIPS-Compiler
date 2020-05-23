@@ -4,8 +4,6 @@
 #include <string>
 #include "node.h"
 
-typedef const Node *nodePtr;
-
 class Operator : public Node
 {
 private:

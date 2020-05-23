@@ -12,4 +12,6 @@ public:
     virtual void add(const Node *ptr) const { return; };
 };
 
+typedef const Node *nodePtr;
+
 #endif // NODE_H
